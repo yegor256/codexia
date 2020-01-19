@@ -14,9 +14,10 @@ Each project may get either manual or automated _reviews_ (via API).
 
 A review can be _voted_ (up or down).
 
-Users have _reputations_, which depend
-on the amount of votes their reviews collect and the
-amount of reviews they post.
+Users have _reputations_, which depend on
+1) the amount of votes their reviews collect,
+2) the amount of reviews they post, and
+3) the amount of projects they submitted.
 
 Projects may get and lose _badges_, according to some rules. For example,
 if a project has a review which is less than 6 months old and
