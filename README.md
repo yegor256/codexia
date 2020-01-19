@@ -25,3 +25,5 @@ has more than 100 upvotes, the badge `trending` gets attached.
 Certain _features_ may be available only for users with big
 enough reputation, for example older reviews may be visible
 only by more reputable users.
+
+Users may _sell_ their reputation to us.
