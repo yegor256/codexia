@@ -1,3 +1,5 @@
+<img src="http://www.codexia.org/logo.svg" height="96px"/>
+
 Codexia is an open source incubator. We want to build
 a community of reviewers and advisers to help us select the most
 interesting emerging open source projects. According to
