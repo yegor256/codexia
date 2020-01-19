@@ -12,7 +12,7 @@ Any open source _project_ can be added to the list.
 
 Each project may get either manual or automated _reviews_ (via API).
 
-A review can be _voted_ (up or down).
+A review can be _voted_ (up or down) by a user.
 
 Users have _reputations_, which depend on
 1) the amount of votes their reviews collected,
