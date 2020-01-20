@@ -1,0 +1,22 @@
+version: "2"
+services:
+  app:
+    container_name: codexia
+    restart: always
+    build: .
+    ports:
+      - "8000:8000"
+    links:
+      - postgres
+    depends_on:
+      - postgres
+  postgres:
+    container_name: postgres
+    image: postgres
+    restart: always
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    env_file:
+      - postgres.env
