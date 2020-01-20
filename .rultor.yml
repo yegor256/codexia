@@ -1,0 +1,18 @@
+docker:
+  image: node:12
+install: |
+  npm i
+  export LC_ALL=en_US.UTF-8
+  export LANG=en_US.UTF-8
+  export LANGUAGE=en_US.UTF-8
+merge:
+  script: |
+    npm run build
+deploy:
+  script: |
+    echo There is nothing to deploy
+    exit 1
+release:
+  script: |-
+    npm run build
+    npm run app
