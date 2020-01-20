@@ -36,3 +36,7 @@ docker-compose build
 docker-compose up -d postgres
 docker-compose up app
 ```
+
+## Check postgresql connection:
+
+[http://localhost:8000/postgres](http://localhost:8000/postgres)
