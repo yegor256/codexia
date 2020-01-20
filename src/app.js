@@ -3,7 +3,7 @@
 const { as } = require('@cuties/cutie')
 const { Backend, RestApi, ServingFilesEndpoint } = require('@cuties/rest')
 const { ReadDataByPath } = require('@cuties/fs')
-const { ParsedJSON } = require('@cuties/json')
+const { ParsedJSON, Value } = require('@cuties/json')
 const { Created } = require('@cuties/created')
 const CustomNotFoundEndpoint = require('./endpoints/CustomNotFoundEndpoint')
 const CustomInternalServerErrorEndpoint = require('./endpoints/CustomInternalServerErrorEndpoint')
@@ -12,16 +12,19 @@ const CheckPostgresConnectionEndpoint = require('./endpoints/CheckPostgresConnec
 const ConnectedPostgresClient = require('./async/postgresql/ConnectedPostgresClient')
 const notFoundEndpoint = new CustomNotFoundEndpoint(new RegExp(/\/not-found/))
 const path = require('path')
+const env = process.env.NODE_ENV || 'test'
 
 const mapper = (url) => {
   return path.join('src', 'static', ...url.split('?')[0].split('/').filter(path => path !== ''))
 }
 
 new ConnectedPostgresClient(
-  new ParsedJSON(
-    new ReadDataByPath(
-      'postgres.env.json', { 'encoding': 'utf8' }
-    )
+  new Value(
+    new ParsedJSON(
+      new ReadDataByPath(
+        'postgres.env.json', { 'encoding': 'utf8' }
+      )
+    ), env
   )
 ).as('POSTGRES_CLIENT').after(
   new Backend(

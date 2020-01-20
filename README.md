@@ -37,6 +37,17 @@ docker-compose up -d postgres
 docker-compose up app
 ```
 
+## Run without docker
+
+```bash
+npm run build
+npm run app
+```
+
+```
+npm run 
+```
+
 ## Check postgresql connection:
 
 [http://localhost:8000/postgres](http://localhost:8000/postgres)
