@@ -7,7 +7,7 @@
     "test": "node test.js",
     "build": "node src/build.js",
     "docker": "NODE_ENV=docker node src/app.js",
-    "app": "NODE_ENV=app node src/app.js"
+    "app": "NODE_ENV=test node src/app.js"
   },
   "repository": {
     "type": "git",
