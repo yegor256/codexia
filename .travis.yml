@@ -16,8 +16,8 @@ env:
   - PGUSER=user
   - PGPASSWORD=1234
   - PGDB=db
-before_script:
-  - psql -c 'create role "user" WITH LOGIN PASSWORD \'jw8s0F4\'' -U postgres
+before_script: >
+  psql -c 'create role "user" WITH LOGIN PASSWORD \'1234\'' -U postgres
 script: |-
   set -e
   npm run build
