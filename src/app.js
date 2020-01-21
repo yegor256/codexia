@@ -20,14 +20,14 @@ const mapper = (url) => {
 }
 
 new ConnectedPostgresClient(
+  Client,
   new Value(
     new ParsedJSON(
       new ReadDataByPath(
         'postgres.env.json', { 'encoding': 'utf8' }
       )
     ), env
-  ),
-  Client
+  )
 ).as('POSTGRES_CLIENT').after(
   new Backend(
     'http',

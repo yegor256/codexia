@@ -3,12 +3,12 @@
 const { AsyncObject } = require('@cuties/cutie')
 
 class ConnectedPostgresClient extends AsyncObject {
-  constructor (options, ClientModule) {
-    super(options, ClientModule)
+  constructor (ClientModule, options) {
+    super(ClientModule, options)
   }
 
   syncCall () {
-    return (options, ClientModule) => {
+    return (ClientModule, options) => {
       const client = new ClientModule(options)
       client.connect()
       return client

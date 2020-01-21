@@ -12,13 +12,16 @@ class FakePostgresClient {
 
 new Assertion(
   new Is(
-    new ConnectedPostgresClient({
-      'user': 'user',
-      'host': 'localhost',
-      'port': 5432,
-      'password': 1234,
-      'database': 'db'
-    }, FakePostgresClient),
+    new ConnectedPostgresClient(
+      FakePostgresClient,
+      {
+        'user': 'user',
+        'host': 'localhost',
+        'port': 5432,
+        'password': 1234,
+        'database': 'db'
+      }
+    ),
     FakePostgresClient
   )
 ).call()
