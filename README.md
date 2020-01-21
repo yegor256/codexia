@@ -36,8 +36,8 @@ Users may _sell_ their reputation to us.
 ## You can use docker to run the app
 
 ```bash
-docker-compose build
 docker-compose up -d postgres
+docker-compose build
 docker-compose up app
 ```
 
