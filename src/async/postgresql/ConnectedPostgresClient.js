@@ -1,16 +1,15 @@
 'usee strict'
 
 const { AsyncObject } = require('@cuties/cutie')
-const { Client } = require('pg')
 
 class ConnectedPostgresClient extends AsyncObject {
-  constructor (options) {
-    super(options)
+  constructor (options, ClientModule) {
+    super(options, ClientModule)
   }
 
   syncCall () {
-    return (options) => {
-      const client = new Client(options)
+    return (options, ClientModule) => {
+      const client = new ClientModule(options)
       client.connect()
       return client
     }

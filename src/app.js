@@ -5,6 +5,7 @@ const { Backend, RestApi, ServingFilesEndpoint } = require('@cuties/rest')
 const { ReadDataByPath } = require('@cuties/fs')
 const { ParsedJSON, Value } = require('@cuties/json')
 const { Created } = require('@cuties/created')
+const { Client } = require('pg')
 const CustomNotFoundEndpoint = require('./endpoints/CustomNotFoundEndpoint')
 const CustomInternalServerErrorEndpoint = require('./endpoints/CustomInternalServerErrorEndpoint')
 const CustomIndexEndpoint = require('./endpoints/CustomIndexEndpoint')
@@ -25,7 +26,8 @@ new ConnectedPostgresClient(
         'postgres.env.json', { 'encoding': 'utf8' }
       )
     ), env
-  )
+  ),
+  Client
 ).as('POSTGRES_CLIENT').after(
   new Backend(
     'http',
