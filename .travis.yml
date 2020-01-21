@@ -13,9 +13,11 @@ addons:
 env:
   global:
   - PGPORT=5432
-  - PGUSERNAME=user
+  - PGUSER=user
   - PGPASSWORD=1234
   - PGDB=db
+before_script:
+  - psql -c 'CREATE ROLE user WITH LOGIN ENCRYPTED PASSWORD '1234';' -U postgres
 script: |-
   set -e
   npm run build
