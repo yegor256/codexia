@@ -13,7 +13,7 @@ addons:
 env:
   global:
   - PGPORT=5432
-  - PGUSER=user
+  - PGUSERNAME=user
   - PGPASSWORD=1234
   - PGDB=db
 script: |-
