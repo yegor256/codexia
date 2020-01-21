@@ -12,7 +12,7 @@ addons:
     - postgresql-client-10
 env:
   global:
-  - PGPORT=5433
+  - PGPORT=5432
   - PGUSER=user
   - PGPASSWORD=1234
   - PGDB=db
