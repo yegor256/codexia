@@ -8,8 +8,6 @@ install: |-
   npm install -g codecov
 script: |-
   set -e
-  mkdir postgres-data
-  chmod 666 postgres-data
   docker-compose up -d postgres
   docker-compose build
   ./node_modules/.bin/nyc report --reporter=lcov
