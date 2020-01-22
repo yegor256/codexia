@@ -5,6 +5,7 @@ services:
   - docker
 before-install: |-
   mkdir postgres-data
+  chmod +x postgres-data
 install: |-
   npm ci
   npm install -g codecov
