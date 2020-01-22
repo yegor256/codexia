@@ -8,5 +8,6 @@ WORKDIR /usr/src/app
 COPY . /usr/src/app
 RUN npm install
 RUN npm run build
+RUN chmod 600 postgres-data
 EXPOSE 8000
 CMD [ "npm", "run", "docker" ]
