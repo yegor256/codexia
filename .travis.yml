@@ -1,6 +1,8 @@
 language: node_js
 node_js:
-- lts/*
+  - lts/*
+services:
+  - docker
 install: |-
   npm ci
   npm install -g codecov
@@ -14,4 +16,4 @@ script: |-
   echo $'**Change log:**<br/>'${log//$'\n'/<br/>}
 branches:
   only:
-  - master
+    - master

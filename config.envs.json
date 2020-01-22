@@ -2,13 +2,15 @@
   "local": {
     "postgres": {
       "host": "localhost",
-      "port": 5432
+      "port": 5432,
+      "user": "pg-docker"
     }
   },
   "test": {
     "postgres": {
       "host": "localhost",
-      "port": 5432
+      "port": 5432,
+      "user": "postgres"
     }
   }
 }
