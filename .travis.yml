@@ -6,8 +6,9 @@ services:
 install: |-
   npm ci
   npm install -g codecov
+  mkdir postgres-data
+  chmod 740 postgres-data
   docker-compose up -d postgres
-  chmod 600 postgres-data
   docker-compose build
 script: |-
   set -e
