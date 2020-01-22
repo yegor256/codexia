@@ -9,7 +9,7 @@ install: |-
 script: |-
   set -e
   mkdir postgres-data
-  chmod +x postgres-data
+  chmod 666 postgres-data
   docker-compose up -d postgres
   docker-compose build
   ./node_modules/.bin/nyc report --reporter=lcov
