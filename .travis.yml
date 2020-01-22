@@ -1,16 +1,26 @@
 language: node_js
 node_js:
-  - lts/*
-services:
-  - docker
+- lts/*
 install: |-
   npm ci
   npm install -g codecov
+addons:
+  postgresql: "10"
+  apt:
+    packages:
+    - postgresql-10
+    - postgresql-client-10
+env:
+  global:
+  - PGPORT=5432
+  - PGUSER=pguser
+  - PGPASSWORD=1234
+  - PGDB=db
+before_script:
+  - psql -c "create role pguser with login password '1234'" -U postgres
 script: |-
   set -e
-  docker-compose up -d postgres
-  sudo chown -R 33:33 postgres-data
-  docker-compose build
+  npm run build-local-app
   ./node_modules/.bin/nyc report --reporter=lcov
   codecov
   log=$(git log $TRAVIS_COMMIT_RANGE --oneline)
@@ -18,4 +28,4 @@ script: |-
   echo $'**Change log:**<br/>'${log//$'\n'/<br/>}
 branches:
   only:
-    - master
+  - master

@@ -2,3 +2,5 @@ node_modules
 postgres-data
 .nyc_output/
 .DS_Store
+docker-compose.yml
+postgres.env

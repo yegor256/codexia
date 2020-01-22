@@ -10,7 +10,6 @@ const { ReadDataByPath } = require('@cuties/fs')
 const { Logged } = require('@cuties/async')
 const ExecutedLiquibaseMigrations = require('./async/liquibase/ExecutedLiquibaseMigrations')
 const liquibase = require('liquibase')
-const env = process.env.NODE_ENV || 'test'
 
 new ExecutedLint(
   process,
@@ -34,7 +33,7 @@ new ExecutedLint(
               { 'encoding': 'utf8' }
             )
           ),
-          env
+          'test'
         ),
         'liquibase'
       )

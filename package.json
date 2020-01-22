@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "node test.js",
-    "build-with-docker": "NODE_ENV=docker node src/build.js",
     "build-test-app": "NODE_ENV=test node src/build.js",
-    "run-with-docker": "NODE_ENV=docker node src/app.js",
-    "run-test-app": "NODE_ENV=test node src/app.js"
+    "run-test-app": "NODE_ENV=test node src/app.js",
+    "build-local-app": "NODE_ENV=local node src/build.js",
+    "run-local-app": "NODE_ENV=local node src/app.js"
   },
   "repository": {
     "type": "git",

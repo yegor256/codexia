@@ -1,15 +1,5 @@
 version: "2"
 services:
-  app:
-    container_name: codexia
-    restart: always
-    build: .
-    ports:
-      - "8000:8000"
-    links:
-      - postgres
-    depends_on:
-      - postgres
   postgres:
     container_name: postgres
     image: postgres
