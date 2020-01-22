@@ -5,10 +5,7 @@ const { Backend, RestApi, ServingFilesEndpoint } = require('@cuties/rest')
 const { ReadDataByPath } = require('@cuties/fs')
 const { ParsedJSON, Value } = require('@cuties/json')
 const { Created } = require('@cuties/created')
-const { Logged } = require('@cuties/async')
-const PGClient = require('pg').Client
-const liquibase = require('liquibase')
-const ExecutedLiquibaseMigrations = require('./async/liquibase/ExecutedLiquibaseMigrations')
+const { Client } = require('pg')
 const CustomNotFoundEndpoint = require('./endpoints/CustomNotFoundEndpoint')
 const CustomInternalServerErrorEndpoint = require('./endpoints/CustomInternalServerErrorEndpoint')
 const CustomIndexEndpoint = require('./endpoints/CustomIndexEndpoint')
@@ -22,45 +19,27 @@ const mapper = (url) => {
   return path.join('src', 'static', ...url.split('?')[0].split('/').filter(path => path !== ''))
 }
 
-new ExecutedLiquibaseMigrations(
-  liquibase,
+new ConnectedPostgresClient(
+  Client,
   new Value(
-    new Value(
-      new ParsedJSON(
-        new ReadDataByPath(
-          './postgres.env.json',
-          { 'encoding': 'utf8' }
-        )
-      ),
-      env
-    ),
-    'liquibase'
+    new ParsedJSON(
+      new ReadDataByPath(
+        'postgres.env.json',
+        { 'encoding': 'utf8' }
+      )
+    ), env
   )
-).after(
-  new Logged('liquibase migrations are applied').after(
-    new ConnectedPostgresClient(
-      PGClient,
-      new Value(
-        new ParsedJSON(
-          new ReadDataByPath(
-            'postgres.env.json',
-            { 'encoding': 'utf8' }
-          )
-        ), env
-      )
-    ).as('POSTGRES_CLIENT').after(
-      new Backend(
-        'http',
-        8000,
-        '0.0.0.0',
-        new RestApi(
-          new CustomIndexEndpoint('./src/static/html/index.html', notFoundEndpoint),
-          new ServingFilesEndpoint(new RegExp(/^\/(html|css|js|images)/), mapper, {}, notFoundEndpoint),
-          new Created(CheckPostgresConnectionEndpoint, new RegExp(/^\/(postgres)/), as('POSTGRES_CLIENT')),
-          notFoundEndpoint,
-          new CustomInternalServerErrorEndpoint(new RegExp(/^\/internal-server-error/))
-        )
-      )
+).as('POSTGRES_CLIENT').after(
+  new Backend(
+    'http',
+    8000,
+    '0.0.0.0',
+    new RestApi(
+      new CustomIndexEndpoint('./src/static/html/index.html', notFoundEndpoint),
+      new ServingFilesEndpoint(new RegExp(/^\/(html|css|js|images)/), mapper, {}, notFoundEndpoint),
+      new Created(CheckPostgresConnectionEndpoint, new RegExp(/^\/(postgres)/), as('POSTGRES_CLIENT')),
+      notFoundEndpoint,
+      new CustomInternalServerErrorEndpoint(new RegExp(/^\/internal-server-error/))
     )
   )
 ).call()
