@@ -6,12 +6,12 @@ services:
 install: |-
   npm ci
   npm install -g codecov
-  mkdir postgres-data
-  chmod 740 postgres-data
   docker-compose up -d postgres
-  docker-compose build
 script: |-
   set -e
+  mkdir postgres-data
+  chmod 740 postgres-data
+  docker-compose build
   ./node_modules/.bin/nyc report --reporter=lcov
   codecov
   log=$(git log $TRAVIS_COMMIT_RANGE --oneline)
