@@ -10,7 +10,6 @@ install: |-
   docker-compose build
 script: |-
   set -e
-  docker-compose up app
   ./node_modules/.bin/nyc report --reporter=lcov
   codecov
   log=$(git log $TRAVIS_COMMIT_RANGE --oneline)
