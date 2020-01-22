@@ -44,8 +44,8 @@ docker-compose up app
 ## Run without docker
 
 ```bash
-npm run build
-npm run app
+npm run build-test-app
+npm run run-test-app
 ```
 
 ## Check postgresql connection:

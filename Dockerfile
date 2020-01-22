@@ -7,7 +7,6 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 RUN npm install
-RUN chmod 740 postgres-data
-RUN npm run build
+RUN npm run build-with-docker
 EXPOSE 8000
-CMD [ "npm", "run", "docker" ]
+CMD [ "npm", "run", "run-with-docker" ]
