@@ -1,0 +1,14 @@
+{
+  "local": {
+    "postgres": {
+      "host": "localhost",
+      "port": 5432
+    }
+  },
+  "test": {
+    "postgres": {
+      "host": "localhost",
+      "port": 5432
+    }
+  }
+}
