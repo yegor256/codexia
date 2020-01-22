@@ -7,6 +7,7 @@ const {
 } = require('@cuties/wall')
 const { ParsedJSON, Value } = require('@cuties/json')
 const { ReadDataByPath } = require('@cuties/fs')
+const { Logged } = require('@cuties/async')
 const ExecutedLiquibaseMigrations = require('./async/liquibase/ExecutedLiquibaseMigrations')
 const liquibase = require('liquibase')
 const env = process.env.NODE_ENV || 'test'
@@ -37,6 +38,8 @@ new ExecutedLint(
         ),
         'liquibase'
       )
+    ).after(
+      new Logged('liquibase migrations are applied')
     )
   )
 ).call()

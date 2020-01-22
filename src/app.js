@@ -24,7 +24,8 @@ new ConnectedPostgresClient(
   new Value(
     new ParsedJSON(
       new ReadDataByPath(
-        'postgres.env.json', { 'encoding': 'utf8' }
+        'postgres.env.json',
+        { 'encoding': 'utf8' }
       )
     ), env
   )
