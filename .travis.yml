@@ -9,6 +9,7 @@ install: |-
 script: |-
   set -e
   docker-compose up -d postgres
+  sudo chown -R 33:33 postgres-data
   docker-compose build
   ./node_modules/.bin/nyc report --reporter=lcov
   codecov
