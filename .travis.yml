@@ -3,13 +3,15 @@ node_js:
   - lts/*
 services:
   - docker
+before-install: |-
+  mkdir postgres-data
+  chmod 740 postgres-data
 install: |-
   npm ci
   npm install -g codecov
   docker-compose up -d postgres
 script: |-
   set -e
-  chmod 740 postgres-data
   docker-compose build
   ./node_modules/.bin/nyc report --reporter=lcov
   codecov
