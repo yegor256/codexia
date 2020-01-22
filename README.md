@@ -33,19 +33,11 @@ only by more reputable users.
 
 Users may _sell_ their reputation to us.
 
-## You can use docker to run the app
+## Build and Run the project (you need postgres locally)
 
 ```bash
-docker-compose build
-docker-compose up -d postgres
-docker-compose up app
-```
-
-## Run without docker
-
-```bash
-npm run build
-npm run app
+npm run build-local
+npm run run-local
 ```
 
 ## Check postgresql connection:
