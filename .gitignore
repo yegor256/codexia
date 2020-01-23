@@ -1,3 +1,4 @@
 node_modules
 postgres-data
 .nyc_output/
+.DS_Store
