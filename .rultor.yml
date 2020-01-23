@@ -1,5 +1,5 @@
 docker:
-  image: node:12
+  image: g4s8/jsrultor:alpine3.10
 install: |-
   npm i
   export LC_ALL=en_US.UTF-8
