@@ -10,7 +10,7 @@ class PulledPostgresByDocker extends AsyncObject {
 
   asyncCall () {
     return (callback) => {
-      exec('/usr/bin/sudo docker pull postgres', callback)
+      exec('docker pull postgres', callback)
     }
   }
 

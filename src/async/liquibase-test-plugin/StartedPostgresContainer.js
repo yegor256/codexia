@@ -12,7 +12,7 @@ class StartedPostgresContainer extends AsyncObject {
     return (postgresOptions, callback) => {
       this.name = postgresOptions.containerName || 'liquibase-plugin-container'
       exec(
-        `/usr/bin/sudo docker run --rm --name ${postgresOptions.containerName || 'liquibase-plugin-container'} \
+        `docker run --rm --name ${postgresOptions.containerName || 'liquibase-plugin-container'} \
            -e POSTGRES_PASSWORD=${postgresOptions.password || ''} \
            -e POSTGRES_USER=${postgresOptions.user || 'postgres'} \
            -e POSTGRES_DB=${postgresOptions.db || 'postgres'} \
