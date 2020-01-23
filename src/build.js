@@ -12,6 +12,10 @@ const StartedPostgresContainer = require('./async/dockerized-postgres/StartedPos
 const KilledPostgresContainer = require('./async/dockerized-postgres/KilledPostgresContainer')
 const AppliedLiquibaseMigrations = require('./async/liquibase/AppliedLiquibaseMigrations')
 const liquibase = require('liquibase')
+const uuidv4 = require('uuid/v4')
+
+const db = uuidv4()
+const user = uuidv4()
 
 new ExecutedLint(
   process,
@@ -30,8 +34,8 @@ new ExecutedLint(
         {
           'containerName': 'codexia-postgres-test-container',
           'port': '5401:5432',
-          'user': 'test1',
-          'db': 'test1',
+          'user': `${user}`,
+          'db': `${db}`,
           'password': '1234'
         }
       ).as('PG_CONTAINER').after(
@@ -41,8 +45,8 @@ new ExecutedLint(
             'liquibase': 'node_modules/liquibase-deps/liquibase-core-3.5.3.jar',
             'classpath': 'node_modules/liquibase-deps/postgresql-9.4-1201.jdbc4.jar',
             'changeLogFile': 'resources/liquibase/db.changelog.xml',
-            'url': 'jdbc:postgresql://0.0.0.0:5401/test1',
-            'username': 'test1',
+            'url': `jdbc:postgresql://0.0.0.0:5401/${db}`,
+            'username': `${user}`,
             'password': '1234'
           }
         ).after(
