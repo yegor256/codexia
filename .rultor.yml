@@ -7,7 +7,6 @@ install: |-
 merge:
   script: |-
     npm install
-    sudo docker pull postgres
     npm run build-test
 deploy:
   script: |-

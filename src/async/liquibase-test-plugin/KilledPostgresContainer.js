@@ -11,7 +11,7 @@ class KilledPostgresContainer extends AsyncObject {
   asyncCall () {
     return (container, callback) => {
       this.container = container
-      exec(`docker kill ${container}`, callback)
+      exec(`sudo docker kill ${container}`, callback)
     }
   }
 
