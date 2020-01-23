@@ -36,6 +36,7 @@ Users may _sell_ their reputation to us.
 ## Build and Run the project (you need postgres locally)
 
 ```bash
+npm i
 npm run build-local
 npm run run-local
 ```

@@ -1,9 +1,9 @@
 'use strict'
 
 const { as } = require('@cuties/cutie')
-const PulledPostgresByDocker = require('./../../../src/async/liquibase-test-plugin/PulledPostgresByDocker')
-const StartedPostgresContainer = require('./../../../src/async/liquibase-test-plugin/StartedPostgresContainer')
-const KilledPostgresContainer = require('./../../../src/async/liquibase-test-plugin/KilledPostgresContainer')
+const PulledPostgresByDocker = require('./../../../src/async/dockerized-postgres/PulledPostgresByDocker')
+const StartedPostgresContainer = require('./../../../src/async/dockerized-postgres/StartedPostgresContainer')
+const KilledPostgresContainer = require('./../../../src/async/dockerized-postgres/KilledPostgresContainer')
 const { StrictEqualAssertion } = require('@cuties/assert')
 const { IsString } = require('@cuties/is')
 

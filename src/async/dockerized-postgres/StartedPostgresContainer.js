@@ -10,14 +10,14 @@ class StartedPostgresContainer extends AsyncObject {
 
   asyncCall () {
     return (postgresOptions, callback) => {
-      this.name = postgresOptions.containerName || 'liquibase-plugin-container'
+      this.name = postgresOptions.containerName || 'postgres-container'
       exec(
-        `sudo docker run --rm --name ${postgresOptions.containerName || 'liquibase-plugin-container'} \
+        `sudo docker run --rm --name ${postgresOptions.containerName || 'postgres-container'} \
            -e POSTGRES_PASSWORD=${postgresOptions.password || ''} \
            -e POSTGRES_USER=${postgresOptions.user || 'postgres'} \
            -e POSTGRES_DB=${postgresOptions.db || 'postgres'} \
-           -d -p ${postgresOptions.port || '5432:5432'} \
-           -v ${postgresOptions.volumes || '$HOME/docker/volumes/postgres'}:/var/lib/postgresql/data postgres`,
+           -p ${postgresOptions.port || '5432:5432'} \
+           -d postgres`,
         callback
       )
     }
@@ -25,6 +25,7 @@ class StartedPostgresContainer extends AsyncObject {
 
   onResult (stdout) {
     console.log('Postgres is started')
+    console.log(this.name)
     console.log(stdout)
     return this.name
   }

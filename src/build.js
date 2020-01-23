@@ -6,13 +6,12 @@ const {
   ExecutedTestCoverageCheck,
   ExecutedTestCoverage
 } = require('@cuties/wall')
-const PulledPostgresByDocker = require('./async/liquibase-test-plugin/PulledPostgresByDocker')
-const StartedPostgresContainer = require('./async/liquibase-test-plugin/StartedPostgresContainer')
-const KilledPostgresContainer = require('./async/liquibase-test-plugin/KilledPostgresContainer')
-const postgresOptionsForTests = {
-  'containerName': 'codexia-posgres-test-container',
-  'port': '5400:5400'
-}
+const { Logged } = require('@cuties/async')
+const PulledPostgresByDocker = require('./async/dockerized-postgres/PulledPostgresByDocker')
+const StartedPostgresContainer = require('./async/dockerized-postgres/StartedPostgresContainer')
+const KilledPostgresContainer = require('./async/dockerized-postgres/KilledPostgresContainer')
+const AppliedLiquibaseMigrations = require('./async/liquibase/AppliedLiquibaseMigrations')
+const liquibase = require('liquibase')
 
 new ExecutedLint(
   process,
@@ -28,10 +27,32 @@ new ExecutedLint(
   ).after(
     new PulledPostgresByDocker().after(
       new StartedPostgresContainer(
-        postgresOptionsForTests
+        {
+          'containerName': 'codexia-postgres-test-container',
+          'port': '5401:5432',
+          'user': 'test',
+          'db': 'test',
+          'password': '1234'
+        }
       ).as('PG_CONTAINER').after(
-        new KilledPostgresContainer(
-          as('PG_CONTAINER')
+        new AppliedLiquibaseMigrations(
+          liquibase,
+          {
+            'liquibase': 'node_modules/liquibase-deps/liquibase-core-3.5.3.jar',
+            'classpath': 'node_modules/liquibase-deps/postgresql-9.4-1201.jdbc4.jar',
+            'changeLogFile': 'resources/liquibase/db.changelog.xml',
+            'url': 'jdbc:postgresql://0.0.0.0:5401/test',
+            'username': 'test',
+            'password': '1234'
+          }
+        ).after(
+          new Logged(
+            'liquibase migrations are applied'
+          ).after(
+            new KilledPostgresContainer(
+              as('PG_CONTAINER')
+            )
+          )
         )
       )
     )

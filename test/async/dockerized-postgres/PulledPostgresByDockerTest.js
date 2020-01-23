@@ -1,6 +1,6 @@
 'use strict'
 
-const PulledPostgresByDocker = require('./../../../src/async/liquibase-test-plugin/PulledPostgresByDocker')
+const PulledPostgresByDocker = require('./../../../src/async/dockerized-postgres/PulledPostgresByDocker')
 const { StrictEqualAssertion } = require('@cuties/assert')
 
 new StrictEqualAssertion(
