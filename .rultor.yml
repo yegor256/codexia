@@ -7,6 +7,7 @@ install: |-
   export LANGUAGE=en_US.UTF-8
 merge:
   script: |-
+    sudo docker pull postgres
     npm run build-test
 deploy:
   script: |-
