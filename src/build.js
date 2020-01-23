@@ -30,8 +30,8 @@ new ExecutedLint(
         {
           'containerName': 'codexia-postgres-test-container',
           'port': '5401:5432',
-          'user': 'test',
-          'db': 'test',
+          'user': 'test1',
+          'db': 'test1',
           'password': '1234'
         }
       ).as('PG_CONTAINER').after(
@@ -41,8 +41,8 @@ new ExecutedLint(
             'liquibase': 'node_modules/liquibase-deps/liquibase-core-3.5.3.jar',
             'classpath': 'node_modules/liquibase-deps/postgresql-9.4-1201.jdbc4.jar',
             'changeLogFile': 'resources/liquibase/db.changelog.xml',
-            'url': 'jdbc:postgresql://0.0.0.0:5401/test',
-            'username': 'test',
+            'url': 'jdbc:postgresql://0.0.0.0:5401/test1',
+            'username': 'test1',
             'password': '1234'
           }
         ).after(
