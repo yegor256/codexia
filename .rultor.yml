@@ -6,6 +6,7 @@ install: |-
   export LANGUAGE=en_US.UTF-8
 merge:
   script: |-
+    export PATH=/usr/local/bin:$PATH
     npm install
     npm run build-test
 deploy:
