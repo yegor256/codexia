@@ -1,12 +1,12 @@
 docker:
   image: g4s8/jsrultor:alpine3.10
 install: |-
-  npm i
   export LC_ALL=en_US.UTF-8
   export LANG=en_US.UTF-8
   export LANGUAGE=en_US.UTF-8
 merge:
   script: |-
+    npm install
     sudo docker pull postgres
     npm run build-test
 deploy:
