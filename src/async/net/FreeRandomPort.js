@@ -16,6 +16,10 @@ class FreeRandomPort extends AsyncObject {
       }, callback)
     }
   }
+
+  onResult () {
+    return 5432
+  }
 }
 
 module.exports = FreeRandomPort
