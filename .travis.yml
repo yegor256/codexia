@@ -1,4 +1,4 @@
-language: java
+language: node.js
 node_js:
   - lts/*
 services:
