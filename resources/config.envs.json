@@ -1,0 +1,26 @@
+{
+  "local": {
+    "postgres": {
+      "host": "0.0.0.0",
+      "port": 5431,
+      "user": "local-user",
+      "password": "local-password",
+      "database": "local-db"
+    },
+    "liquibase": {
+      "liquibase": "node_modules/liquibase-deps/liquibase-core-3.5.3.jar",
+      "classpath": "node_modules/liquibase-deps/postgresql-9.4-1201.jdbc4.jar",
+      "changeLogFile": "resources/liquibase/db.changelog.xml",
+      "url": "jdbc:postgresql://0.0.0.0:5431/local-db",
+      "username": "local-user",
+      "password": "local-password"
+    },
+    "dockerizedPostgres": {
+      "containerName": "local-postgres",
+      "port": "5431:5432",
+      "user": "local-user",
+      "db": "local-db",
+      "password": "local-password"
+    }
+  }
+}

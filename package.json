@@ -5,10 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node test.js",
-    "build-local": "NODE_ENV=local node src/build.js",
-    "run-local": "NODE_ENV=local node src/app.js",
-    "build-test": "NODE_ENV=test node src/build.js",
-    "run-test": "NODE_ENV=test node src/app.js"
+    "build": "node src/build.js",
+    "local": "NODE_ENV=local node src/app.js"
   },
   "repository": {
     "type": "git",

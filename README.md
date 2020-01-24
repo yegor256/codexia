@@ -37,8 +37,8 @@ Users may _sell_ their reputation to us.
 
 ```bash
 npm i
-npm run build-local
-npm run run-local
+npm run build
+npm run local
 ```
 
 ## Check postgresql connection:
