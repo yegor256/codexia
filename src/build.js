@@ -18,10 +18,10 @@ const Sleep = require('./async/process/Sleep')
 const liquibase = require('liquibase')
 const uuidv4 = require('uuid/v4')
 
-const postgresContainerName = uuidv4().replace(/-/g, '')
-const db = uuidv4().replace(/-/g, '')
-const user = uuidv4().replace(/-/g, '')
-const password = uuidv4().replace(/-/g, '')
+const postgresContainerName = uuidv4()
+const db = uuidv4()
+const user = uuidv4()
+const password = uuidv4()
 
 new ExecutedLint(
   process,
@@ -42,7 +42,7 @@ new ExecutedLint(
             postgresContainerName, as('RANDOM_PORT'), user, db, password
           )
         ).as('PG_CONTAINER').after(
-          new Sleep(100).after(
+          new Sleep(1000).after(
             new AppliedLiquibaseMigrations(
               liquibase,
               new OptionsForLiquibase(
