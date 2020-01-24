@@ -14,6 +14,7 @@ const OptionsForPostgresContainer = require('./async/dockerized-postgres/Options
 const AppliedLiquibaseMigrations = require('./async/liquibase/AppliedLiquibaseMigrations')
 const OptionsForLiquibase = require('./async/liquibase/OptionsForLiquibase')
 const FreeRandomPort = require('./async/net/FreeRandomPort')
+const Sleep = require('./async/process/Sleep')
 const liquibase = require('liquibase')
 const uuidv4 = require('uuid/v4')
 
@@ -41,20 +42,22 @@ new ExecutedLint(
             postgresContainerName, as('RANDOM_PORT'), user, db, password
           )
         ).as('PG_CONTAINER').after(
-          new AppliedLiquibaseMigrations(
-            liquibase,
-            new OptionsForLiquibase(
-              'node_modules/liquibase-deps/liquibase-core-3.5.3.jar',
-              'node_modules/liquibase-deps/postgresql-9.4-1201.jdbc4.jar',
-              'resources/liquibase/db.changelog.xml',
-              '0.0.0.0', as('RANDOM_PORT'), db, user, password
-            )
-          ).after(
-            new Logged(
-              'liquibase migrations are applied'
+          new Sleep(100).after(
+            new AppliedLiquibaseMigrations(
+              liquibase,
+              new OptionsForLiquibase(
+                'node_modules/liquibase-deps/liquibase-core-3.5.3.jar',
+                'node_modules/liquibase-deps/postgresql-9.4-1201.jdbc4.jar',
+                'resources/liquibase/db.changelog.xml',
+                '0.0.0.0', as('RANDOM_PORT'), db, user, password
+              )
             ).after(
-              new KilledPostgresContainer(
-                as('PG_CONTAINER')
+              new Logged(
+                'liquibase migrations are applied'
+              ).after(
+                new KilledPostgresContainer(
+                  as('PG_CONTAINER')
+                )
               )
             )
           )
