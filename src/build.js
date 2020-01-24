@@ -17,10 +17,10 @@ const FreeRandomPort = require('./async/net/FreeRandomPort')
 const liquibase = require('liquibase')
 const uuidv4 = require('uuid/v4')
 
-const postgresContainerName = uuidv4()
-const db = uuidv4()
-const user = uuidv4()
-const password = uuidv4()
+const postgresContainerName = uuidv4().replace(/-/g, '')
+const db = uuidv4().replace(/-/g, '')
+const user = uuidv4().replace(/-/g, '')
+const password = uuidv4().replace(/-/g, '')
 
 new ExecutedLint(
   process,
@@ -34,7 +34,7 @@ new ExecutedLint(
     new ExecutedTestCoverage(process, './test.js'),
     { 'lines': 100, 'functions': 100, 'branches': 100 }
   ).after(
-    new FreeRandomPort(5432, 5440).as('RANDOM_PORT').after(
+    new FreeRandomPort().as('RANDOM_PORT').after(
       new PulledPostgresByDocker().after(
         new StartedPostgresContainer(
           new OptionsForPostgresContainer(
