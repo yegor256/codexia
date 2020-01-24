@@ -1,8 +1,6 @@
 language: java
 node_js:
   - lts/*
-jdk:
-  - oraclejdk8
 services:
   - docker
 install: |-
