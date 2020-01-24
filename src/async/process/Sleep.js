@@ -9,13 +9,11 @@ class Sleep extends AsyncObject {
 
   asyncCall () {
     return (ms, callback) => {
-      console.log('sleep start')
       setTimeout(callback, ms)
     }
   }
 
   onResult () {
-    console.log('sleep end')
     return 0
   }
 }
