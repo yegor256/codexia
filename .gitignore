@@ -1,5 +1,4 @@
-node_modules
-postgres-data
-.nyc_output/
 .DS_Store
 .idea
+node_modules
+.nyc_output

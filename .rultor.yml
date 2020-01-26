@@ -1,5 +1,5 @@
 docker:
-  image: g4s8/jsrultor:alpine3.10
+  image: yegor256/rultor-image
 install: |-
   export LC_ALL=en_US.UTF-8
   export LANG=en_US.UTF-8
