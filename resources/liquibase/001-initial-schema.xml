@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd" logicalFilePath="001-initial-schema.xml">
+  <changeSet id="001" author="guseyn">
+    <sql>
+      CREATE TABLE "user" (
+        id SERIAL PRIMARY KEY,
+        login VARCHAR(64) NOT NULL,
+        avatar_url VARCHAR(100) NOT NULL,
+        created TIMESTAMPTZ DEFAULT now() NOT NULL
+      );
+      CREATE INDEX idx_user1 ON "user" (login);
+    </sql>
+    <sql>
+      CREATE TABLE project (
+        id SERIAL PRIMARY KEY,
+        submitter INT NOT NULL REFERENCES "user"(id),
+        title VARCHAR(64) NOT NULL,
+        github_url VARCHAR(160) NOT NULL,
+        starts_count INT NOT NULL DEFAULT 0,
+        satus VARCHAR(64) NOT NULL DEFAULT 'new',
+        created TIMESTAMPTZ DEFAULT now() NOT NULL,
+        edited TIMESTAMPTZ DEFAULT now() NOT NULL
+      );
+      CREATE INDEX idx_project1 ON project (submitter);
+    </sql>
+    <sql>
+      CREATE TABLE review (
+        id SERIAL PRIMARY KEY,
+        project INT NOT NULL REFERENCES project(id),
+        submitter INT NOT NULL REFERENCES "user"(id),
+        text VARCHAR(500) NOT NULL,
+        vote_count INT NOT NULL DEFAULT 0,
+        created TIMESTAMPTZ DEFAULT now() NOT NULL,
+        edited TIMESTAMPTZ DEFAULT now() NOT NULL
+      );
+      CREATE INDEX idx_review1 ON review (project, submitter, text);
+    </sql>
+  </changeSet>
+</databaseChangeLog>
