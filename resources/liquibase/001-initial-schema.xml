@@ -22,7 +22,7 @@
         created TIMESTAMPTZ DEFAULT now() NOT NULL,
         edited TIMESTAMPTZ DEFAULT now() NOT NULL
       );
-      CREATE INDEX idx_project1 ON project (submitter);
+      CREATE INDEX idx_project1 ON project (submitter, title);
     </sql>
     <sql>
       CREATE TABLE review (
