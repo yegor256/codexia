@@ -4,9 +4,8 @@
   <changeSet id="001" author="guseyn">
     <sql>
       CREATE TABLE "user" (
-        id SERIAL PRIMARY KEY,
-        login VARCHAR(64) NOT NULL,
-        avatar_url VARCHAR(100) NOT NULL,
+        login VARCHAR(64) PRIMARY KEY NOT NULL,
+        avatar_url VARCHAR(2000) NOT NULL,
         created TIMESTAMPTZ DEFAULT now() NOT NULL
       );
       CREATE INDEX idx_user1 ON "user" (login);
@@ -14,27 +13,42 @@
     <sql>
       CREATE TABLE project (
         id SERIAL PRIMARY KEY,
-        submitter INT NOT NULL REFERENCES "user"(id),
-        title VARCHAR(64) NOT NULL,
-        github_url VARCHAR(160) NOT NULL,
-        starts_count INT NOT NULL DEFAULT 0,
-        satus VARCHAR(64) NOT NULL DEFAULT 'new',
-        created TIMESTAMPTZ DEFAULT now() NOT NULL,
-        edited TIMESTAMPTZ DEFAULT now() NOT NULL
+        submitter VARCHAR(64) NOT NULL REFERENCES "user"(login),
+        coordinates VARCHAR(64) NOT NULL,
+        platform VARCHAR(64) NOT NULL DEFAULT 'github',
+        created TIMESTAMPTZ DEFAULT now() NOT NULL
       );
-      CREATE INDEX idx_project1 ON project (submitter, title);
+      CREATE INDEX idx_project1 ON project (id, submitter, coordinates, platform);
     </sql>
     <sql>
       CREATE TABLE review (
         id SERIAL PRIMARY KEY,
         project INT NOT NULL REFERENCES project(id),
-        submitter INT NOT NULL REFERENCES "user"(id),
-        text VARCHAR(500) NOT NULL,
-        vote_count INT NOT NULL DEFAULT 0,
-        created TIMESTAMPTZ DEFAULT now() NOT NULL,
-        edited TIMESTAMPTZ DEFAULT now() NOT NULL
+        author VARCHAR(64) NOT NULL REFERENCES "user"(login),
+        text TEXT NOT NULL,
+        created TIMESTAMPTZ DEFAULT now() NOT NULL
       );
-      CREATE INDEX idx_review1 ON review (project, submitter, text);
+      CREATE INDEX idx_review1 ON review (project, author, text);
+    </sql>
+    <sql>
+      <!-- value here can be eigher -1, 0 or 1 -->
+      CREATE TABLE review_vote (
+        review INT NOT NULL REFERENCES review(id),
+        "user" VARCHAR(64) NOT NULL REFERENCES "user"(login),
+        value SMALLINT NOT NULL DEFAULT 0,
+        PRIMARY KEY(review, "user"),
+        created TIMESTAMPTZ DEFAULT now() NOT NULL
+      );
+      CREATE INDEX idx_review_vote1 ON review_vote (review, "user");
+    </sql>
+    <sql>
+      CREATE TABLE badge (
+        id SERIAL PRIMARY KEY,
+        project INT NOT NULL REFERENCES project(id),
+        image_url VARCHAR(2000) NOT NULL,
+        created TIMESTAMPTZ DEFAULT now() NOT NULL
+      );
+      CREATE INDEX idx_badge1 ON badge (project);
     </sql>
   </changeSet>
 </databaseChangeLog>
