@@ -45,6 +45,7 @@
       CREATE TABLE badge (
         id SERIAL PRIMARY KEY,
         project INT NOT NULL REFERENCES project(id),
+        url VARCHAR(2000) NOT NULL,
         image_url VARCHAR(2000) NOT NULL,
         created TIMESTAMPTZ DEFAULT now() NOT NULL
       );
