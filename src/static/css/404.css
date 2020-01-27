@@ -1,0 +1,24 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+._404 {
+  width: 190px;
+  height: 28px;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  font-size: 1.5em;
+  font-family: 'Source Sans Pro', sans-serif;
+  color: #111111;
+  font-weight: bold;
+  text-align: center;
+}

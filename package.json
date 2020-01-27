@@ -6,7 +6,8 @@
   "scripts": {
     "test": "node test.js",
     "build": "node src/build.js",
-    "local": "NODE_ENV=local node src/app.js"
+    "local": "NODE_ENV=local node src/app.js",
+    "postgres": "node src/local-postgres-from-docker.js"
   },
   "repository": {
     "type": "git",
