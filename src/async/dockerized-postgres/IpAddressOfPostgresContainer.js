@@ -2,7 +2,7 @@
 
 const { AsyncObject } = require('@cuties/cutie')
 
-class IpAddressOfContainer extends AsyncObject {
+class IpAddressOfPostgresContainer extends AsyncObject {
   constructor (container) {
     super(container)
   }
@@ -14,4 +14,4 @@ class IpAddressOfContainer extends AsyncObject {
   }
 }
 
-module.exports = IpAddressOfContainer
+module.exports = IpAddressOfPostgresContainer

@@ -2,7 +2,7 @@
 
 const { AsyncObject } = require('@cuties/cutie')
 
-class MappedPortOfContainer extends AsyncObject {
+class MappedPortOfPostgresContainer extends AsyncObject {
   constructor (container) {
     super(container)
   }
@@ -14,4 +14,4 @@ class MappedPortOfContainer extends AsyncObject {
   }
 }
 
-module.exports = MappedPortOfContainer
+module.exports = MappedPortOfPostgresContainer
