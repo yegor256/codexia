@@ -1,7 +1,8 @@
 'usee strict'
 
 const { AsyncObject } = require('@cuties/cutie')
-const { exec } = require('child_process')
+const { GenericContainer } = require('testcontainers')
+const promiseToCallback = require('promise-to-callback')
 
 class StartedPostgresContainer extends AsyncObject {
   constructor (postgresOptions) {
@@ -10,24 +11,16 @@ class StartedPostgresContainer extends AsyncObject {
 
   asyncCall () {
     return (postgresOptions, callback) => {
-      this.name = postgresOptions.containerName || 'postgres-container'
-      exec(
-        `sudo docker run --rm --name ${postgresOptions.containerName || 'postgres-container'} \
-           -e POSTGRES_PASSWORD=${postgresOptions.password || ''} \
-           -e POSTGRES_USER=${postgresOptions.user || 'postgres'} \
-           -e POSTGRES_DB=${postgresOptions.db || 'postgres'} \
-           -p ${postgresOptions.port || '5432:5432'} \
-           -d postgres`,
-        callback
-      )
+      promiseToCallback(
+        new GenericContainer('postgres')
+          .withName(postgresOptions.containerName, 'postgres-container')
+          .withEnv('POSTGRES_PASSWORD', postgresOptions.password || '')
+          .withEnv('POSTGRES_USER', postgresOptions.user || 'postgres')
+          .withEnv('POSTGRES_DB', postgresOptions.db || 'postgres')
+          .withExposedPorts(5432)
+          .start()
+      )(callback)
     }
-  }
-
-  onResult (stdout) {
-    console.log('Postgres is started')
-    console.log(this.name)
-    console.log(stdout)
-    return this.name
   }
 }
 

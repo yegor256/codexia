@@ -1,35 +1,41 @@
 'use strict'
 
 const { as } = require('@cuties/cutie')
-const PulledPostgresByDocker = require('./../../../src/async/dockerized-postgres/PulledPostgresByDocker')
+const { Assertion } = require('@cuties/assert')
+const { IsObject } = require('@cuties/is')
+const OptionsForPostgresContainer = require('./../../../src/async/dockerized-postgres/OptionsForPostgresContainer')
 const StartedPostgresContainer = require('./../../../src/async/dockerized-postgres/StartedPostgresContainer')
 const KilledPostgresContainer = require('./../../../src/async/dockerized-postgres/KilledPostgresContainer')
-const { Assertion } = require('@cuties/assert')
-const { IsString } = require('@cuties/is')
+const uuidv4 = require('uuid/v4')
 
-new PulledPostgresByDocker().after(
-  new Assertion(
-    new IsString(
-      new StartedPostgresContainer({
-        'containerName': 'testName1',
-        'port': '5433:5433'
-      }).as('PG_CONTAINER')
-    )
-  ).after(
-    new KilledPostgresContainer(
-      as('PG_CONTAINER')
-    )
+const postgresContainerName = uuidv4()
+const db = uuidv4()
+const user = uuidv4()
+const password = uuidv4()
+
+new Assertion(
+  new IsObject(
+    new StartedPostgresContainer(
+      new OptionsForPostgresContainer(
+        postgresContainerName,
+        db,
+        user,
+        password
+      )
+    ).as('PG_CONTAINER')
+  )
+).after(
+  new KilledPostgresContainer(
+    as('PG_CONTAINER')
   )
 ).call()
 
-new PulledPostgresByDocker().after(
-  new Assertion(
-    new IsString(
-      new StartedPostgresContainer({}).as('PG_CONTAINER')
-    )
-  ).after(
-    new KilledPostgresContainer(
-      as('PG_CONTAINER')
-    )
+new Assertion(
+  new IsObject(
+    new StartedPostgresContainer({}).as('PG_CONTAINER')
+  )
+).after(
+  new KilledPostgresContainer(
+    as('PG_CONTAINER')
   )
 ).call()
