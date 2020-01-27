@@ -36,7 +36,6 @@
     "liquibase-deps": "^1.0.0",
     "maven": "^4.7.0",
     "pg": "^7.17.1",
-    "portfinder": "^1.0.25",
     "uuid": "^3.4.0"
   },
   "devDependencies": {

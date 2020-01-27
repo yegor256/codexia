@@ -1,20 +1,24 @@
 'use strict'
 
 const { AsyncObject } = require('@cuties/cutie')
-const portfinder = require('portfinder')
+const net = require('net')
 
 class FreeRandomPort extends AsyncObject {
-  constructor (minPort = 1000, maxPort = 9999) {
-    super(minPort, maxPort)
+  constructor () {
+    super()
   }
 
   asyncCall () {
-    return (minPort, maxPort, callback) => {
-      portfinder.getPort({
-        port: minPort,
-        stopPort: maxPort
-      }, callback)
+    return (callback) => {
+      this.server = net.createServer()
+      this.server.listen(0, callback)
     }
+  }
+
+  onResult () {
+    const port = this.server.address().port
+    this.server.close()
+    return port
   }
 }
 
