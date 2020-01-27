@@ -8,7 +8,7 @@ merge:
   script: |-
     export PATH=/usr/local/bin:$PATH
     npm install
-    sudo $(which npm) run build
+    npm run build
 deploy:
   script: |-
     echo There is nothing to deploy
