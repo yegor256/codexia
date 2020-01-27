@@ -15,5 +15,5 @@ deploy:
     exit 1
 release:
   script: |-
-    npm run build
+    npm run build-in-docker
     npm run app

@@ -6,6 +6,7 @@
   "scripts": {
     "test": "node test.js",
     "build": "node src/build.js",
+    "build-in-docker": "IN_DOCKER=true node src/build.js",
     "local": "NODE_ENV=local node src/app.js"
   },
   "repository": {

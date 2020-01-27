@@ -11,12 +11,15 @@ const PulledPostgresByDocker = require('./async/dockerized-postgres/PulledPostgr
 const StartedPostgresContainer = require('./async/dockerized-postgres/StartedPostgresContainer')
 const KilledPostgresContainer = require('./async/dockerized-postgres/KilledPostgresContainer')
 const OptionsForPostgresContainer = require('./async/dockerized-postgres/OptionsForPostgresContainer')
+const IPAddressOfPostgresContainer = require('./async/dockerized-postgres/IPAddressOfPostgresContainer')
 const AppliedLiquibaseMigrations = require('./async/liquibase/AppliedLiquibaseMigrations')
 const OptionsForLiquibase = require('./async/liquibase/OptionsForLiquibase')
 const FreeRandomPort = require('./async/net/FreeRandomPort')
 const Sleep = require('./async/process/Sleep')
 const liquibase = require('liquibase')
 const uuidv4 = require('uuid/v4')
+
+const runInDocker = process.env.IN_DOCKER || false
 
 const postgresContainerName = uuidv4()
 const db = uuidv4()
@@ -49,7 +52,8 @@ new ExecutedLint(
                 'node_modules/liquibase-deps/liquibase-core-3.5.3.jar',
                 'node_modules/liquibase-deps/postgresql-9.4-1201.jdbc4.jar',
                 'resources/liquibase/db.changelog.xml',
-                '0.0.0.0', 5432, db, user, password
+                runInDocker ? new IPAddressOfPostgresContainer(as('PG_CONTAINER')) : '0.0.0.0', 
+                runInDocker ? '5432' : as('RANDOM_PORT'), db, user, password
               )
             ).after(
               new Logged(
