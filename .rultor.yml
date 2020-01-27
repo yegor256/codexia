@@ -8,7 +8,7 @@ merge:
   script: |-
     export PATH=/usr/local/bin:$PATH
     npm install
-    npm run build
+    npm run build-rultor
 deploy:
   script: |-
     echo There is nothing to deploy
