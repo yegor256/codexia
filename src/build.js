@@ -42,14 +42,14 @@ new ExecutedLint(
             postgresContainerName, as('RANDOM_PORT'), user, db, password
           )
         ).as('PG_CONTAINER').after(
-          new Sleep(10000).after(
+          new Sleep(1000).after(
             new AppliedLiquibaseMigrations(
               liquibase,
               new OptionsForLiquibase(
                 'node_modules/liquibase-deps/liquibase-core-3.5.3.jar',
                 'node_modules/liquibase-deps/postgresql-9.4-1201.jdbc4.jar',
                 'resources/liquibase/db.changelog.xml',
-                '0.0.0.0', as('RANDOM_PORT'), db, user, password
+                '0.0.0.0', 5432, db, user, password
               )
             ).after(
               new Logged(
