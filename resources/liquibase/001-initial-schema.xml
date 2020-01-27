@@ -33,7 +33,6 @@
       CREATE INDEX idx_review1 ON review (project, author);
     </sql>
     <sql>
-      <!-- value here can be eigher -1, 0 or 1 -->
       CREATE TABLE vote (
         id SERIAL PRIMARY KEY,
         review INT NOT NULL REFERENCES review(id),
@@ -42,7 +41,7 @@
         UNIQUE(review, "user"),
         created TIMESTAMPTZ DEFAULT now() NOT NULL
       );
-      CREATE INDEX idx_review_vote1 ON review_vote (review, "user");
+      CREATE INDEX idx_vote1 ON vote (review, "user");
     </sql>
     <sql>
       CREATE TABLE badge (
