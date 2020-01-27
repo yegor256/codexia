@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node test.js",
-    "build": "node src/build.js",
+    "build": "DEBUG=testcontainers node src/build.js",
     "local": "NODE_ENV=local node src/app.js"
   },
   "repository": {
@@ -37,6 +37,8 @@
     "maven": "^4.7.0",
     "pg": "^7.17.1",
     "portfinder": "^1.0.25",
+    "promise-to-callback": "^1.0.0",
+    "testcontainers": "^2.3.1",
     "uuid": "^3.4.0"
   },
   "devDependencies": {
