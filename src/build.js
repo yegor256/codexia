@@ -52,7 +52,7 @@ new ExecutedLint(
                 'node_modules/liquibase-deps/liquibase-core-3.5.3.jar',
                 'node_modules/liquibase-deps/postgresql-9.4-1201.jdbc4.jar',
                 'resources/liquibase/db.changelog.xml',
-                runInDocker ? new IPAddressOfPostgresContainer(as('PG_CONTAINER')) : '0.0.0.0', 
+                runInDocker ? new IPAddressOfPostgresContainer(as('PG_CONTAINER')) : '0.0.0.0',
                 runInDocker ? '5432' : as('RANDOM_PORT'), db, user, password
               )
             ).after(
