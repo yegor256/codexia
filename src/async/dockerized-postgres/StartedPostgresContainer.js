@@ -18,7 +18,7 @@ class StartedPostgresContainer extends AsyncObject {
            -e POSTGRES_DB=${postgresOptions.db || 'postgres'} \
            -p ${postgresOptions.port || '5432:5432'} \
            -d postgres &\
-           docker ps`,
+           sudo docker ps`,
         callback
       )
     }
