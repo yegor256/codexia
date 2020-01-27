@@ -1,6 +1,5 @@
 'use strict'
 
-const { as } = require('@cuties/cutie')
 const OptionsForLiquibase = require('./../../../src/async/liquibase/OptionsForLiquibase')
 const { DeepStrictEqualAssertion } = require('@cuties/assert')
 

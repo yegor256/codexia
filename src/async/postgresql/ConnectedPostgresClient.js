@@ -1,4 +1,4 @@
-'usee strict'
+'use strict'
 
 const { AsyncObject } = require('@cuties/cutie')
 

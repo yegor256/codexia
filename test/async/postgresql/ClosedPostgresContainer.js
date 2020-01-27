@@ -9,21 +9,21 @@ const ConnectedPostgresClient = require('./../../../src/async/postgresql/Connect
 const ClosedPostgresClient = require('./../../../src/async/postgresql/ClosedPostgresClient')
 const PGClient = require('pg').Client
 
-new Assertion(
-  new Is(
-    new ConnectedPostgresClient(
-      PGClient,
-      new ParsedJSON(
-        new ReadDataByPath(
-          './test/resources/postgres.json',
-          { 'encoding': 'utf8' }
-        )
-      )
-    ).as('PG_CLIENT'),
-    PGClient
+new ConnectedPostgresClient(
+  PGClient,
+  new ParsedJSON(
+    new ReadDataByPath(
+      './test/resources/postgres.json',
+      { 'encoding': 'utf8' }
+    )
   )
-).after(
-  new ClosedPostgresClient(
-    as('PG_CLIENT')
+).as('PG_CLIENT').after(
+  new Assertion(
+    new Is(
+      new ClosedPostgresClient(
+        as('PG_CLIENT')
+      ),
+      PGClient
+    )
   )
 ).call()

@@ -7,6 +7,9 @@ const {
   ExecutedTestCoverage
 } = require('@cuties/wall')
 const { Logged } = require('@cuties/async')
+const { WrittenFile } = require('@cuties/fs')
+const { CreatedOptions } = require('@cuties/object')
+const { StringifiedJSON } = require('@cuties/json')
 const PulledPostgresByDocker = require('./async/dockerized-postgres/PulledPostgresByDocker')
 const StartedPostgresContainer = require('./async/dockerized-postgres/StartedPostgresContainer')
 const KilledPostgresContainer = require('./async/dockerized-postgres/KilledPostgresContainer')
@@ -29,13 +32,22 @@ new ExecutedLint(
   './src/build.js',
   './src/async',
   './src/endpoints',
-  './src/events'
+  './src/events',
+  './test/async'
 ).after(
-  new ExecutedTestCoverageCheck(
-    new ExecutedTestCoverage(process, './test.js'),
-    { 'lines': 100, 'functions': 100, 'branches': 100 }
-  ).after(
-    new FreeRandomPort().as('RANDOM_PORT').after(
+  new FreeRandomPort().as('RANDOM_PORT').after(
+    new WrittenFile(
+      './test/resources/postgres.json',
+      new StringifiedJSON(
+        new CreatedOptions(
+          'host', '0.0.0.0',
+          'port', as('RANDOM_PORT'),
+          'database', db,
+          'user', user,
+          'password', password
+        )
+      )
+    ).after(
       new PulledPostgresByDocker().after(
         new StartedPostgresContainer(
           new OptionsForPostgresContainer(
@@ -55,8 +67,13 @@ new ExecutedLint(
               new Logged(
                 'liquibase migrations are applied'
               ).after(
-                new KilledPostgresContainer(
-                  as('PG_CONTAINER')
+                new ExecutedTestCoverageCheck(
+                  new ExecutedTestCoverage(process, './test.js'),
+                  { 'lines': 100, 'functions': 100, 'branches': 100 }
+                ).after(
+                  new KilledPostgresContainer(
+                    as('PG_CONTAINER')
+                  )
                 )
               )
             )

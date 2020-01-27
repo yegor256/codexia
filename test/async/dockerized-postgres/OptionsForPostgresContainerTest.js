@@ -1,6 +1,5 @@
 'use strict'
 
-const { as } = require('@cuties/cutie')
 const OptionsForPostgresContainer = require('./../../../src/async/dockerized-postgres/OptionsForPostgresContainer')
 const { DeepStrictEqualAssertion } = require('@cuties/assert')
 

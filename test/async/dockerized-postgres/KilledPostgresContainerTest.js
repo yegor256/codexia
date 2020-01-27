@@ -5,7 +5,6 @@ const PulledPostgresByDocker = require('./../../../src/async/dockerized-postgres
 const StartedPostgresContainer = require('./../../../src/async/dockerized-postgres/StartedPostgresContainer')
 const KilledPostgresContainer = require('./../../../src/async/dockerized-postgres/KilledPostgresContainer')
 const { StrictEqualAssertion } = require('@cuties/assert')
-const { IsString } = require('@cuties/is')
 
 new PulledPostgresByDocker().after(
   new StartedPostgresContainer({
