@@ -11,7 +11,7 @@ class IPAddressOfPostgresContainer extends AsyncObject {
   asyncCall () {
     return (container, callback) => {
       this.container = container
-      exec(`sudo docker inspect -f "{{ .NetworkSettings.IPAddress }}" ${container}`, callback)
+      exec(`sudo docker inspect -f "{{ .NetworkSettings.Gateway }}" ${container}`, callback)
     }
   }
 
