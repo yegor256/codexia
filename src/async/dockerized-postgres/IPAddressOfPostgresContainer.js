@@ -16,7 +16,7 @@ class IPAddressOfPostgresContainer extends AsyncObject {
   }
 
   onResult (ip) {
-    return ip
+    return ip.trim()
   }
 }
 
