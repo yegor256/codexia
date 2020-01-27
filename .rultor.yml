@@ -16,4 +16,4 @@ deploy:
 release:
   script: |-
     npm run build
-    npm run app
+    npm run prod

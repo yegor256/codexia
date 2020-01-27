@@ -37,7 +37,7 @@ new ExecutedLint(
 ).after(
   new FreeRandomPort().as('RANDOM_PORT').after(
     new WrittenFile(
-      './test/resources/postgres.json',
+      './target/postgres/config.json',
       new StringifiedJSON(
         new CreatedOptions(
           'host', '0.0.0.0',

@@ -15,7 +15,7 @@ new Assertion(
       PGClient,
       new ParsedJSON(
         new ReadDataByPath(
-          './test/resources/postgres.json',
+          './target/postgres/config.json',
           { 'encoding': 'utf8' }
         )
       )
