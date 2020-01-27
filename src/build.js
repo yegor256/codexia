@@ -35,7 +35,7 @@ new ExecutedLint(
     new ExecutedTestCoverage(process, './test.js'),
     { 'lines': 100, 'functions': 100, 'branches': 100 }
   ).after(
-    new FreeRandomPort().as('RANDOM_PORT').after(
+    new FreeRandomPort(5000, 6000).as('RANDOM_PORT').after(
       new PulledPostgresByDocker().after(
         new StartedPostgresContainer(
           new OptionsForPostgresContainer(
