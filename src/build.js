@@ -42,7 +42,7 @@ new ExecutedLint(
             postgresContainerName, as('RANDOM_PORT'), user, db, password
           )
         ).as('PG_CONTAINER').after(
-          new Sleep(1000).after(
+          new Sleep(2000).after(
             new AppliedLiquibaseMigrations(
               liquibase,
               new OptionsForLiquibase(
