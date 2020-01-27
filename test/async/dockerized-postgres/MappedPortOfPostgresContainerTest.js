@@ -9,12 +9,17 @@ const KilledPostgresContainer = require('./../../../src/async/dockerized-postgre
 const MappedPortOfPostgresContainer = require('./../../../src/async/dockerized-postgres/MappedPortOfPostgresContainer')
 const uuidv4 = require('uuid/v4')
 
+const postgresContainerName = uuidv4()
+const db = uuidv4()
+const user = uuidv4()
+const password = uuidv4()
+
 new StartedPostgresContainer(
   new OptionsForPostgresContainer(
-    uuidv4(),
-    uuidv4(),
-    uuidv4(),
-    uuidv4()
+    postgresContainerName,
+    db,
+    user,
+    password
   )
 ).as('PG_CONTAINER').after(
   new Assertion(
