@@ -34,11 +34,11 @@
     </sql>
     <sql>
       <!-- value here can be eigher -1, 0 or 1 -->
-      CREATE TABLE review_vote (
+      CREATE TABLE vote (
         id SERIAL PRIMARY KEY,
         review INT NOT NULL REFERENCES review(id),
         "user" VARCHAR(64) NOT NULL REFERENCES "user"(login),
-        value BOOLEAN NOT NULL DEFAULT null,
+        positive BOOLEAN NOT NULL,
         UNIQUE(review, "user"),
         created TIMESTAMPTZ DEFAULT now() NOT NULL
       );
