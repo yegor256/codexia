@@ -7,9 +7,10 @@ const {
   ExecutedTestCoverage
 } = require('@cuties/wall')
 const { Logged } = require('@cuties/async')
-const { WrittenFile } = require('@cuties/fs')
+const { WrittenFile, CreatedDirectory, DoesFileExistSync } = require('@cuties/fs')
 const { CreatedOptions } = require('@cuties/object')
 const { StringifiedJSON } = require('@cuties/json')
+const { IfNot } = require('@cuties/if-else')
 const StartedPostgresContainer = require('./async/dockerized-postgres/StartedPostgresContainer')
 const KilledPostgresContainer = require('./async/dockerized-postgres/KilledPostgresContainer')
 const OptionsForPostgresContainer = require('./async/dockerized-postgres/OptionsForPostgresContainer')
@@ -59,24 +60,33 @@ new ExecutedLint(
             new Logged(
               'liquibase migrations are applied'
             ).after(
-              new WrittenFile(
-                './target/postgres/config.json',
-                new StringifiedJSON(
-                  new CreatedOptions(
-                    'host', as('PG_HOST'),
-                    'port', as('PG_PORT'),
-                    'database', db,
-                    'user', user,
-                    'password', password
-                  )
+              new IfNot(
+                new DoesFileExistSync(
+                  './test/resources'
+                ),
+                new CreatedDirectory(
+                  './test/resources'
                 )
               ).after(
-                new ExecutedTestCoverageCheck(
-                  new ExecutedTestCoverage(process, './test.js'),
-                  { 'lines': 100, 'functions': 100, 'branches': 100 }
+                new WrittenFile(
+                  './test/resources/postgres.json',
+                  new StringifiedJSON(
+                    new CreatedOptions(
+                      'host', as('PG_HOST'),
+                      'port', as('PG_PORT'),
+                      'database', db,
+                      'user', user,
+                      'password', password
+                    )
+                  )
                 ).after(
-                  new KilledPostgresContainer(
-                    as('PG_CONTAINER')
+                  new ExecutedTestCoverageCheck(
+                    new ExecutedTestCoverage(process, './test.js'),
+                    { 'lines': 100, 'functions': 100, 'branches': 100 }
+                  ).after(
+                    new KilledPostgresContainer(
+                      as('PG_CONTAINER')
+                    )
                   )
                 )
               )
