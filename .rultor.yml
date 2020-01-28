@@ -15,6 +15,8 @@ deploy:
     echo There is nothing to deploy
     exit 1
 release:
+  sensitive:
+    - resources/prod.json
   script: |-
     sudo npm run build
     git remote add dokku dokku@dokku.codexia.org:codexia
