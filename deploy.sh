@@ -2,8 +2,8 @@
 set -e
 
 cd $(dirname $0)
-npm install
-npm run build
+# npm install
+# npm run build
 cp /code/home/assets/codexia/prod.json resources/prod.json
 git add resources/prod.json
 git commit -m 'resources/prod.json for dokku'
