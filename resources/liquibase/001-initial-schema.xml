@@ -52,14 +52,5 @@
       );
       CREATE INDEX idx_badge1 ON badge (project);
     </sql>
-    <sql>
-      CREATE TABLE badge_project (
-        id SERIAL PRIMARY KEY,
-        badge INT NOT NULL REFERENCES badge(id),
-        project INT NOT NULL REFERENCES project(id),
-        UNIQUE(badge, project),
-        created TIMESTAMPTZ DEFAULT now() NOT NULL
-      );
-    </sql>
   </changeSet>
 </databaseChangeLog>
