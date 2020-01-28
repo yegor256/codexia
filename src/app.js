@@ -14,6 +14,7 @@ const ConnectedPostgresClient = require('./async/postgresql/ConnectedPostgresCli
 const path = require('path')
 
 const env = process.env.NODE_ENV || 'local'
+const port = process.env.PORT || 8000
 const notFoundEndpoint = new CustomNotFoundEndpoint(new RegExp(/\/not-found/), './src/static/html/404.html')
 const mapper = (url) => {
   return path.join('src', 'static', ...url.split('?')[0].split('/').filter(path => path !== ''))
@@ -34,7 +35,7 @@ new ParsedJSON(
   ).as('POSTGRES_CLIENT').after(
     new Backend(
       'http',
-      8000,
+      port,
       '0.0.0.0',
       new RestApi(
         new CustomIndexEndpoint('./src/static/html/index.html', notFoundEndpoint),
