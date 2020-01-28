@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd" logicalFilePath="001-initial-schema.xml">
+  <changeSet id="001" author="guseyn">
+    <sql>
+      CREATE TABLE "user" (
+        login VARCHAR(64) PRIMARY KEY NOT NULL,
+        avatar_url VARCHAR(2000) NOT NULL,
+        created TIMESTAMPTZ DEFAULT now() NOT NULL
+      );
+    </sql>
+    <sql>
+      CREATE TYPE PLATFORM AS ENUM ('github', 'bitbucket')
+    </sql>
+    <sql>
+      CREATE TABLE project (
+        id SERIAL PRIMARY KEY,
+        submitter VARCHAR(64) NOT NULL REFERENCES "user"(login),
+        coordinates VARCHAR(64) NOT NULL,
+        platform PLATFORM NOT NULL DEFAULT 'github',
+        created TIMESTAMPTZ DEFAULT now() NOT NULL
+      );
+      CREATE INDEX idx_project1 ON project (id, submitter, coordinates, platform);
+    </sql>
+    <sql>
+      CREATE TABLE review (
+        id SERIAL PRIMARY KEY,
+        project INT NOT NULL REFERENCES project(id),
+        author VARCHAR(64) NOT NULL REFERENCES "user"(login),
+        text TEXT NOT NULL,
+        created TIMESTAMPTZ DEFAULT now() NOT NULL
+      );
+      CREATE INDEX idx_review1 ON review (project, author);
+    </sql>
+    <sql>
+      CREATE TABLE vote (
+        id SERIAL PRIMARY KEY,
+        review INT NOT NULL REFERENCES review(id),
+        "user" VARCHAR(64) NOT NULL REFERENCES "user"(login),
+        positive BOOLEAN NOT NULL,
+        UNIQUE(review, "user"),
+        created TIMESTAMPTZ DEFAULT now() NOT NULL
+      );
+      CREATE INDEX idx_vote1 ON vote (review, "user");
+    </sql>
+    <sql>
+      CREATE TABLE badge (
+        id SERIAL PRIMARY KEY,
+        project INT NOT NULL REFERENCES project(id),
+        text VARCHAR(64) NOT NULL,
+        created TIMESTAMPTZ DEFAULT now() NOT NULL
+      );
+      CREATE INDEX idx_badge1 ON badge (project);
+    </sql>
+  </changeSet>
+</databaseChangeLog>
