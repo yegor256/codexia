@@ -27,6 +27,8 @@ const db = uuidv4()
 const user = uuidv4()
 const password = uuidv4()
 
+const skipTests = process.env.SKIP_TESTS || false
+
 new ExecutedLint(
   process,
   './src/app.js',
@@ -36,56 +38,59 @@ new ExecutedLint(
   './src/events',
   './test/async'
 ).after(
-  new StartedPostgresContainer(
-    new OptionsForPostgresContainer(
-      postgresContainerName, user, db, password
-    )
-  ).as('PG_CONTAINER').after(
-    new IpAddressOfPostgresContainer(
-      as('PG_CONTAINER')
-    ).as('PG_HOST').after(
-      new MappedPortOfPostgresContainer(
+  new IfNot(
+    skipTests,
+    new StartedPostgresContainer(
+      new OptionsForPostgresContainer(
+        postgresContainerName, user, db, password
+      )
+    ).as('PG_CONTAINER').after(
+      new IpAddressOfPostgresContainer(
         as('PG_CONTAINER')
-      ).as('PG_PORT').after(
-        new Sleep(1000).after(
-          new AppliedLiquibaseMigrations(
-            liquibase,
-            new OptionsForLiquibase(
-              'node_modules/liquibase-deps/liquibase-core-3.5.3.jar',
-              'node_modules/liquibase-deps/postgresql-9.4-1201.jdbc4.jar',
-              'resources/liquibase/db.changelog.xml',
-              as('PG_HOST'), as('PG_PORT'), db, user, password
-            )
-          ).after(
-            new Logged(
-              'liquibase migrations are applied'
+      ).as('PG_HOST').after(
+        new MappedPortOfPostgresContainer(
+          as('PG_CONTAINER')
+        ).as('PG_PORT').after(
+          new Sleep(1000).after(
+            new AppliedLiquibaseMigrations(
+              liquibase,
+              new OptionsForLiquibase(
+                'node_modules/liquibase-deps/liquibase-core-3.5.3.jar',
+                'node_modules/liquibase-deps/postgresql-9.4-1201.jdbc4.jar',
+                'resources/liquibase/db.changelog.xml',
+                as('PG_HOST'), as('PG_PORT'), db, user, password
+              )
             ).after(
-              new IfNot(
-                new DoesFileExistSync(
-                  './test-tmp'
-                ),
-                new CreatedDirectory(
-                  './test-tmp'
-                )
+              new Logged(
+                'liquibase migrations are applied'
               ).after(
-                new WrittenFile(
-                  './test-tmp/postgres.json',
-                  new StringifiedJSON(
-                    new CreatedOptions(
-                      'host', as('PG_HOST'),
-                      'port', as('PG_PORT'),
-                      'database', db,
-                      'user', user,
-                      'password', password
-                    )
+                new IfNot(
+                  new DoesFileExistSync(
+                    './test-tmp'
+                  ),
+                  new CreatedDirectory(
+                    './test-tmp'
                   )
                 ).after(
-                  new ExecutedTestCoverageCheck(
-                    new ExecutedTestCoverage(process, './src/test.js'),
-                    { 'lines': 100, 'functions': 100, 'branches': 100 }
+                  new WrittenFile(
+                    './test-tmp/postgres.json',
+                    new StringifiedJSON(
+                      new CreatedOptions(
+                        'host', as('PG_HOST'),
+                        'port', as('PG_PORT'),
+                        'database', db,
+                        'user', user,
+                        'password', password
+                      )
+                    )
                   ).after(
-                    new KilledPostgresContainer(
-                      as('PG_CONTAINER')
+                    new ExecutedTestCoverageCheck(
+                      new ExecutedTestCoverage(process, './src/test.js'),
+                      { 'lines': 100, 'functions': 100, 'branches': 100 }
+                    ).after(
+                      new KilledPostgresContainer(
+                        as('PG_CONTAINER')
+                      )
                     )
                   )
                 )
