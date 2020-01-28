@@ -5,9 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "NODE_ENV=prod node src/app.js",
-    "test": "node src/test.js",
-    "build": "DEBUG=testcontainers node src/build.js",
-    "build-rultor": "DEBUG=testcontainers sudo node src/build.js",
+    "build": "node src/build.js",
+    "build-rultor": "sudo node src/build.js",
     "liquibase-local": "NODE_ENV=local node src/liquibase.js",
     "liquibase-prod": "NODE_ENV=prod node src/liquibase.js",
     "local": "NODE_ENV=local node src/app.js",
