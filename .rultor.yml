@@ -19,7 +19,7 @@ release:
     - resources/prod.json
   script: |-
     npm install
-    sudo npm run build
+    npm run build-rultor
     git remote add dokku dokku@dokku.codexia.org:codexia
     rm -rf ~/.ssh
     mkdir ~/.ssh
