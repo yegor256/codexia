@@ -62,14 +62,14 @@ new ExecutedLint(
             ).after(
               new IfNot(
                 new DoesFileExistSync(
-                  './test/resources'
+                  './test-tmp'
                 ),
                 new CreatedDirectory(
-                  './test/resources'
+                  './test-tmp'
                 )
               ).after(
                 new WrittenFile(
-                  './test/resources/postgres.json',
+                  './test-tmp/postgres.json',
                   new StringifiedJSON(
                     new CreatedOptions(
                       'host', as('PG_HOST'),
