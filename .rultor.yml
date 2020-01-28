@@ -32,6 +32,6 @@ release:
     git commit -m 'prod.json'
     git push -f dokku $(git symbolic-ref --short HEAD):master
     git reset HEAD~1
-    npm run liquibase
+    npm run liquibase-prod
     rm -rf resources/prod.json
     curl -f --connect-timeout 15 --retry 5 --retry-delay 30 https://www.codexia.org > /dev/null
