@@ -1,12 +1,13 @@
-docker:
-  image: yegor256/rultor-image
+assets:
+  config.yml: yegor256/home#assets/codexia/prod.json
+  id_rsa: yegor256/home#assets/heroku-key
+  id_rsa.pub: yegor256/home#assets/heroku-key.pub
 install: |-
   export LC_ALL=en_US.UTF-8
   export LANG=en_US.UTF-8
   export LANGUAGE=en_US.UTF-8
 merge:
   script: |-
-    export PATH=/usr/local/bin:$PATH
     npm install
     npm run build-rultor
 deploy:
@@ -15,5 +16,22 @@ deploy:
     exit 1
 release:
   script: |-
-    npm run build
-    npm run app
+    sudo npm run build
+    git remote add dokku dokku@dokku.codexia.org:codexia
+    rm -rf ~/.ssh
+    mkdir ~/.ssh
+    mv ../id_rsa ../id_rsa.pub ~/.ssh
+    chmod -R 600 ~/.ssh/*
+    echo -e "Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null" > ~/.ssh/config
+    git fetch
+    sed -i "s/0\.0\.0/${tag}/g" ./package.json
+    git add ./package.json
+    git commit -m 'build number set'
+    cp ../prod.json resources/
+    git add resources/prod.json
+    git commit -m 'prod.json'
+    git push -f dokku $(git symbolic-ref --short HEAD):master
+    git reset HEAD~1
+    npm run liquibase
+    rm -rf resources/prod.json
+    curl -f --connect-timeout 15 --retry 5 --retry-delay 30 https://www.codexia.org > /dev/null
