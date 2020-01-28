@@ -17,7 +17,7 @@ const path = require('path')
 const liquibase = require('liquibase')
 
 const env = process.env.NODE_ENV || 'local'
-const notFoundEndpoint = new CustomNotFoundEndpoint(new RegExp(/\/not-found/))
+const notFoundEndpoint = new CustomNotFoundEndpoint(new RegExp(/\/not-found/), './src/static/html/404.html')
 const mapper = (url) => {
   return path.join('src', 'static', ...url.split('?')[0].split('/').filter(path => path !== ''))
 }
