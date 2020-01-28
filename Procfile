@@ -1,1 +1,1 @@
-web: PORT=$PORT npm run prod
+web: npm run prod
