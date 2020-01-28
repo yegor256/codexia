@@ -4,10 +4,13 @@
   "description": "Codexia.",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js",
+    "test": "node src/test.js",
     "build": "DEBUG=testcontainers node src/build.js",
     "build-rultor": "DEBUG=testcontainers sudo node src/build.js",
-    "local": "NODE_ENV=local node src/app.js"
+    "liquibase-local": "NODE_ENV=local node src/liquibase.js",
+    "liquibase-prod": "NODE_ENV=prod node src/liquibase.js",
+    "local": "NODE_ENV=local node src/app.js",
+    "prod": "NODE_ENV=prod node src/app.js"
   },
   "repository": {
     "type": "git",

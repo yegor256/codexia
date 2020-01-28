@@ -81,7 +81,7 @@ new ExecutedLint(
                   )
                 ).after(
                   new ExecutedTestCoverageCheck(
-                    new ExecutedTestCoverage(process, './test.js'),
+                    new ExecutedTestCoverage(process, './src/test.js'),
                     { 'lines': 100, 'functions': 100, 'branches': 100 }
                   ).after(
                     new KilledPostgresContainer(

@@ -12,11 +12,11 @@ new StartedPostgresContainer(
   new Value(
     new ParsedJSON(
       new ReadDataByPath(
-        './resources/config.envs.json',
+        './resources/local.json',
         { 'encoding': 'utf8' }
       )
     ),
-    'local.dockerizedPostgres'
+    'dockerizedPostgres'
   )
 ).as('PG_CONTAINER').after(
   new Logged(
