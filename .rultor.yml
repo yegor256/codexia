@@ -37,4 +37,4 @@ release:
     git reset HEAD~1
     npm run liquibase-prod
     rm -rf resources/prod.json
-    curl -f --connect-timeout 15 --retry 5 --retry-delay 30 https://www.codexia.org > /dev/null
+    curl -f --connect-timeout 15 --retry 5 --insecure --retry-delay 30 https://www.codexia.org > /dev/null
