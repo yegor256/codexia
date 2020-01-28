@@ -2,7 +2,7 @@
 set -e
 
 cd $(dirname $0)
-bundle update
+npm install
 npm run build
 cp /code/home/assets/codexia/prod.json resources/prod.json
 git add resources/prod.json

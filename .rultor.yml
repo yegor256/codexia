@@ -18,6 +18,7 @@ release:
   sensitive:
     - resources/prod.json
   script: |-
+    npm install
     sudo npm run build
     git remote add dokku dokku@dokku.codexia.org:codexia
     rm -rf ~/.ssh
