@@ -9,4 +9,3 @@ git add resources/prod.json
 git commit -m 'resources/prod.json for dokku'
 trap 'git reset HEAD~1 && rm resources/prod.json && git checkout -- .gitignore' EXIT
 git push dokku master -f
-
