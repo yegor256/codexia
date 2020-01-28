@@ -4,6 +4,7 @@
   "description": "Codexia.",
   "main": "index.js",
   "scripts": {
+    "start": "NODE_ENV=prod node src/app.js",
     "test": "node src/test.js",
     "build": "DEBUG=testcontainers node src/build.js",
     "build-rultor": "DEBUG=testcontainers sudo node src/build.js",
