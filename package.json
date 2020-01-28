@@ -1,6 +1,6 @@
 {
   "name": "codexia",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Open Source Incubator",
   "main": "index.js",
   "scripts": {
