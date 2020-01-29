@@ -1,19 +1,23 @@
-language: node.js
-node_js:
-  - lts/*
-services:
-  - docker
-install: |-
-  npm ci
-  npm install -g codecov
-script: |-
-  set -e
-  npm run build
-  ./node_modules/.bin/nyc report --reporter=lcov
-  codecov
-  log=$(git log $TRAVIS_COMMIT_RANGE --oneline)
-  echo $'Commit message: '$TRAVIS_COMMIT_MESSAGE
-  echo $'**Change log:**<br/>'${log//$'\n'/<br/>}
+language: ruby
+sudo: required
+rvm:
+  - 2.6.0
+cache: bundler
 branches:
   only:
     - master
+addons:
+  postgresql: "10"
+  apt:
+    packages:
+      - postgresql-10
+      - postgresql-client-10
+install:
+  - travis_retry bundle update
+services:
+  - postgresql
+script:
+  - bundle exec rake
+after_success:
+  - "bash <(curl -s https://codecov.io/bash)"
+

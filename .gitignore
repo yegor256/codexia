@@ -1,5 +1,7 @@
+coverage/
+.idea/
+*.gem
+.bundle/
 .DS_Store
-.idea
-node_modules
-.nyc_output
-test-tmp/postgres.json
+rdoc/
+target/

@@ -1,0 +1,65 @@
+!!! 5
+%html
+  %head
+    %title= title
+    %meta{charset:'UTF-8'}
+    %meta{name: 'viewport', content: 'width=device-width, initial-scale=1.0'}
+    %meta{name: 'keywords', content: 'investment, open source, incubator'}
+    %meta{name: 'description', content: 'Open Source Incubator'}
+    %link{href: 'https://cdn.jsdelivr.net/gh/yegor256/tacit@gh-pages/tacit-css.min.css', rel: 'stylesheet'}
+    %link{href: 'https://cdn.jsdelivr.net/gh/yegor256/drops@gh-pages/drops.min.css', rel: 'stylesheet'}
+    %link{href: 'https://www.yegor256.com/css/icons.css', rel: 'stylesheet'}
+    %link{rel: 'shortcut icon', href: iri.cut('/favicon.ico')}
+    %script{src: 'https://code.jquery.com/jquery-3.3.1.min.js'}
+    :css
+      .item { margin-right: 1em; }
+      .logo { width: 64px; height: 64px; }
+  %body
+    %section
+      %header
+        %nav
+          %ul
+            %li
+              %a{href: url('/')}
+                %img.logo{src: iri.cut('/logo.svg'), alt: 'Logo'}
+        %nav
+          %ul
+            %li
+              - if defined?(user)
+                = "@#{user[:login]}"
+              - else
+                %a{href: login_link}
+                  Login
+              %li
+                %a{href: iri.cut('/logout')}
+                  Logout
+        - if defined?(flash_msg) && !flash_msg.empty?
+          %p{style: 'background-color:' + flash_color + ';color:white;padding:.1em .5em;border-radius:4px;width:100%;'}
+            = flash_msg
+      %article
+        = yield
+      %footer.small.gray
+        %nav
+          %ul
+            %li
+              &copy; 2020
+              %a{href: 'https://www.codexia.org'} Codexia
+        %nav
+          %ul
+            %li{title: 'Release version and currently deployed version'}
+              = "#{Xia::RELEASE}/#{ver}"
+            %li{title: 'PostgreSQL version'}
+              = "pg:#{settings.pgsql.version}"
+            %li{title: 'Your IP address visible to the server'}
+              %a{href: 'https://iplocation.com/?ip=' + request_ip}
+                = request_ip
+            %li{title: 'This request processing time'}
+              = "#{((Time.now - http_start) * 1000).round}ms"
+        %nav
+          %ul
+            %li
+              %a{href: 'https://github.com/yegor256/codexia/stargazers'}<
+                %img{src: 'https://img.shields.io/github/stars/yegor256/codexia.svg?style=flat-square', alt: 'GitHub'}
+            %li
+              %a{href: 'https://www.sixnines.io/h/ad6a'}<
+                %img{src: 'https://www.sixnines.io/b/ad6a?style=flat', alt: 'SixNines'}
