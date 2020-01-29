@@ -48,7 +48,8 @@ class Xia::AppTest < Minitest::Test
       '/version',
       '/robots.txt',
       '/',
-      '/js/smth.js'
+      '/js/smth.js',
+      '/recent'
     ]
     pages.each do |p|
       get(p)

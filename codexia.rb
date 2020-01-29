@@ -96,6 +96,12 @@ get '/' do
   )
 end
 
+get '/recent' do
+  haml :recent, layout: :layout, locals: merged(
+    title: '/recent'
+  )
+end
+
 def current_user
   redirect '/' unless @locals[:user]
   @locals[:user][:login].downcase

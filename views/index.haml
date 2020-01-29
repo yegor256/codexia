@@ -1,2 +1,40 @@
-%p
-  Hello!
+!!! 5
+%html
+  %head
+    %title= title
+    %meta{charset:'UTF-8'}
+    %meta{name: 'viewport', content: 'width=device-width, initial-scale=1.0'}
+    %meta{name: 'keywords', content: 'investment, open source, incubator'}
+    %meta{name: 'description', content: 'Open Source Incubator: to help young emerging projects to grow and reach their users faster'}
+    %link{href: 'https://cdn.jsdelivr.net/gh/yegor256/tacit@gh-pages/tacit-css.min.css', rel: 'stylesheet'}
+    %link{href: 'https://cdn.jsdelivr.net/gh/yegor256/drops@gh-pages/drops.min.css', rel: 'stylesheet'}
+    %link{rel: 'shortcut icon', href: iri.cut('/favicon.ico')}
+    :css
+      .item { margin-right: 1em; }
+      .logo { width: 64px; height: 64px; }
+      .body { font-size: 24px; }
+      .center {
+        width: 20em;
+        max-width: 100%;
+        padding: 1em;
+        height: 20em;
+        position: absolute;
+        top:0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+      }
+      p { margin: 1em 0; }
+    %body
+      %div.center.monospace
+      %p
+        %img{src: 'logo.svg', style: 'width:250px;', alt: 'logo'}
+      %p
+        %strong.firebrick Codexia
+        is an open source incubator.
+      %p{style: 'font-size: 0.6em; line-height: 1.4em;'}
+        More news are coming, stay tuned<br/>
+        and join us in <
+        %a{href: 'https://t.me/cdxia'} Telegram
+
