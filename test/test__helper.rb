@@ -38,9 +38,9 @@ require 'pgtk/pool'
 require 'loog'
 module Minitest
   class Test
-    def test_pgsql
+    def t_pgsql
       # rubocop:disable Style/ClassVars
-      @@test_pgsql ||= Pgtk::Pool.new(
+      @@t_pgsql ||= Pgtk::Pool.new(
         Pgtk::Wire::Yaml.new(File.join(__dir__, '../target/pgsql-config.yml')),
         log: Loog::VERBOSE
       ).start
