@@ -17,7 +17,6 @@ release:
   sensitive:
     - config.yml
   script: |-
-    sudo wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
     pdd -f /dev/null
     export GEM_HOME=~/.ruby
     export GEM_PATH=$GEM_HOME:$GEM_PATH
