@@ -20,41 +20,39 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-before '/*' do
-  @locals = {
-    http_start: Time.now,
-    ver: Xia::VERSION,
-    login_link: settings.glogin.login_uri,
-    request_ip: request.ip
-  }
-  cookies[:glogin] = params[:glogin] if params[:glogin]
-  if cookies[:glogin]
-    begin
-      @locals[:author] = GLogin::Cookie::Closed.new(
-        cookies[:glogin],
-        settings.config['github']['encryption_secret'],
-        context
-      ).to_user
-    rescue GLogin::Codec::DecodingError
-      cookies.delete(:glogin)
-    end
+require_relative 'xia'
+require_relative 'urror'
+require_relative 'projects'
+
+# One author.
+# Author:: Yegor Bugayenko (yegor256@gmail.com)
+# Copyright:: Copyright (c) 2020 Yegor Bugayenko
+# License:: MIT
+class Xia::Author
+  attr_reader :id
+
+  def initialize(pgsql, id)
+    @pgsql = pgsql
+    @id = id
   end
-end
 
-get '/github-callback' do
-  code = params[:code]
-  error(400) if code.nil?
-  u = settings.glogin.user(code)
-  cookies[:glogin] = GLogin::Cookie::Open.new(
-    u,
-    settings.config['github']['encryption_secret'],
-    context
-  ).to_s
-  authors.author(u[:glogin]).avatar = u[:avatar]
-  flash('/', "You have been logged in as #{u[:glogin]}")
-end
+  def projects
+    Xia::Projects.new(@pgsql, self)
+  end
 
-get '/logout' do
-  cookies.delete(:glogin)
-  flash('/', 'You have been logged out')
+  def avatar
+    row = @pgsql.exec(
+      'SELECT avatar FROM author WHERE id=$1',
+      [@id]
+    )[0]
+    raise Xia::Urror, "Author @#{@login} not found in the database" if row.nil?
+    row['avatar']
+  end
+
+  def avatar=(url)
+    @pgsql.exec(
+      'UPDATE author SET avatar=$2 WHERE id=$1',
+      [@id, url]
+    )
+  end
 end

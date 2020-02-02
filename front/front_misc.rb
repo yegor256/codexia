@@ -49,7 +49,7 @@ error do
   status 503
   e = env['sinatra.error']
   if e.is_a?(Xia::Urror)
-    flash(@locals[:user] ? '/ranked' : '/', e.message, color: 'darkred')
+    flash(@locals[:author] ? '/ranked' : '/', e.message, color: 'darkred')
   else
     Raven.capture_exception(e)
     haml(
@@ -67,7 +67,7 @@ def context
   "#{request.ip} #{request.user_agent} #{Xia::VERSION} #{Time.now.strftime('%Y/%m')}"
 end
 
-def merged(hash)
+def merged(hash = {})
   out = @locals.merge(hash)
   out[:local_assigns] = out
   if cookies[:flash_msg]

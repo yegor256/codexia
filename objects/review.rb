@@ -20,41 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-before '/*' do
-  @locals = {
-    http_start: Time.now,
-    ver: Xia::VERSION,
-    login_link: settings.glogin.login_uri,
-    request_ip: request.ip
-  }
-  cookies[:glogin] = params[:glogin] if params[:glogin]
-  if cookies[:glogin]
-    begin
-      @locals[:author] = GLogin::Cookie::Closed.new(
-        cookies[:glogin],
-        settings.config['github']['encryption_secret'],
-        context
-      ).to_user
-    rescue GLogin::Codec::DecodingError
-      cookies.delete(:glogin)
-    end
+require_relative 'xia'
+
+# Review.
+# Author:: Yegor Bugayenko (yegor256@gmail.com)
+# Copyright:: Copyright (c) 2020 Yegor Bugayenko
+# License:: MIT
+class Xia::Review
+  attr_reader :id
+  attr_reader :project
+
+  def initialize(pgsql, project, id)
+    @pgsql = pgsql
+    @project = project
+    @id = id
   end
-end
-
-get '/github-callback' do
-  code = params[:code]
-  error(400) if code.nil?
-  u = settings.glogin.user(code)
-  cookies[:glogin] = GLogin::Cookie::Open.new(
-    u,
-    settings.config['github']['encryption_secret'],
-    context
-  ).to_s
-  authors.author(u[:glogin]).avatar = u[:avatar]
-  flash('/', "You have been logged in as #{u[:glogin]}")
-end
-
-get '/logout' do
-  cookies.delete(:glogin)
-  flash('/', 'You have been logged out')
 end

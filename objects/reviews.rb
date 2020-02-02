@@ -20,41 +20,47 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-before '/*' do
-  @locals = {
-    http_start: Time.now,
-    ver: Xia::VERSION,
-    login_link: settings.glogin.login_uri,
-    request_ip: request.ip
-  }
-  cookies[:glogin] = params[:glogin] if params[:glogin]
-  if cookies[:glogin]
-    begin
-      @locals[:author] = GLogin::Cookie::Closed.new(
-        cookies[:glogin],
-        settings.config['github']['encryption_secret'],
-        context
-      ).to_user
-    rescue GLogin::Codec::DecodingError
-      cookies.delete(:glogin)
+require_relative 'xia'
+require_relative 'review'
+
+# Reviews.
+# Author:: Yegor Bugayenko (yegor256@gmail.com)
+# Copyright:: Copyright (c) 2020 Yegor Bugayenko
+# License:: MIT
+class Xia::Reviews
+  def initialize(pgsql, project)
+    @pgsql = pgsql
+    @project = project
+  end
+
+  def get(id)
+    Xia::Review.new(@pgsql, @project, id)
+  end
+
+  def post(text)
+    id = @pgsql.exec(
+      'INSERT INTO review (project, author, text) VALUES ($1, $2, $3) RETURNING id',
+      [@project.id, @project.author.id, text]
+    )[0]['id'].to_i
+    get(id)
+  end
+
+  def recent(limit: 10)
+    q = [
+      'SELECT review.*, author.login, author.avatar',
+      'FROM review',
+      'JOIN author ON author.id=review.author',
+      'ORDER BY review.created DESC',
+      'LIMIT $1'
+    ].join(' ')
+    @pgsql.exec(q, [limit]).map do |r|
+      {
+        id: r['id'].to_i,
+        text: r['text'],
+        author: r['login'],
+        avatar: r['avatar'],
+        created: Time.parse(r['created'])
+      }
     end
   end
-end
-
-get '/github-callback' do
-  code = params[:code]
-  error(400) if code.nil?
-  u = settings.glogin.user(code)
-  cookies[:glogin] = GLogin::Cookie::Open.new(
-    u,
-    settings.config['github']['encryption_secret'],
-    context
-  ).to_s
-  authors.author(u[:glogin]).avatar = u[:avatar]
-  flash('/', "You have been logged in as #{u[:glogin]}")
-end
-
-get '/logout' do
-  cookies.delete(:glogin)
-  flash('/', 'You have been logged out')
 end

@@ -79,7 +79,7 @@ task(:config) do
 end
 
 task(run: %i[pgsql liquibase]) do
-  `rerun -b "RACK_ENV=test rackup"`
+  `rerun -b "RACK_ENV=test ruby codexia.rb"`
 end
 
 task(:copyright) do

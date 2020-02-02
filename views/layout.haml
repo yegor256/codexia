@@ -9,11 +9,16 @@
     %link{href: 'https://cdn.jsdelivr.net/gh/yegor256/tacit@gh-pages/tacit-css.min.css', rel: 'stylesheet'}
     %link{href: 'https://cdn.jsdelivr.net/gh/yegor256/drops@gh-pages/drops.min.css', rel: 'stylesheet'}
     %link{href: 'https://www.yegor256.com/css/icons.css', rel: 'stylesheet'}
-    %link{rel: 'shortcut icon', href: iri.cut('/favicon.ico')}
+    %link{rel: 'shortcut icon', href: iri.cut('/logo-64.png')}
     %script{src: 'https://code.jquery.com/jquery-3.3.1.min.js'}
     :css
+      body { padding: 1em; }
+      section { margin-left: 0; width: 700px; }
+      article { border: 0 }
+      header, article, footer { padding: 1em; }
+      nav ul { text-align: left; margin-bottom: 0.1em; }
       .item { margin-right: 1em; }
-      .logo { width: 64px; height: 64px; }
+      .logo { width: 1em; height: 1em; vertical-align: middle; }
   %body
     %section
       %header
@@ -22,30 +27,30 @@
             %li
               %a{href: url('/')}
                 %img.logo{src: iri.cut('/logo.svg'), alt: 'Logo'}
-        %nav
-          %ul
             %li
-              - if defined?(user)
-                = "@#{user[:login]}"
+              - if defined?(author)
+                = "@#{author[:login]}"
               - else
                 %a{href: login_link}
-                  Login
-              %li
-                %a{href: iri.cut('/logout')}
-                  Logout
+                  = '/login'
+              - if defined?(author)
+                %li
+                  %a{href: iri.cut('/submit')}
+                    = '/submit'
+                %li
+                  %a{href: iri.cut('/logout')}
+                    = '/logout'
         - if defined?(flash_msg) && !flash_msg.empty?
-          %p{style: 'background-color:' + flash_color + ';color:white;padding:.1em .5em;border-radius:4px;width:100%;'}
+          %p{style: 'color:' + flash_color}
             = flash_msg
       %article
         = yield
-      %footer.small.gray
+      %footer.smaller.gray
         %nav
           %ul
             %li
               &copy; 2020
-              %a{href: 'https://www.codexia.org'} Codexia
-        %nav
-          %ul
+              %a{href: '/welcome'} Codexia
             %li{title: 'Release version and currently deployed version'}
               = "#{Xia::RELEASE}/#{ver}"
             %li{title: 'PostgreSQL version'}

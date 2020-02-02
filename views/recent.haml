@@ -1,2 +1,13 @@
-%p
-  Recent...
+- list.each do |p|
+  %p
+    %a{href: iri.cut('/p').append(p[:id])}
+      &= p[:coordinates]
+    %br
+      %span.smaller.gray
+        %span.item
+          %a{href: "https://github.com/#{p[:author]}"}
+            %img{src: p[:avatar], style: 'height: 1em; width: 1em; vertical-align: middle;'}
+          &= p[:author]
+        %span.item
+          = RelativeTime.in_words(p[:created])
+

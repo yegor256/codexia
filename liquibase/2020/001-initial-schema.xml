@@ -25,45 +25,45 @@ SOFTWARE.
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd" logicalFilePath="001-initial-schema.xml">
   <changeSet id="001" author="guseyn">
     <sql>
-      CREATE TABLE "user" (
-        login VARCHAR(64) PRIMARY KEY NOT NULL,
-        avatar_url VARCHAR(2000) NOT NULL,
+      CREATE TABLE author (
+        id SERIAL PRIMARY KEY,
+        login VARCHAR(64) NOT NULL,
+        avatar VARCHAR(2000) NOT NULL,
         created TIMESTAMPTZ DEFAULT now() NOT NULL
       );
+      CREATE INDEX idx_author1 ON author (login);
     </sql>
     <sql>
-      CREATE TYPE PLATFORM AS ENUM ('github', 'bitbucket')
-    </sql>
-    <sql>
+      CREATE TYPE PLATFORM AS ENUM ('github', 'bitbucket');
       CREATE TABLE project (
         id SERIAL PRIMARY KEY,
-        submitter VARCHAR(64) NOT NULL REFERENCES "user"(login),
-        coordinates VARCHAR(64) NOT NULL,
+        author INT NOT NULL REFERENCES author(id),
         platform PLATFORM NOT NULL DEFAULT 'github',
-        created TIMESTAMPTZ DEFAULT now() NOT NULL
+        coordinates VARCHAR(64) NOT NULL,
+        created TIMESTAMPTZ DEFAULT now() NOT NULL,
+        UNIQUE(platform, coordinates)
       );
-      CREATE INDEX idx_project1 ON project (id, submitter, coordinates, platform);
     </sql>
     <sql>
       CREATE TABLE review (
         id SERIAL PRIMARY KEY,
         project INT NOT NULL REFERENCES project(id),
-        author VARCHAR(64) NOT NULL REFERENCES "user"(login),
+        author INT NOT NULL REFERENCES author(id),
         text TEXT NOT NULL,
         created TIMESTAMPTZ DEFAULT now() NOT NULL
       );
-      CREATE INDEX idx_review1 ON review (project, author);
+      CREATE INDEX idx_review1 ON review (project);
     </sql>
     <sql>
       CREATE TABLE vote (
         id SERIAL PRIMARY KEY,
         review INT NOT NULL REFERENCES review(id),
-        "user" VARCHAR(64) NOT NULL REFERENCES "user"(login),
+        author INT NOT NULL REFERENCES author(id),
         positive BOOLEAN NOT NULL,
-        UNIQUE(review, "user"),
-        created TIMESTAMPTZ DEFAULT now() NOT NULL
+        created TIMESTAMPTZ DEFAULT now() NOT NULL,
+        UNIQUE(review, author)
       );
-      CREATE INDEX idx_vote1 ON vote (review, "user");
+      CREATE INDEX idx_vote1 ON vote (review);
     </sql>
     <sql>
       CREATE TABLE badge (

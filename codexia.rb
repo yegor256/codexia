@@ -91,25 +91,50 @@ configure do
 end
 
 get '/' do
-  haml :index, layout: :layout, locals: merged(
-    title: '/'
-  )
+  redirect '/recent'
+end
+
+get '/welcome' do
+  haml :welcome, layout: nil, locals: merged
 end
 
 get '/recent' do
   haml :recent, layout: :layout, locals: merged(
-    title: '/recent'
+    title: '/recent',
+    list: the_author.projects.recent(limit: 25)
   )
 end
 
-def current_user
-  redirect '/' unless @locals[:user]
-  @locals[:user][:login].downcase
+get '/p/{id}' do
+  project = the_author.projects.get(params[:id].to_i)
+  haml :project, layout: :layout, locals: merged(
+    title: project.coordinates,
+    project: project,
+    reviews: project.reviews.recent(limit: 25)
+  )
 end
 
-def users
-  require_relative 'objects/users'
-  @users ||= Xia::Users.new(settings.pgsql)
+post '/do-review' do
+  project = the_author.projects.get(params[:project].to_i)
+  review = project.reviews.post(params[:text].strip)
+  flash(iri.cut('/p').append(project.id), "A new review ##{review.id} has been posted to the project ##{project.id}")
+end
+
+get '/submit' do
+  haml :submit, layout: :layout, locals: merged(
+    title: '/submit'
+  )
+end
+
+post '/do-submit' do
+  project = the_author.projects.submit(params[:platform], params[:coordinates])
+  flash('/recent', "A new project #{project.id} has been submitted!")
+end
+
+def the_author
+  redirect '/welcome' unless @locals[:author]
+  require_relative 'objects/authors'
+  Xia::Authors.new(settings.pgsql).named(@locals[:author][:login].downcase)
 end
 
 def iri

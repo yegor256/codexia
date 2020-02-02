@@ -21,65 +21,16 @@
 # SOFTWARE.
 
 require 'minitest/autorun'
-require 'rack/test'
 require_relative 'test__helper'
-require_relative '../codexia'
 require_relative '../objects/xia'
+require_relative '../objects/authors'
 
-module Rack
-  module Test
-    class Session
-      def default_env
-        { 'REMOTE_ADDR' => '127.0.0.1', 'HTTPS' => 'on' }.merge(headers_for_env)
-      end
-    end
-  end
-end
-
-class Xia::AppTest < Minitest::Test
-  include Rack::Test::Methods
-
-  def app
-    Sinatra::Application
-  end
-
-  def test_renders_pages
-    pages = [
-      '/version',
-      '/robots.txt',
-      '/welcome',
-      '/js/smth.js'
-    ]
-    pages.each do |p|
-      get(p)
-      assert(last_response.ok?, last_response.body)
-    end
-  end
-
-  def test_not_found
-    ['/unknown_path', '/js/x/y/z/not-found.js', '/css/a/b/c/not-found.css'].each do |p|
-      get(p)
-      assert_equal(404, last_response.status, last_response.body)
-      assert_equal('text/html;charset=utf-8', last_response.content_type)
-    end
-  end
-
-  def test_200_user_pages
-    name = 'bill'
-    login(name)
-    pages = [
-      '/recent',
-      '/submit'
-    ]
-    pages.each do |p|
-      get(p)
-      assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
-    end
-  end
-
-  private
-
-  def login(name)
-    set_cookie('glogin=' + name)
+class Xia::AuthorTest < Minitest::Test
+  def test_updates_author
+    authors = Xia::Authors.new(t_pgsql)
+    author = authors.named('test')
+    url = 'https://localhost'
+    author.avatar = url
+    assert_equal(url, author.avatar)
   end
 end

@@ -1,0 +1,22 @@
+%p
+  %a{href: "https://github.com/#{project.coordinates}"}
+    &= project.coordinates
+
+- reviews.each do |r|
+  %p
+    %span.smaller.gray
+      %span.item
+        %a{href: "https://github.com/#{r[:author]}"}
+          %img{src: r[:avatar], style: 'height: 1em; width: 1em; vertical-align: middle;'}
+        &= r[:author]
+      %span.item
+        = RelativeTime.in_words(r[:created])
+    %br
+    &= r[:text]
+
+%form{action: iri.cut('/do-review'), method: 'POST'}
+  %fieldset
+    %input{type: 'hidden', name: 'project', value: project.id}
+    %label What do you think about it?
+    %textarea{name: 'text', style: 'width: 100%; height: 8em;'}
+    %button{type: 'submit'} Post
