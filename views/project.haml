@@ -8,8 +8,7 @@
   %p
     %span.smaller.gray
       %span.item
-        %a{href: "https://socatar.com/github/#{r[:author]}/192-192"}<
-          %img{src: r[:avatar], style: 'height: 1em; width: 1em; vertical-align: middle;'}
+        %img{src: "https://socatar.com/github/#{r[:author]}/192-192", style: 'height: 1em; width: 1em; vertical-align: middle;'}
         &= r[:author]
       %span.item
         = RelativeTime.in_words(r[:created])
