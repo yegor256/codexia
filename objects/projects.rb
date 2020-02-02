@@ -38,7 +38,7 @@ class Xia::Projects
   end
 
   def submit(platform, coordinates)
-    raise Xia::Urror, 'Not enough karma to submit a project' if @author.karma < 100
+    raise Xia::Urror, 'Not enough karma to submit a project' unless @author.karma.positive?
     id = @pgsql.exec(
       'INSERT INTO project (platform, coordinates, author) VALUES ($1, $2, $3) RETURNING id',
       [platform, coordinates, @author.id]
@@ -51,6 +51,7 @@ class Xia::Projects
       'SELECT project.*, author.login',
       'FROM project',
       'JOIN author ON author.id=project.author',
+      'WHERE project.deleted IS NULL',
       'ORDER BY project.created DESC',
       'LIMIT $1'
     ].join(' ')

@@ -20,48 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require_relative 'xia'
-require_relative 'review'
+require 'minitest/autorun'
+require_relative 'test__helper'
+require_relative '../objects/xia'
+require_relative '../objects/authors'
 
-# Reviews.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2020 Yegor Bugayenko
-# License:: MIT
-class Xia::Reviews
-  def initialize(pgsql, project)
-    @pgsql = pgsql
-    @project = project
-  end
-
-  def get(id)
-    Xia::Review.new(@pgsql, @project, id)
-  end
-
-  def post(text)
-    raise Xia::Urror, 'Not enough karma to post a review' unless @project.author.karma.positive?
-    id = @pgsql.exec(
-      'INSERT INTO review (project, author, text) VALUES ($1, $2, $3) RETURNING id',
-      [@project.id, @project.author.id, text]
-    )[0]['id'].to_i
-    get(id)
-  end
-
-  def recent(limit: 10)
-    q = [
-      'SELECT review.*, author.login',
-      'FROM review',
-      'JOIN author ON author.id=review.author',
-      'WHERE review.deleted IS NULL',
-      'ORDER BY review.created DESC',
-      'LIMIT $1'
-    ].join(' ')
-    @pgsql.exec(q, [limit]).map do |r|
-      {
-        id: r['id'].to_i,
-        text: r['text'],
-        author: r['login'],
-        created: Time.parse(r['created'])
-      }
-    end
+class Xia::ProjectTest < Minitest::Test
+  def test_submits_project
+    author = Xia::Authors.new(t_pgsql).named('yegor256')
+    projects = author.projects
+    project = projects.submit('github', "yegor256/takes#{rand(999)}")
+    project.delete
   end
 end

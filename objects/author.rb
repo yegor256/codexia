@@ -38,9 +38,27 @@ class Xia::Author
 
   def karma
     return 1_000_000 if login == 'yegor256' || ENV['RACK_ENV'] == 'test'
-    projects = @pgsql.exec('SELECT COUNT(*) FROM project WHERE author=$1', [@id])[0]['count'].to_i
-    reviews = @pgsql.exec('SELECT COUNT(*) FROM review WHERE author=$1', [@id])[0]['count'].to_i
-    projects * 5 + reviews + 10
+    queries = [
+      [
+        +5,
+        'SELECT COUNT(*) FROM project WHERE author=$1 AND deleted IS NULL'
+      ],
+      [
+        +10,
+        'SELECT COUNT(*) FROM review WHERE author=$1 AND deleted IS NULL'
+      ],
+      [
+        -25,
+        'SELECT COUNT(*) FROM project WHERE author=$1 AND deleted IS NOT NULL'
+      ],
+      [
+        -50,
+        'SELECT COUNT(*) FROM review WHERE author=$1 AND deleted IS NOT NULL'
+      ]
+    ]
+    queries.map do |score, q|
+      @pgsql.query(q, [@id])[0]['count'].to_i * score
+    end.inject(&:+)
   end
 
   def projects

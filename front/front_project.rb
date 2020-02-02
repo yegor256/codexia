@@ -20,48 +20,23 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require_relative 'xia'
-require_relative 'review'
+get '/p/{id}' do
+  project = the_author.projects.get(params[:id].to_i)
+  haml :project, layout: :layout, locals: merged(
+    title: project.coordinates,
+    project: project,
+    reviews: project.reviews.recent(limit: 25)
+  )
+end
 
-# Reviews.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2020 Yegor Bugayenko
-# License:: MIT
-class Xia::Reviews
-  def initialize(pgsql, project)
-    @pgsql = pgsql
-    @project = project
-  end
+get '/p/{id}/delete' do
+  project = the_author.projects.get(params[:id].to_i)
+  project.delete
+  flash(iri.cut('/recent'), "The project ##{project.id} has been deleted")
+end
 
-  def get(id)
-    Xia::Review.new(@pgsql, @project, id)
-  end
-
-  def post(text)
-    raise Xia::Urror, 'Not enough karma to post a review' unless @project.author.karma.positive?
-    id = @pgsql.exec(
-      'INSERT INTO review (project, author, text) VALUES ($1, $2, $3) RETURNING id',
-      [@project.id, @project.author.id, text]
-    )[0]['id'].to_i
-    get(id)
-  end
-
-  def recent(limit: 10)
-    q = [
-      'SELECT review.*, author.login',
-      'FROM review',
-      'JOIN author ON author.id=review.author',
-      'WHERE review.deleted IS NULL',
-      'ORDER BY review.created DESC',
-      'LIMIT $1'
-    ].join(' ')
-    @pgsql.exec(q, [limit]).map do |r|
-      {
-        id: r['id'].to_i,
-        text: r['text'],
-        author: r['login'],
-        created: Time.parse(r['created'])
-      }
-    end
-  end
+post '/do-review' do
+  project = the_author.projects.get(params[:project].to_i)
+  review = project.reviews.post(params[:text].strip)
+  flash(iri.cut('/p').append(project.id), "A new review ##{review.id} has been posted to the project ##{project.id}")
 end

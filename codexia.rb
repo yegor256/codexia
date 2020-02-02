@@ -105,21 +105,6 @@ get '/recent' do
   )
 end
 
-get '/p/{id}' do
-  project = the_author.projects.get(params[:id].to_i)
-  haml :project, layout: :layout, locals: merged(
-    title: project.coordinates,
-    project: project,
-    reviews: project.reviews.recent(limit: 25)
-  )
-end
-
-post '/do-review' do
-  project = the_author.projects.get(params[:project].to_i)
-  review = project.reviews.post(params[:text].strip)
-  flash(iri.cut('/p').append(project.id), "A new review ##{review.id} has been posted to the project ##{project.id}")
-end
-
 get '/submit' do
   haml :submit, layout: :layout, locals: merged(
     title: '/submit'
@@ -144,3 +129,4 @@ end
 require_relative 'front/front_misc.rb'
 require_relative 'front/front_login.rb'
 require_relative 'front/front_helpers.rb'
+require_relative 'front/front_project.rb'
