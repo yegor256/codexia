@@ -50,7 +50,7 @@ get '/github-callback' do
     settings.config['github']['encryption_secret'],
     context
   ).to_s
-  authors.author(u[:glogin]).avatar = u[:avatar]
+  the_author.avatar = u[:avatar]
   flash('/', "You have been logged in as #{u[:glogin]}")
 end
 

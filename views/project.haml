@@ -12,7 +12,7 @@
       %span.item
         = RelativeTime.in_words(r[:created])
     %br
-    &= r[:text]
+    &= r[:text].gsub('\n\n', '<br/><br/>')
 
 - if the_author.karma >= 50
   %form{action: iri.cut('/do-review'), method: 'POST'}

@@ -66,7 +66,7 @@ class Xia::Author
 
   def row
     row = @pgsql.exec(
-      'SELECT avatar FROM author WHERE id=$1',
+      'SELECT * FROM author WHERE id=$1',
       [@id]
     )[0]
     raise Xia::Urror, "Author @#{@login} not found in the database" if row.nil?

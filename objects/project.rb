@@ -38,13 +38,21 @@ class Xia::Project
   end
 
   def coordinates
-    @pgsql.exec(
-      'SELECT coordinates FROM project WHERE id=$1',
-      [@id]
-    )[0]['coordinates']
+    row['coordinates']
   end
 
   def reviews
     Xia::Reviews.new(@pgsql, self)
+  end
+
+  private
+
+  def row
+    row = @pgsql.exec(
+      'SELECT * FROM project WHERE id=$1',
+      [@id]
+    )[0]
+    raise Xia::Urror, "Project ##{@id} not found in the database" if row.nil?
+    row
   end
 end
