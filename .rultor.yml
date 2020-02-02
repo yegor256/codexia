@@ -15,11 +15,11 @@ install: |-
   sudo gem install pdd -v 0.20.5
   git config --global user.email "server@codexia.org"
   git config --global user.name "codexia.org"
+  sudo gem update bundler
 release:
   sensitive:
     - config.yml
   script: |-
-    sudo wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
     pdd -f /dev/null
     export GEM_HOME=~/.ruby
     export GEM_PATH=$GEM_HOME:$GEM_PATH
