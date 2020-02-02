@@ -31,7 +31,9 @@ class Xia::ReviewsTest < Minitest::Test
     projects = author.projects
     project = projects.submit('github', "yegor256/takes#{rand(999)}")
     reviews = project.reviews
-    review = reviews.post('How are you?')
+    review = reviews.post(
+      'How are you? This is a nice long review to pass all possible quality checks of ours. Don\'t make it shorter.'
+    )
     assert(!review.id.nil?)
     assert(!reviews.recent.empty?)
   end

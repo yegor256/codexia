@@ -21,48 +21,33 @@
 # SOFTWARE.
 
 require_relative 'xia'
-require_relative 'review'
+require_relative 'badge'
 
-# Reviews.
+# Badges.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2020 Yegor Bugayenko
 # License:: MIT
-class Xia::Reviews
+class Xia::Badges
   def initialize(pgsql, project)
     @pgsql = pgsql
     @project = project
   end
 
   def get(id)
-    Xia::Review.new(@pgsql, @project, id)
+    Xia::Badge.new(@pgsql, @project, id)
   end
 
-  def post(text)
-    raise Xia::Urror, 'Not enough karma to post a review' unless @project.author.karma.positive?
-    raise Xia::Urror, 'The review is too short' if text.length < 100
+  def all
+    @pgsql.exec('SELECT text FROM badge WHERE project=$1', [@project.id]).map { |r| r['text'] }
+  end
+
+  def attach(text)
+    raise Xia::Urror, 'Not enough karma to attach a badge' unless @project.author.karma.positive?
+    raise Xia::Urror, "The badge #{text.inspect} looks wrong" unless /^[a-z0-9]+$/.match?(text)
     id = @pgsql.exec(
-      'INSERT INTO review (project, author, text) VALUES ($1, $2, $3) RETURNING id',
-      [@project.id, @project.author.id, text]
+      'INSERT INTO badge (project, text) VALUES ($1, $2) RETURNING id',
+      [@project.id, text]
     )[0]['id'].to_i
     get(id)
-  end
-
-  def recent(limit: 10)
-    q = [
-      'SELECT review.*, author.login',
-      'FROM review',
-      'JOIN author ON author.id=review.author',
-      'WHERE review.deleted IS NULL',
-      'ORDER BY review.created DESC',
-      'LIMIT $1'
-    ].join(' ')
-    @pgsql.exec(q, [limit]).map do |r|
-      {
-        id: r['id'].to_i,
-        text: r['text'],
-        author: r['login'],
-        created: Time.parse(r['created'])
-      }
-    end
   end
 end

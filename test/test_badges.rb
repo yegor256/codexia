@@ -24,25 +24,18 @@ require 'minitest/autorun'
 require_relative 'test__helper'
 require_relative '../objects/xia'
 require_relative '../objects/authors'
-require_relative '../objects/projects'
 
-class Xia::ProjectsTest < Minitest::Test
-  def test_submits_project
+class Xia::BadgesTest < Minitest::Test
+  def test_attaches_badge
     author = Xia::Authors.new(t_pgsql).named('yegor256')
     projects = author.projects
     project = projects.submit('github', "yegor256/takes#{rand(999)}")
-    assert(!project.id.nil?)
-    assert(!projects.recent.empty?)
-  end
-
-  def test_adds_badges_and_fetches_them
-    author = Xia::Authors.new(t_pgsql).named('yegor256')
-    projects = author.projects
-    project = projects.submit('github', "yegor256/takes#{rand(999)}")
-    badge = 'hello'
-    project.badges.attach(badge)
-    project.badges.attach('something')
-    assert(projects.recent[0][:badges].is_a?(Array))
-    assert(projects.recent[0][:badges].include?(badge))
+    badges = project.badges
+    text = 'jey'
+    badge = badges.attach(text)
+    assert_equal(2, badges.all.size)
+    assert(badges.all.include?(text))
+    assert(!badge.id.nil?)
+    badge.detach
   end
 end

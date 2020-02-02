@@ -42,8 +42,14 @@ get '/p/{id}/r/{rid}/delete' do
   flash(iri.cut('/p').append(project.id), "The review ##{review.id} in the project ##{project.id} removed")
 end
 
-post '/do-review' do
-  project = the_author.projects.get(params[:project].to_i)
+post '/p/{id}/post' do
+  project = the_author.projects.get(params[:id].to_i)
   review = project.reviews.post(params[:text].strip)
   flash(iri.cut('/p').append(project.id), "A new review ##{review.id} has been posted to the project ##{project.id}")
+end
+
+post '/p/{id}/attach' do
+  project = the_author.projects.get(params[:id].to_i)
+  badge = project.badges.attach(params[:text].strip)
+  flash(iri.cut('/p').append(project.id), "A new badge ##{badge.id} has been attached to the project ##{project.id}")
 end

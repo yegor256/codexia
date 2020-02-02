@@ -4,6 +4,16 @@
   %a{href: "https://github.com/#{project.coordinates}"}
     %img{src: iri.cut('/github-logo.svg'), style: 'vertical-align: middle; width: 1em;'}
 
+%p
+  - project.badges.all.each do |b|
+    %kbd
+      &= b
+
+- if the_author.karma >= 500
+  %form{action: iri.cut('/p').append(project.id).append('attach'), method: 'POST'}
+    %input{type: 'text', name: 'text', size: 25, placeholder: 'attach a new badge...'}
+    %button{type: 'submit'} Attach
+
 - reviews.each do |r|
   %p
     %span.smaller.gray
@@ -19,9 +29,8 @@
     &= r[:text].gsub('\n\n', '<br/><br/>')
 
 - if the_author.karma >= 50
-  %form{action: iri.cut('/do-review'), method: 'POST'}
+  %form{action: iri.cut('/p').append(project.id).append('post'), method: 'POST'}
     %fieldset
-      %input{type: 'hidden', name: 'project', value: project.id}
       %label What do you think about it?
       %textarea{name: 'text', style: 'width: 100%; height: 8em;'}
       %button{type: 'submit'} Post

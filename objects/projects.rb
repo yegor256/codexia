@@ -43,16 +43,19 @@ class Xia::Projects
       'INSERT INTO project (platform, coordinates, author) VALUES ($1, $2, $3) RETURNING id',
       [platform, coordinates, @author.id]
     )[0]['id'].to_i
-    get(id)
+    project = get(id)
+    project.badges.attach('newbie')
+    project
   end
 
   def recent(limit: 10)
     q = [
-      'SELECT project.*, author.login',
-      'FROM project',
-      'JOIN author ON author.id=project.author',
-      'WHERE project.deleted IS NULL',
-      'ORDER BY project.created DESC',
+      'SELECT p.*, author.login,',
+      'ARRAY(SELECT text FROM badge WHERE project=p.id) as badges',
+      'FROM project AS p',
+      'JOIN author ON author.id=p.author',
+      'WHERE p.deleted IS NULL',
+      'ORDER BY p.created DESC',
       'LIMIT $1'
     ].join(' ')
     @pgsql.exec(q, [limit]).map do |r|
@@ -60,6 +63,7 @@ class Xia::Projects
         id: r['id'].to_i,
         coordinates: r['coordinates'],
         author: r['login'],
+        badges: r['badges'][1..-2].split(','),
         created: Time.parse(r['created'])
       }
     end

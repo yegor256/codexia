@@ -21,48 +21,23 @@
 # SOFTWARE.
 
 require_relative 'xia'
-require_relative 'review'
 
-# Reviews.
+# Badges.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2020 Yegor Bugayenko
 # License:: MIT
-class Xia::Reviews
-  def initialize(pgsql, project)
+class Xia::Badge
+  attr_reader :id
+
+  def initialize(pgsql, project, id)
     @pgsql = pgsql
     @project = project
+    @id = id
   end
 
-  def get(id)
-    Xia::Review.new(@pgsql, @project, id)
-  end
-
-  def post(text)
-    raise Xia::Urror, 'Not enough karma to post a review' unless @project.author.karma.positive?
-    raise Xia::Urror, 'The review is too short' if text.length < 100
-    id = @pgsql.exec(
-      'INSERT INTO review (project, author, text) VALUES ($1, $2, $3) RETURNING id',
-      [@project.id, @project.author.id, text]
-    )[0]['id'].to_i
-    get(id)
-  end
-
-  def recent(limit: 10)
-    q = [
-      'SELECT review.*, author.login',
-      'FROM review',
-      'JOIN author ON author.id=review.author',
-      'WHERE review.deleted IS NULL',
-      'ORDER BY review.created DESC',
-      'LIMIT $1'
-    ].join(' ')
-    @pgsql.exec(q, [limit]).map do |r|
-      {
-        id: r['id'].to_i,
-        text: r['text'],
-        author: r['login'],
-        created: Time.parse(r['created'])
-      }
-    end
+  def detach
+    raise Xia::Urror, 'Not enough karma to detach a badge' unless @project.author.karma.positive?
+    raise Xia::Urror, 'Can\'t delete the last badge' if @project.badges.all.count < 2
+    @pgsql.exec('DELETE FROM badge WHERE id=$1', [@id])
   end
 end

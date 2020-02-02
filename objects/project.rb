@@ -22,6 +22,7 @@
 
 require_relative 'xia'
 require_relative 'reviews'
+require_relative 'badges'
 
 # Project.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -43,6 +44,10 @@ class Xia::Project
 
   def reviews
     Xia::Reviews.new(@pgsql, self)
+  end
+
+  def badges
+    Xia::Badges.new(@pgsql, self)
   end
 
   def delete

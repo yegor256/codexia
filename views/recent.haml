@@ -3,6 +3,10 @@
     %a{href: iri.cut('/p').append(p[:id])}
       &= p[:coordinates]
     %br
+    - p[:badges].each do |b|
+      %kbd
+        &= b
+    %br
     %span.smaller.gray
       %span.item
         %img{src: "https://socatar.com/github/#{p[:author]}/192-192", style: 'height: 1em; width: 1em; vertical-align: middle;'}
