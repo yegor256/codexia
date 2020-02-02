@@ -12,6 +12,9 @@
         &= r[:author]
       %span.item
         = RelativeTime.in_words(r[:created])
+      %span.item
+        %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('delete')}
+          = '/delete'
     %br
     &= r[:text].gsub('\n\n', '<br/><br/>')
 

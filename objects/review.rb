@@ -35,4 +35,12 @@ class Xia::Review
     @project = project
     @id = id
   end
+
+  def delete
+    raise Xia::Urror, 'Not enough karma to delete a review' if @project.author.karma < 500
+    @pgsql.exec(
+      'UPDATE review SET deleted = $2 WHERE id=$1',
+      [@id, "Deleted by @#{@project.author.login} on #{Time.now.utc.iso8601}"]
+    )
+  end
 end

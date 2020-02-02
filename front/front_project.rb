@@ -35,6 +35,13 @@ get '/p/{id}/delete' do
   flash(iri.cut('/recent'), "The project ##{project.id} has been deleted")
 end
 
+get '/p/{id}/r/{rid}/delete' do
+  project = the_author.projects.get(params[:id].to_i)
+  review = project.reviews.get(params[:rid].to_i)
+  review.delete
+  flash(iri.cut('/p').append(project.id), "The review ##{review.id} in the project ##{project.id} removed")
+end
+
 post '/do-review' do
   project = the_author.projects.get(params[:project].to_i)
   review = project.reviews.post(params[:text].strip)
