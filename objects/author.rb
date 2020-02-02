@@ -36,16 +36,22 @@ class Xia::Author
     @id = id
   end
 
+  def karma
+    return 1_000_000 if login == 'yegor256' || ENV['RACK_ENV'] == 'test'
+    projects = @pgsql.exec('SELECT COUNT(*) FROM project WHERE author=$1', [@id])[0]['count'].to_i
+    reviews = @pgsql.exec('SELECT COUNT(*) FROM review WHERE author=$1', [@id])[0]['count'].to_i
+    projects * 5 + reviews + 10
+  end
+
   def projects
     Xia::Projects.new(@pgsql, self)
   end
 
+  def login
+    row['login']
+  end
+
   def avatar
-    row = @pgsql.exec(
-      'SELECT avatar FROM author WHERE id=$1',
-      [@id]
-    )[0]
-    raise Xia::Urror, "Author @#{@login} not found in the database" if row.nil?
     row['avatar']
   end
 
@@ -54,5 +60,16 @@ class Xia::Author
       'UPDATE author SET avatar=$2 WHERE id=$1',
       [@id, url]
     )
+  end
+
+  private
+
+  def row
+    row = @pgsql.exec(
+      'SELECT avatar FROM author WHERE id=$1',
+      [@id]
+    )[0]
+    raise Xia::Urror, "Author @#{@login} not found in the database" if row.nil?
+    row
   end
 end

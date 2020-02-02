@@ -14,9 +14,10 @@
     %br
     &= r[:text]
 
-%form{action: iri.cut('/do-review'), method: 'POST'}
-  %fieldset
-    %input{type: 'hidden', name: 'project', value: project.id}
-    %label What do you think about it?
-    %textarea{name: 'text', style: 'width: 100%; height: 8em;'}
-    %button{type: 'submit'} Post
+- if the_author.karma >= 50
+  %form{action: iri.cut('/do-review'), method: 'POST'}
+    %fieldset
+      %input{type: 'hidden', name: 'project', value: project.id}
+      %label What do you think about it?
+      %textarea{name: 'text', style: 'width: 100%; height: 8em;'}
+      %button{type: 'submit'} Post

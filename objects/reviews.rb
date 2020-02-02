@@ -38,6 +38,7 @@ class Xia::Reviews
   end
 
   def post(text)
+    raise Xia::Urror, 'Not enough karma to post a review' if @project.author.karma < 50
     id = @pgsql.exec(
       'INSERT INTO review (project, author, text) VALUES ($1, $2, $3) RETURNING id',
       [@project.id, @project.author.id, text]
