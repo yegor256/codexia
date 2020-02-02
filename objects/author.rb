@@ -51,17 +51,6 @@ class Xia::Author
     row['login']
   end
 
-  def avatar
-    row['avatar']
-  end
-
-  def avatar=(url)
-    @pgsql.exec(
-      'UPDATE author SET avatar=$2 WHERE id=$1',
-      [@id, url]
-    )
-  end
-
   private
 
   def row

@@ -30,8 +30,6 @@ class Xia::AuthorsTest < Minitest::Test
     authors = Xia::Authors.new(t_pgsql)
     login = 'test'
     author = authors.named(login)
-    url = 'https://localhost'
-    author.avatar = url
-    assert_equal(url, author.avatar)
+    assert(!author.id.nil?)
   end
 end

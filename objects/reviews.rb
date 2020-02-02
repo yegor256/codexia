@@ -48,7 +48,7 @@ class Xia::Reviews
 
   def recent(limit: 10)
     q = [
-      'SELECT review.*, author.login, author.avatar',
+      'SELECT review.*, author.login',
       'FROM review',
       'JOIN author ON author.id=review.author',
       'ORDER BY review.created DESC',
@@ -59,7 +59,6 @@ class Xia::Reviews
         id: r['id'].to_i,
         text: r['text'],
         author: r['login'],
-        avatar: r['avatar'],
         created: Time.parse(r['created'])
       }
     end

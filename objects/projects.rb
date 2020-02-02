@@ -48,7 +48,7 @@ class Xia::Projects
 
   def recent(limit: 10)
     q = [
-      'SELECT project.*, author.login, author.avatar',
+      'SELECT project.*, author.login',
       'FROM project',
       'JOIN author ON author.id=project.author',
       'ORDER BY project.created DESC',
@@ -59,7 +59,6 @@ class Xia::Projects
         id: r['id'].to_i,
         coordinates: r['coordinates'],
         author: r['login'],
-        avatar: r['avatar'],
         created: Time.parse(r['created'])
       }
     end

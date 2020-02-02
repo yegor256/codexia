@@ -34,8 +34,8 @@ class Xia::Authors
 
   def named(login)
     id = @pgsql.exec(
-      'INSERT INTO author (login, avatar) VALUES ($1, $2) ON CONFLICT DO NOTHING RETURNING id',
-      [login, 'https://www.codexia.org/logo-64.png']
+      'INSERT INTO author (login) VALUES ($1) ON CONFLICT DO NOTHING RETURNING id',
+      [login]
     )[0]['id'].to_i
     Xia::Author.new(@pgsql, id)
   end

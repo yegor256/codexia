@@ -29,9 +29,7 @@ class Xia::AuthorTest < Minitest::Test
   def test_updates_author
     authors = Xia::Authors.new(t_pgsql)
     author = authors.named('test')
-    url = 'https://localhost'
-    author.avatar = url
-    assert_equal(url, author.avatar)
+    assert(!author.id.nil?)
   end
 
   def test_karma
