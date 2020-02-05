@@ -43,33 +43,38 @@ class Xia::Author
     row['login']
   end
 
-  def karma
-    return 1_000_000 if ENV['RACK_ENV'] == 'test'
-    queries = [
+  def legend
+    [
       [
         +5,
-        'SELECT COUNT(*) FROM project WHERE author=$1 AND deleted IS NULL'
+        'SELECT COUNT(*) FROM project WHERE author=$1 AND deleted IS NULL',
+        'each project submitted'
       ],
       [
         +10,
-        'SELECT COUNT(*) FROM review WHERE author=$1 AND deleted IS NULL'
+        'SELECT COUNT(*) FROM review WHERE author=$1 AND deleted IS NULL',
+        'each review submitted'
       ],
       [
         -25,
-        'SELECT COUNT(*) FROM project WHERE author=$1 AND deleted IS NOT NULL'
+        'SELECT COUNT(*) FROM project WHERE author=$1 AND deleted IS NOT NULL',
+        'each project deleted'
       ],
       [
         -50,
-        'SELECT COUNT(*) FROM review WHERE author=$1 AND deleted IS NOT NULL'
-      ],
-      [
-        -1,
-        'SELECT SUM(points) FROM withdrawal WHERE author=$1'
+        'SELECT COUNT(*) FROM review WHERE author=$1 AND deleted IS NOT NULL',
+        'each review deleted'
       ]
     ]
-    @karma ||= queries.map do |score, q|
+  end
+
+  def karma
+    return 1_000_000 if ENV['RACK_ENV'] == 'test'
+    earned = legend.map do |score, q, _|
       @pgsql.query(q, [@id])[0]['count'].to_i * score
     end.inject(&:+)
+    paid = @pgsql.query('SELECT SUM(points) FROM withdrawal WHERE author=$1', [@id])[0]['count'].to_i
+    @karma ||= earned + paid
   end
 
   def projects
