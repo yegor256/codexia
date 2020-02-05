@@ -42,25 +42,37 @@ class Xia::Karma
     [
       [
         +5,
-        'SELECT * FROM project WHERE author=$1 AND deleted IS NULL',
+        'SELECT * FROM project AS t WHERE author=$1 AND deleted IS NULL',
         'each project submitted',
         'Project #[id]:[coordinates] submitted'
       ],
       [
         +10,
-        'SELECT * FROM review WHERE author=$1 AND deleted IS NULL',
+        'SELECT * FROM review AS t WHERE author=$1 AND deleted IS NULL',
         'each review submitted',
         'Review #[id] submitted'
       ],
       [
+        +1,
+        'SELECT * FROM vote AS t JOIN review ON t.review=review.id WHERE review.author=$1 AND positive=true',
+        'each review up-voted',
+        'Review #[id] up-voted'
+      ],
+      [
+        -5,
+        'SELECT * FROM vote AS t JOIN review ON t.review=review.id WHERE review.author=$1 AND positive=false',
+        'each review down-voted',
+        'Review #[id] down-voted'
+      ],
+      [
         -25,
-        'SELECT * FROM project WHERE author=$1 AND deleted IS NOT NULL',
+        'SELECT * FROM project AS t WHERE author=$1 AND deleted IS NOT NULL',
         'each project deleted',
         'Project #[id]:[coordinates] deleted'
       ],
       [
         -50,
-        'SELECT * FROM review WHERE author=$1 AND deleted IS NOT NULL',
+        'SELECT * FROM review AS t WHERE author=$1 AND deleted IS NOT NULL',
         'each review deleted',
         'Review #[id] deleted'
       ]
@@ -78,7 +90,7 @@ class Xia::Karma
 
   def recent(limit: 10)
     legend.map do |score, q, _text, summary|
-      @pgsql.exec("#{q} ORDER BY created DESC LIMIT $2", [@author.id, limit]).map do |r|
+      @pgsql.exec("#{q} ORDER BY t.created DESC LIMIT $2", [@author.id, limit]).map do |r|
         {
           text: summary.gsub(/\[([a-z]+)\]/) { r[Regexp.last_match[1]] },
           points: score,
