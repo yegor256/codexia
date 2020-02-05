@@ -128,6 +128,16 @@ get '/terms' do
   )
 end
 
+get '/sql' do
+  raise Xia::Urror, 'You are not allowed to see this' unless the_author.vip?
+  query = params[:query] || 'SELECT * FROM author LIMIT 16'
+  haml :sql, layout: :layout, locals: merged(
+    page_title: '/sql',
+    query: query,
+    result: settings.pgsql.exec(query)
+  )
+end
+
 def the_author
   redirect '/welcome' unless @locals[:author]
   require_relative 'objects/authors'

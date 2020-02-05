@@ -29,7 +29,8 @@
                 %img.logo{src: iri.cut('/logo.svg'), alt: 'Logo'}
             %li
               - if defined?(author)
-                = "@#{author[:login]}"
+                %span{title: "Author ID: ##{the_author.id}"}
+                  = "@#{author[:login]}"
               - else
                 %a{href: login_link}
                   = '/login'
@@ -54,6 +55,12 @@
       %article
         = yield
       %footer.smaller.gray
+        - if defined?(author) && the_author.vip?
+          %nav
+            %ul
+              %li
+                %a{href: iri.cut('/sql')}
+                  = '/sql'
         %nav
           %ul
             %li

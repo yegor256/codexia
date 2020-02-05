@@ -1,0 +1,32 @@
+%h2
+  SQL
+
+%form{method: 'GET', action: iri.cut('/sql')}
+  %input{type: 'text', name: 'query', size: 60, autocomplete: 'off', required: true, tabindex: 1, autofocus: true, value: query}
+  %input{type: 'submit', tabindex: 2, value: 'Query'}
+
+- max = 100
+
+- if result.empty?
+  %p
+    Empty result.
+- else
+  %table.compact
+    %thead
+      %tr
+        - result[0].keys.each do |k|
+          %th= k
+    %tbody
+      - result.take(max).each do |r|
+        %tr
+          - r.each do |k, v|
+            %td.monospace
+              - if v.nil?
+                = '&mdash;'
+              - else
+                = largetext(v)
+  - if result.count > max
+    %p
+      There are
+      %strong= result.count
+      rows (more than you see above).
