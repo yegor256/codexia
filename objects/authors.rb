@@ -35,10 +35,8 @@ class Xia::Authors
   end
 
   def named(login)
-    id = @pgsql.exec(
-      'INSERT INTO author (login) VALUES ($1) ON CONFLICT DO NOTHING RETURNING id',
-      [login]
-    )[0]['id'].to_i
+    @pgsql.exec('INSERT INTO author (login) VALUES ($1) ON CONFLICT DO NOTHING', [login])
+    id = @pgsql.exec('SELECT id FROM author WHERE login=$1', [login])[0]['id'].to_i
     Xia::Author.new(@pgsql, id, log: @log)
   end
 end

@@ -31,5 +31,6 @@ class Xia::AuthorsTest < Minitest::Test
     login = 'test'
     author = authors.named(login)
     assert(!author.id.nil?)
+    assert_equal(author.id, authors.named(login).id)
   end
 end

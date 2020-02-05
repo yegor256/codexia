@@ -72,9 +72,9 @@ class Xia::Author
     earned = legend.map do |score, q, _|
       @pgsql.exec(q, [@id])[0]['count'].to_i * score
     end.inject(&:+)
-    paid = @pgsql.exec('SELECT SUM(points) FROM withdrawal WHERE author=$1', [@id])[0]['count'].to_i
-    earned += 1000 if ENV['RACK_ENV'] == 'test'
-    @karma ||= earned + paid
+    paid = @pgsql.exec('SELECT SUM(points) FROM withdrawal WHERE author=$1', [@id])[0]['sum'].to_i
+    earned += 1000 if login == 'test'
+    @karma ||= earned - paid
   end
 
   def projects

@@ -27,7 +27,7 @@ require_relative '../objects/authors'
 
 class Xia::BadgesTest < Minitest::Test
   def test_attaches_badge
-    author = Xia::Authors.new(t_pgsql).named('yegor256')
+    author = Xia::Authors.new(t_pgsql).named('test')
     projects = author.projects
     project = projects.submit('github', "yegor256/takes#{rand(999)}")
     badges = project.badges

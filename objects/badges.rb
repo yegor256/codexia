@@ -44,7 +44,7 @@ class Xia::Badges
   end
 
   def attach(text)
-    raise Xia::Urror, 'Not enough karma to attach a badge' unless @project.author.karma.positive?
+    raise Xia::Urror, 'Not enough karma to attach a badge' if @project.author.karma.negative?
     raise Xia::Urror, "The badge #{text.inspect} looks wrong" unless /^[a-z0-9]{3,12}$/.match?(text)
     id = @pgsql.exec(
       'INSERT INTO badge (project, text) VALUES ($1, $2) RETURNING id',

@@ -34,7 +34,10 @@ class Xia::AuthorTest < Minitest::Test
 
   def test_karma
     authors = Xia::Authors.new(t_pgsql)
-    author = authors.named('test')
-    assert(!author.karma.nil?)
+    login = '-test-'
+    author = authors.named(login)
+    author.projects.submit('github', "yegor256/takes#{rand(999)}")
+    karma = authors.named(login).karma
+    assert(karma.positive?, "The karma is #{karma}")
   end
 end
