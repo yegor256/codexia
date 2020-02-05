@@ -13,6 +13,8 @@
     withdraw some or all of your karma. One karma point is equal
     to 1 USD.
 - else
+  %p
+    Your most recent withdrawals:
   - withdrawals.each do |w|
     %p
       %span.item
@@ -23,3 +25,19 @@
         = w[:zld].to_zld
       %span.item
         = RelativeTime.in_words(w[:created])
+
+- if recent.empty?
+  %p
+    Nothing earned as of yet.
+- else
+  %p
+    Your most recent karma points:
+  - recent.each do |r|
+    %p
+      %strong
+        = format('%+d', r[:points])
+      &= r[:text]
+      %br
+      %span.smaller.gray
+        %span.item
+          = RelativeTime.in_words(r[:created])

@@ -20,47 +20,28 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'loog'
-require_relative 'xia'
-require_relative 'urror'
-require_relative 'projects'
-require_relative 'withdrawals'
-require_relative 'karma'
+require 'minitest/autorun'
+require_relative 'test__helper'
+require_relative '../objects/xia'
+require_relative '../objects/authors'
 
-# One author.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2020 Yegor Bugayenko
-# License:: MIT
-class Xia::Author
-  attr_reader :id
-
-  def initialize(pgsql, id, log: Loog::NULL)
-    @pgsql = pgsql
-    @id = id
-    @log = log
+class Xia::KarmaTest < Minitest::Test
+  def test_karma
+    authors = Xia::Authors.new(t_pgsql)
+    login = '-test-'
+    author = authors.named(login)
+    project = author.projects.submit('github', "yegor256/takes#{rand(999)}")
+    reviews = project.reviews
+    reviews.post('How are you?')
+    karma = authors.named(login).karma.points
+    assert(karma.positive?, "The karma is #{karma}")
   end
 
-  def login
-    row['login']
-  end
-
-  def karma
-    Xia::Karma.new(@pgsql, self, log: @log)
-  end
-
-  def projects
-    Xia::Projects.new(@pgsql, self, log: @log)
-  end
-
-  def withdrawals
-    Xia::Withdrawals.new(@pgsql, self, log: @log)
-  end
-
-  private
-
-  def row
-    row = @pgsql.exec('SELECT * FROM author WHERE id=$1', [@id])[0]
-    raise Xia::Urror, "Author @#{@login} not found in the database" if row.nil?
-    row
+  def test_list_recent
+    authors = Xia::Authors.new(t_pgsql)
+    login = '-test-'
+    author = authors.named(login)
+    author.projects.submit('github', "yegor256/takes#{rand(999)}")
+    assert(!author.karma.recent.empty?)
   end
 end

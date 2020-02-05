@@ -53,7 +53,7 @@ class Xia::Project
   end
 
   def delete
-    raise Xia::Urror, 'Not enough karma to delete a project' if @author.karma < 500
+    raise Xia::Urror, 'Not enough karma to delete a project' if @author.karma.points < 500
     @pgsql.exec(
       'UPDATE project SET deleted = $2 WHERE id=$1',
       [@id, "Deleted by @#{@author.login} on #{Time.now.utc.iso8601}"]

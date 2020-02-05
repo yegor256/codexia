@@ -9,7 +9,7 @@
     %kbd
       &= b
 
-- if the_author.karma >= 500
+- if the_author.karma.points >= 500
   %form{action: iri.cut('/p').append(project.id).append('attach'), method: 'POST'}
     %input{type: 'text', name: 'text', size: 25, placeholder: 'attach a new badge...'}
     %button{type: 'submit'} Attach
@@ -17,7 +17,7 @@
 - reviews.each do |r|
   %p
     %span.smaller.gray
-      %span.item
+      %span.item{title: "Author ID: ##{r[:author_id]}"}
         %img{src: "https://socatar.com/github/#{r[:author]}/192-192", style: 'height: 1em; width: 1em; vertical-align: middle;'}
         &= r[:author]
       %span.item
@@ -28,7 +28,7 @@
     %br
     &= r[:text].gsub('\n\n', '<br/><br/>')
 
-- if the_author.karma >= 50
+- if the_author.karma.points >= 50
   %form{action: iri.cut('/p').append(project.id).append('post'), method: 'POST'}
     %fieldset
       %label What do you think about it?

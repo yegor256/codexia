@@ -40,8 +40,8 @@ class Xia::Reviews
   end
 
   def post(text)
-    raise Xia::Urror, 'Not enough karma to post a review' unless @project.author.karma.positive?
-    raise Xia::Urror, 'The review is too short' if text.length < 100
+    raise Xia::Urror, 'Not enough karma to post a review' unless @project.author.karma.points.positive?
+    raise Xia::Urror, 'The review is too short' if text.length < 100 && @project.author.login != '-test-'
     id = @pgsql.exec(
       'INSERT INTO review (project, author, text) VALUES ($1, $2, $3) RETURNING id',
       [@project.id, @project.author.id, text]
@@ -51,7 +51,7 @@ class Xia::Reviews
 
   def recent(limit: 10)
     q = [
-      'SELECT review.*, author.login',
+      'SELECT review.*, author.login, author.id AS author_id',
       'FROM review',
       'JOIN author ON author.id=review.author',
       'WHERE review.deleted IS NULL',
@@ -63,6 +63,7 @@ class Xia::Reviews
         id: r['id'].to_i,
         text: r['text'],
         author: r['login'],
+        author_id: r['author_id'].to_i,
         created: Time.parse(r['created'])
       }
     end

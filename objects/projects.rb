@@ -40,7 +40,7 @@ class Xia::Projects
   end
 
   def submit(platform, coordinates)
-    raise Xia::Urror, 'Not enough karma to submit a project' if @author.karma.negative?
+    raise Xia::Urror, 'Not enough karma to submit a project' if @author.karma.points.negative?
     id = @pgsql.exec(
       'INSERT INTO project (platform, coordinates, author) VALUES ($1, $2, $3) RETURNING id',
       [platform, coordinates, @author.id]
@@ -52,7 +52,7 @@ class Xia::Projects
 
   def recent(limit: 10)
     q = [
-      'SELECT p.*, author.login,',
+      'SELECT p.*, author.login, author.id AS author_id,',
       'ARRAY(SELECT text FROM badge WHERE project=p.id) as badges',
       'FROM project AS p',
       'JOIN author ON author.id=p.author',
@@ -65,6 +65,7 @@ class Xia::Projects
         id: r['id'].to_i,
         coordinates: r['coordinates'],
         author: r['login'],
+        author_id: r['author_id'].to_i,
         badges: r['badges'][1..-2].split(','),
         created: Time.parse(r['created'])
       }

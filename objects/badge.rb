@@ -38,7 +38,7 @@ class Xia::Badge
   end
 
   def detach
-    raise Xia::Urror, 'Not enough karma to detach a badge' unless @project.author.karma.positive?
+    raise Xia::Urror, 'Not enough karma to detach a badge' unless @project.author.karma.points.positive?
     raise Xia::Urror, 'Can\'t delete the last badge' if @project.badges.all.count < 2
     @pgsql.exec('DELETE FROM badge WHERE id=$1', [@id])
   end

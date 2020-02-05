@@ -33,14 +33,14 @@
               - else
                 %a{href: login_link}
                   = '/login'
-              - if defined?(author) && the_author.karma >= 100
+              - if defined?(author) && the_author.karma.points >= 100
                 %li
                   %a{href: iri.cut('/submit')}
                     = '/submit'
               - if defined?(author)
                 %li{title: 'Your karma'}
                   %a{href: iri.cut('/karma')}
-                    = format('%+d', the_author.karma)
+                    = format('%+d', the_author.karma.points)
                 %li
                   %a{href: iri.cut('/terms')}
                     = '/terms'

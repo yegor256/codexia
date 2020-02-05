@@ -124,7 +124,7 @@ end
 get '/terms' do
   haml :terms, layout: :layout, locals: merged(
     title: '/terms',
-    legend: the_author.legend
+    legend: the_author.karma.legend
   )
 end
 
