@@ -49,7 +49,12 @@ class Xia::Review
     raise Xia::Urror, 'Not enough karma to upvote a review' if @project.author.karma.points < 100
     raise Xia::Urror, 'Not enough karma to downvote a review' if !up && @project.author.karma.points < 200
     @pgsql.exec(
-      'INSERT INTO vote (review, author, positive) VALUES ($1, $2, $3) RETURNING id',
+      [
+        'INSERT INTO vote (review, author, positive)',
+        'VALUES ($1, $2, $3)',
+        'ON CONFLICT (review, author) DO UPDATE SET positive=$3',
+        'RETURNING id'
+      ].join(' '),
       [@id, @project.author.id, up]
     )[0]['id'].to_i
   end

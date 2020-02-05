@@ -24,10 +24,12 @@
         = RelativeTime.in_words(r[:created])
       - if the_author.karma.points >= 100
         %span.item
+          = r[:up]
           %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('up')}
             = '/up'
       - if the_author.karma.points >= 200
         %span.item
+          = r[:down]
           %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('down')}
             = '/down'
       - if the_author.karma.points >= 500

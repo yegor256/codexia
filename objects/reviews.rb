@@ -51,11 +51,13 @@ class Xia::Reviews
 
   def recent(limit: 10)
     q = [
-      'SELECT review.*, author.login, author.id AS author_id',
-      'FROM review',
-      'JOIN author ON author.id=review.author',
-      'WHERE review.deleted IS NULL',
-      'ORDER BY review.created DESC',
+      'SELECT r.*, author.login, author.id AS author_id,',
+      '(SELECT COUNT(*) FROM vote AS v WHERE v.review=r.id AND positive=true) AS up,',
+      '(SELECT COUNT(*) FROM vote AS v WHERE v.review=r.id AND positive=false) AS down',
+      'FROM review AS r',
+      'JOIN author ON author.id=r.author',
+      'WHERE r.deleted IS NULL',
+      'ORDER BY r.created DESC',
       'LIMIT $1'
     ].join(' ')
     @pgsql.exec(q, [limit]).map do |r|
@@ -64,6 +66,8 @@ class Xia::Reviews
         text: r['text'],
         author: r['login'],
         author_id: r['author_id'].to_i,
+        up: r['up'].to_i,
+        down: r['down'].to_i,
         created: Time.parse(r['created'])
       }
     end

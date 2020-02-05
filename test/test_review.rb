@@ -34,5 +34,6 @@ class Xia::ReviewTest < Minitest::Test
     review = reviews.post('How are you?')
     id = review.vote(true)
     assert(!id.nil?)
+    assert_equal(id, review.vote(false))
   end
 end
