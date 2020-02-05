@@ -42,6 +42,20 @@ get '/p/{id}/r/{rid}/delete' do
   flash(iri.cut('/p').append(project.id), "The review ##{review.id} in the project ##{project.id} removed")
 end
 
+get '/p/{id}/r/{rid}/up' do
+  project = the_author.projects.get(params[:id].to_i)
+  review = project.reviews.get(params[:rid].to_i)
+  review.vote(true)
+  flash(iri.cut('/p').append(project.id), "The review ##{review.id} in the project ##{project.id} upvoted")
+end
+
+get '/p/{id}/r/{rid}/down' do
+  project = the_author.projects.get(params[:id].to_i)
+  review = project.reviews.get(params[:rid].to_i)
+  review.vote(false)
+  flash(iri.cut('/p').append(project.id), "The review ##{review.id} in the project ##{project.id} downvoted")
+end
+
 post '/p/{id}/post' do
   project = the_author.projects.get(params[:id].to_i)
   review = project.reviews.post(params[:text].strip)

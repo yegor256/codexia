@@ -46,7 +46,7 @@ class Xia::Withdrawals
     wts.wait(job)
     @pgsql.exec(
       'INSERT INTO withdrawal (author, wallet, points, zents) VALUES ($1, $2, $3, $4) RETURNING id',
-      [@author.login, wallet, points, zld.to_i]
+      [@author.id, wallet, points, zld.to_i]
     )[0]['id'].to_i
   end
 

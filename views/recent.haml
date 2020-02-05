@@ -13,6 +13,7 @@
         &= p[:author]
       %span.item
         = RelativeTime.in_words(p[:created])
-      %span.item
-        %a{href: iri.cut('/p').append(p[:id]).append('delete')}
-          = '/delete'
+      - if the_author.karma.points >= 500
+        %span.item
+          %a{href: iri.cut('/p').append(p[:id]).append('delete')}
+            = '/delete'

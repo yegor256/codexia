@@ -20,37 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require_relative 'xia'
+require 'minitest/autorun'
+require_relative 'test__helper'
+require_relative '../objects/xia'
+require_relative '../objects/authors'
 
-# Review.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2020 Yegor Bugayenko
-# License:: MIT
-class Xia::Review
-  attr_reader :id
-  attr_reader :project
-
-  def initialize(pgsql, project, id, log: Loog::NULL)
-    @pgsql = pgsql
-    @project = project
-    @id = id
-    @log = log
-  end
-
-  def delete
-    raise Xia::Urror, 'Not enough karma to delete a review' if @project.author.karma.points < 500
-    @pgsql.exec(
-      'UPDATE review SET deleted = $2 WHERE id=$1',
-      [@id, "Deleted by @#{@project.author.login} on #{Time.now.utc.iso8601}"]
-    )
-  end
-
-  def vote(up)
-    raise Xia::Urror, 'Not enough karma to upvote a review' if @project.author.karma.points < 100
-    raise Xia::Urror, 'Not enough karma to downvote a review' if !up && @project.author.karma.points < 200
-    @pgsql.exec(
-      'INSERT INTO vote (review, author, positive) VALUES ($1, $2, $3) RETURNING id',
-      [@id, @project.author.id, up]
-    )[0]['id'].to_i
+class Xia::ReviewTest < Minitest::Test
+  def test_votes_review
+    author = Xia::Authors.new(t_pgsql).named('-test-')
+    projects = author.projects
+    project = projects.submit('github', "yegor256/takes#{rand(999)}")
+    reviews = project.reviews
+    review = reviews.post('How are you?')
+    id = review.vote(true)
+    assert(!id.nil?)
   end
 end

@@ -22,9 +22,18 @@
         &= r[:author]
       %span.item
         = RelativeTime.in_words(r[:created])
-      %span.item
-        %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('delete')}
-          = '/delete'
+      - if the_author.karma.points >= 100
+        %span.item
+          %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('up')}
+            = '/up'
+      - if the_author.karma.points >= 200
+        %span.item
+          %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('down')}
+            = '/down'
+      - if the_author.karma.points >= 500
+        %span.item
+          %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('delete')}
+            = '/delete'
     %br
     &= r[:text].gsub('\n\n', '<br/><br/>')
 
