@@ -41,9 +41,9 @@ class Xia::Withdrawals
     raise Xia::Urror, 'Not enough karma to pay that much' if @author.karma.points(safe: true) < points
     rate = wts.usd_rate
     zld = (points / rate).round(4)
-    wts.wait(wts.pull)
-    job = wts.pay(keygap, wallet, zld, "#{points} codexia karma points")
-    wts.wait(job)
+    # wts.wait(wts.pull)
+    wts.pay(keygap, wallet, zld, "#{points} codexia karma points")
+    # wts.wait(job)
     @pgsql.exec(
       'INSERT INTO withdrawal (author, wallet, points, zents) VALUES ($1, $2, $3, $4) RETURNING id',
       [@author.id, wallet, points, Zold::Amount.new(zld: zld).to_i]
