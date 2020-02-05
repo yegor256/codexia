@@ -25,6 +25,7 @@ SOFTWARE.
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd" logicalFilePath="001-initial-schema.xml">
   <changeSet id="006" author="yegor256">
     <sql>
+      DELETE FROM author;
       ALTER TABLE author ADD CONSTRAINT unique_login UNIQUE(login);
     </sql>
   </changeSet>
