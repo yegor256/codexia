@@ -27,7 +27,7 @@ require_relative '../objects/authors'
 
 class Xia::ProjectTest < Minitest::Test
   def test_submits_project
-    author = Xia::Authors.new(t_pgsql).named('test')
+    author = Xia::Authors.new(t_pgsql).named('-test-')
     projects = author.projects
     project = projects.submit('github', "yegor256/takes#{rand(999)}")
     project.delete

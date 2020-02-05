@@ -28,7 +28,7 @@ require_relative '../objects/authors'
 class Xia::AuthorsTest < Minitest::Test
   def test_updates_author
     authors = Xia::Authors.new(t_pgsql)
-    login = 'test'
+    login = '-test-'
     author = authors.named(login)
     assert(!author.id.nil?)
     assert_equal(author.id, authors.named(login).id)
