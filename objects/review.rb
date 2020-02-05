@@ -45,9 +45,17 @@ class Xia::Review
     )
   end
 
+  def quota
+    10 - @pgsql.exec(
+      'SELECT COUNT(*) FROM vote WHERE created > NOW() - INTERVAL \'1 DAY\' AND author=$1',
+      [@project.author.id]
+    )[0]['count'].to_i
+  end
+
   def vote(up)
     raise Xia::Urror, 'Not enough karma to upvote a review' if @project.author.karma.points < 100
     raise Xia::Urror, 'Not enough karma to downvote a review' if !up && @project.author.karma.points < 200
+    raise Xia::Urror, 'You are voting too fast' if quota.negative?
     @pgsql.exec(
       [
         'INSERT INTO vote (review, author, positive)',
