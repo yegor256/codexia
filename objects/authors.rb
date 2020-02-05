@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'loog'
 require_relative 'xia'
 require_relative 'author'
 
@@ -28,8 +29,9 @@ require_relative 'author'
 # Copyright:: Copyright (c) 2020 Yegor Bugayenko
 # License:: MIT
 class Xia::Authors
-  def initialize(pgsql)
+  def initialize(pgsql, log: Loog::NULL)
     @pgsql = pgsql
+    @log = log
   end
 
   def named(login)
@@ -37,6 +39,6 @@ class Xia::Authors
       'INSERT INTO author (login) VALUES ($1) ON CONFLICT DO NOTHING RETURNING id',
       [login]
     )[0]['id'].to_i
-    Xia::Author.new(@pgsql, id)
+    Xia::Author.new(@pgsql, id, log: @log)
   end
 end

@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'loog'
 require_relative 'xia'
 require_relative 'badge'
 
@@ -28,13 +29,14 @@ require_relative 'badge'
 # Copyright:: Copyright (c) 2020 Yegor Bugayenko
 # License:: MIT
 class Xia::Badges
-  def initialize(pgsql, project)
+  def initialize(pgsql, project, log: Loog::NULL)
     @pgsql = pgsql
     @project = project
+    @log = log
   end
 
   def get(id)
-    Xia::Badge.new(@pgsql, @project, id)
+    Xia::Badge.new(@pgsql, @project, id, log: @log)
   end
 
   def all

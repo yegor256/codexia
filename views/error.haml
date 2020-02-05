@@ -1,11 +1,19 @@
-%p{style: 'color: red;'}
-  Internal error at
-  =ver
+!!! 5
+%html
+  %head
+    %title Ouch... :(
+    %meta{charset:'UTF-8'}
+    %link{href: 'https://cdn.jsdelivr.net/gh/yegor256/tacit@gh-pages/tacit-css.min.css', rel: 'stylesheet'}
+    %link{rel: 'shortcut icon', href: iri.cut('/logo-64.png')}
+  %body
+    %p{style: 'color: red;'}
+      Internal error at
+      =ver
 
-%p
-  Please help us improve our service and submit the following
-  stacktrace to our issue tracker in GitHub:
-  %a{href:'https://github.com/yegor256/codexia'} yegor256/codexia
+    %p
+      Please help us improve our service and submit the following
+      stacktrace to our issue tracker in GitHub:
+      %a{href:'https://github.com/yegor256/codexia'} yegor256/codexia
 
-%pre
-  &=error
+    %pre
+      &=error

@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'loog'
 require_relative 'xia'
 
 # Badges.
@@ -29,10 +30,11 @@ require_relative 'xia'
 class Xia::Badge
   attr_reader :id
 
-  def initialize(pgsql, project, id)
+  def initialize(pgsql, project, id, log: Loog::NULL)
     @pgsql = pgsql
     @project = project
     @id = id
+    @log = log
   end
 
   def detach

@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'loog'
 require_relative 'xia'
 require_relative 'reviews'
 require_relative 'badges'
@@ -32,10 +33,11 @@ class Xia::Project
   attr_reader :id
   attr_reader :author
 
-  def initialize(pgsql, author, id)
+  def initialize(pgsql, author, id, log: Loog::NULL)
     @pgsql = pgsql
     @author = author
     @id = id
+    @log = log
   end
 
   def coordinates
@@ -43,11 +45,11 @@ class Xia::Project
   end
 
   def reviews
-    Xia::Reviews.new(@pgsql, self)
+    Xia::Reviews.new(@pgsql, self, log: @log)
   end
 
   def badges
-    Xia::Badges.new(@pgsql, self)
+    Xia::Badges.new(@pgsql, self, log: @log)
   end
 
   def delete

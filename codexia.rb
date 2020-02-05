@@ -53,6 +53,10 @@ configure do
       'client_secret' => '?',
       'encryption_secret' => ''
     },
+    'zold' => {
+      'token' => '?',
+      'keygap' => '?'
+    },
     'sentry' => ''
   }
   config = YAML.safe_load(File.open(File.join(File.dirname(__FILE__), 'config.yml'))) unless ENV['RACK_ENV'] == 'test'
@@ -62,11 +66,12 @@ configure do
       c.release = Xia::VERSION
     end
   end
+  disable :show_exceptions
+  disable :raise_errors
+  enable :logging
   set :bind, '0.0.0.0'
   set :server, :thin
-  set :show_exceptions, false
-  set :raise_errors, false
-  set :dump_errors, false
+  set :dump_errors, ENV['RACK_ENV'] == 'test'
   set :config, config
   set :logging, true
   set :log, Loog::REGULAR
@@ -119,7 +124,7 @@ end
 def the_author
   redirect '/welcome' unless @locals[:author]
   require_relative 'objects/authors'
-  Xia::Authors.new(settings.pgsql).named(@locals[:author][:login].downcase)
+  Xia::Authors.new(settings.pgsql, log: settings.log).named(@locals[:author][:login].downcase)
 end
 
 def iri
@@ -130,3 +135,4 @@ require_relative 'front/front_misc.rb'
 require_relative 'front/front_login.rb'
 require_relative 'front/front_helpers.rb'
 require_relative 'front/front_project.rb'
+require_relative 'front/front_karma.rb'

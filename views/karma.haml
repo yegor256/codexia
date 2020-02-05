@@ -1,0 +1,25 @@
+%form{action: iri.cut('/karma/withdraw'), method: 'POST'}
+  %label Withdraw:
+  %input{type: 'text', name: 'wallet', size: 18, autofocus: true, tabindex: 1, placeholder: 'Zold wallet or invoice'}
+  %input{type: 'text', name: 'points', size: 5, tabindex: 2, placeholder: 'Points'}
+  %button{type: 'submit', tabindex: 3} Send
+
+- if withdrawals.empty?
+  %p
+    You can convert your karma to real cash. In order to do that,
+    create a wallet at
+    %a{href: 'https://wts.zold.io'} WTS
+    and then use the form above to
+    withdraw some or all of your karma. One karma point is equal
+    to 1 USD.
+- else
+  - withdrawals.each do |w|
+    %p
+      %span.item
+        = w[:id]
+      %span.item
+        = w[:wallet]
+      %span.item
+        = w[:zld].to_zld
+      %span.item
+        = RelativeTime.in_words(w[:created])

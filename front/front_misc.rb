@@ -54,7 +54,7 @@ error do
     Raven.capture_exception(e)
     haml(
       :error,
-      layout: :layout,
+      layout: nil,
       locals: merged(
         title: 'error',
         error: "#{e.message}\n\t#{e.backtrace.join("\n\t")}"

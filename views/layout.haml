@@ -39,7 +39,8 @@
                     = '/submit'
               - if defined?(author)
                 %li{title: 'Your karma'}
-                  = format('%+d', the_author.karma)
+                  %a{href: iri.cut('/karma')}
+                    = format('%+d', the_author.karma)
               - if defined?(author)
                 %li
                   %a{href: iri.cut('/logout')}

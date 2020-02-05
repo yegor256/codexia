@@ -30,10 +30,11 @@ class Xia::Review
   attr_reader :id
   attr_reader :project
 
-  def initialize(pgsql, project, id)
+  def initialize(pgsql, project, id, log: Loog::NULL)
     @pgsql = pgsql
     @project = project
     @id = id
+    @log = log
   end
 
   def delete

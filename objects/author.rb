@@ -20,9 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'loog'
 require_relative 'xia'
 require_relative 'urror'
 require_relative 'projects'
+require_relative 'withdrawals'
 
 # One author.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -31,9 +33,14 @@ require_relative 'projects'
 class Xia::Author
   attr_reader :id
 
-  def initialize(pgsql, id)
+  def initialize(pgsql, id, log: Loog::NULL)
     @pgsql = pgsql
     @id = id
+    @log = log
+  end
+
+  def login
+    row['login']
   end
 
   def karma
@@ -62,20 +69,17 @@ class Xia::Author
   end
 
   def projects
-    Xia::Projects.new(@pgsql, self)
+    Xia::Projects.new(@pgsql, self, log: @log)
   end
 
-  def login
-    row['login']
+  def withdrawals
+    Xia::Withdrawals.new(@pgsql, self, log: @log)
   end
 
   private
 
   def row
-    row = @pgsql.exec(
-      'SELECT * FROM author WHERE id=$1',
-      [@id]
-    )[0]
+    row = @pgsql.exec('SELECT * FROM author WHERE id=$1', [@id])[0]
     raise Xia::Urror, "Author @#{@login} not found in the database" if row.nil?
     row
   end

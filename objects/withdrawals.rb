@@ -21,51 +21,47 @@
 # SOFTWARE.
 
 require 'loog'
+require 'zold/wts'
 require_relative 'xia'
-require_relative 'project'
 
-# Projects.
+# Withdrawals.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2020 Yegor Bugayenko
 # License:: MIT
-class Xia::Projects
+class Xia::Withdrawals
   def initialize(pgsql, author, log: Loog::NULL)
     @pgsql = pgsql
     @author = author
     @log = log
   end
 
-  def get(id)
-    Xia::Project.new(@pgsql, @author, id, log: @log)
-  end
-
-  def submit(platform, coordinates)
-    raise Xia::Urror, 'Not enough karma to submit a project' unless @author.karma.positive?
-    id = @pgsql.exec(
-      'INSERT INTO project (platform, coordinates, author) VALUES ($1, $2, $3) RETURNING id',
-      [platform, coordinates, @author.id]
+  # +points+ is the amount of Karma points to pay. Each Karma point will
+  # be converted to 1 USD.
+  def pay(wallet, points, wts, keygap)
+    raise Xia::Urror, 'Not enough karma to pay that much' if @author.karma < points
+    rate = wts.usd_rate
+    zld = (points / rate).round(4)
+    wts.wait(wts.pull)
+    job = wts.pay(keygap, wallet, zld, "#{points} codexia karma points")
+    wts.wait(job)
+    @pgsql.exec(
+      'INSERT INTO withdrawal (author, wallet, zents) VALUES ($1, $2, $3) RETURNING id',
+      [@author.login, wallet, zld.to_i]
     )[0]['id'].to_i
-    project = get(id)
-    project.badges.attach('newbie')
-    project
   end
 
   def recent(limit: 10)
     q = [
-      'SELECT p.*, author.login,',
-      'ARRAY(SELECT text FROM badge WHERE project=p.id) as badges',
-      'FROM project AS p',
-      'JOIN author ON author.id=p.author',
-      'WHERE p.deleted IS NULL',
-      'ORDER BY p.created DESC',
+      'SELECT *',
+      'FROM withdrawal',
+      'ORDER BY created DESC',
       'LIMIT $1'
     ].join(' ')
     @pgsql.exec(q, [limit]).map do |r|
       {
         id: r['id'].to_i,
-        coordinates: r['coordinates'],
-        author: r['login'],
-        badges: r['badges'][1..-2].split(','),
+        zld: Zold::Amount.new(zents: r['zents'].to_i),
+        wallet: r['wallet'],
         created: Time.parse(r['created'])
       }
     end
