@@ -44,7 +44,7 @@ class Xia::Author
   end
 
   def karma
-    return 1_000_000 if login == 'yegor256' || ENV['RACK_ENV'] == 'test'
+    return 1_000_000 if ENV['RACK_ENV'] == 'test'
     queries = [
       [
         +5,
