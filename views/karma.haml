@@ -18,11 +18,15 @@
   - withdrawals.each do |w|
     %p
       %span.item
-        = w[:id]
-      %span.item
+        = "##{w[:id]}"
+      %span.item.monospace
+        = w[:points]
+        pts
+      %span.item.monospace
         = w[:wallet]
-      %span.item
+      %span.item.monospace
         = w[:zld].to_zld
+        ZLD
       %span.item
         = RelativeTime.in_words(w[:created])
 

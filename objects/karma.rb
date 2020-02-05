@@ -79,9 +79,15 @@ class Xia::Karma
     ]
   end
 
-  def points
+  def points(safe: false)
     earned = legend.map do |score, q, _text, _summary|
-      @pgsql.exec("SELECT COUNT(*) FROM (#{q}) AS q", [@author.id])[0]['count'].to_i * score
+      @pgsql.exec(
+        [
+          "SELECT COUNT(*) FROM (#{q}) AS q",
+          safe ? 'WHERE q.created < NOW() - INTERVAL \'2 DAY\'' : ''
+        ].join(' '),
+        [@author.id]
+      )[0]['count'].to_i * score
     end.inject(&:+)
     paid = @pgsql.exec('SELECT SUM(points) FROM withdrawal WHERE author=$1', [@id])[0]['sum'].to_i
     earned += 1000 if @author.vip?

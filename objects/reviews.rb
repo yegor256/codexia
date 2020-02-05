@@ -51,7 +51,7 @@ class Xia::Reviews
   end
 
   def quota
-    10 - @pgsql.exec(
+    5 - @pgsql.exec(
       'SELECT COUNT(*) FROM review WHERE created > NOW() - INTERVAL \'1 DAY\' AND author=$1',
       [@project.author.id]
     )[0]['count'].to_i

@@ -38,7 +38,7 @@ class Xia::Withdrawals
   # +points+ is the amount of Karma points to pay. Each Karma point will
   # be converted to 1 USD.
   def pay(wallet, points, wts, keygap)
-    raise Xia::Urror, 'Not enough karma to pay that much' if @author.karma.points < points
+    raise Xia::Urror, 'Not enough karma to pay that much' if @author.karma.points(safe: true) < points
     rate = wts.usd_rate
     zld = (points / rate).round(4)
     wts.wait(wts.pull)
@@ -46,7 +46,7 @@ class Xia::Withdrawals
     wts.wait(job)
     @pgsql.exec(
       'INSERT INTO withdrawal (author, wallet, points, zents) VALUES ($1, $2, $3, $4) RETURNING id',
-      [@author.id, wallet, points, zld.to_i]
+      [@author.id, wallet, points, Zold::Amount.new(zld: zld).to_i]
     )[0]['id'].to_i
   end
 
