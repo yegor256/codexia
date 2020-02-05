@@ -34,6 +34,8 @@ release:
     echo -e "Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile=/dev/null" > ~/.ssh/config
     git fetch
     sed -i "s/0\.0\.0/${tag}/g" ./version.rb
+    release=$(git rev-parse --short HEAD)
+    sed -i "s/000000/${release}/g" ./version.rb
     git add ./version.rb
     git commit -m 'build number set'
     cp ../config.yml config.yml
