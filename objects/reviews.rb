@@ -42,11 +42,19 @@ class Xia::Reviews
   def post(text)
     raise Xia::Urror, 'Not enough karma to post a review' unless @project.author.karma.points.positive?
     raise Xia::Urror, 'The review is too short' if text.length < 100 && @project.author.login != '-test-'
+    raise Xia::Urror, 'You are reviewing too fast' if quota.negative?
     id = @pgsql.exec(
       'INSERT INTO review (project, author, text) VALUES ($1, $2, $3) RETURNING id',
       [@project.id, @project.author.id, text]
     )[0]['id'].to_i
     get(id)
+  end
+
+  def quota
+    10 - @pgsql.exec(
+      'SELECT COUNT(*) FROM review WHERE created > NOW() - INTERVAL \'1 DAY\' AND author=$1',
+      [@project.author.id]
+    )[0]['count'].to_i
   end
 
   def recent(limit: 10)

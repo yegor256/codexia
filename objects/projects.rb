@@ -41,6 +41,7 @@ class Xia::Projects
 
   def submit(platform, coordinates)
     raise Xia::Urror, 'Not enough karma to submit a project' if @author.karma.points.negative?
+    raise Xia::Urror, 'You are submitting too fast' if quota.negative?
     id = @pgsql.exec(
       'INSERT INTO project (platform, coordinates, author) VALUES ($1, $2, $3) RETURNING id',
       [platform, coordinates, @author.id]
@@ -48,6 +49,13 @@ class Xia::Projects
     project = get(id)
     project.badges.attach('newbie')
     project
+  end
+
+  def quota
+    10 - @pgsql.exec(
+      'SELECT COUNT(*) FROM project WHERE created > NOW() - INTERVAL \'1 DAY\' AND author=$1',
+      [@author.id]
+    )[0]['count'].to_i
   end
 
   def recent(limit: 10)

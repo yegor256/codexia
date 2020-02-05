@@ -53,7 +53,7 @@ class Xia::Karma
         'Review #[id] submitted'
       ],
       [
-        +1,
+        0,
         'SELECT * FROM vote AS t JOIN review ON t.review=review.id WHERE review.author=$1 AND positive=true',
         'each review up-voted',
         'Review #[id] up-voted'
