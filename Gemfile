@@ -32,7 +32,7 @@ gem 'loog', '0.2.1'
 gem 'minitest', '5.11.3', require: false
 gem 'minitest-reporters', '1.3.6', require: false
 gem 'pgtk', '0.7.5'
-gem 'rack', '2.0.6'
+gem 'rack', '2.0.8'
 gem 'rack-ssl', '1.4.1'
 gem 'rack-test', '1.1.0'
 gem 'rake', '12.3.1', require: false
