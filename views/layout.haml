@@ -41,6 +41,9 @@
                 %li{title: 'Your karma'}
                   %a{href: iri.cut('/karma')}
                     = format('%+d', the_author.karma)
+                %li
+                  %a{href: iri.cut('/terms')}
+                    = '/terms'
               - if defined?(author)
                 %li
                   %a{href: iri.cut('/logout')}

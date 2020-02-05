@@ -69,11 +69,11 @@ class Xia::Author
   end
 
   def karma
-    return 1_000_000 if ENV['RACK_ENV'] == 'test'
     earned = legend.map do |score, q, _|
-      @pgsql.query(q, [@id])[0]['count'].to_i * score
+      @pgsql.exec(q, [@id])[0]['count'].to_i * score
     end.inject(&:+)
-    paid = @pgsql.query('SELECT SUM(points) FROM withdrawal WHERE author=$1', [@id])[0]['count'].to_i
+    paid = @pgsql.exec('SELECT SUM(points) FROM withdrawal WHERE author=$1', [@id])[0]['count'].to_i
+    earned += 1000 if ENV['RACK_ENV'] == 'test'
     @karma ||= earned + paid
   end
 

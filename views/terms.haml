@@ -1,13 +1,14 @@
-%p
+%h2
   Terms of Use
 
 %p
-  This is how many points you earn per:
+  This is how many points you earn:
 
 %ul
   - legend.each do |score, _, text|
     %li
       %strong
         = format('%+d', score)
+      per
       = text
 
