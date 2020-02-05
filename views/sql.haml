@@ -24,7 +24,7 @@
               - if v.nil?
                 = '&mdash;'
               - else
-                = largetext(v)
+                &= v
   - if result.count > max
     %p
       There are
