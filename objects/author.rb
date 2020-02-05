@@ -61,9 +61,13 @@ class Xia::Author
       [
         -50,
         'SELECT COUNT(*) FROM review WHERE author=$1 AND deleted IS NOT NULL'
+      ],
+      [
+        -50,
+        'SELECT COUNT(*) FROM review WHERE author=$1 AND deleted IS NOT NULL'
       ]
     ]
-    queries.map do |score, q|
+    @karma ||= queries.map do |score, q|
       @pgsql.query(q, [@id])[0]['count'].to_i * score
     end.inject(&:+)
   end
