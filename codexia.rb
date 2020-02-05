@@ -132,7 +132,7 @@ get '/sql' do
   raise Xia::Urror, 'You are not allowed to see this' unless the_author.vip?
   query = params[:query] || 'SELECT * FROM author LIMIT 16'
   haml :sql, layout: :layout, locals: merged(
-    page_title: '/sql',
+    title: '/sql',
     query: query,
     result: settings.pgsql.exec(query)
   )

@@ -72,7 +72,7 @@ class Xia::Karma
       @pgsql.exec("SELECT COUNT(*) FROM (#{q}) AS q", [@author.id])[0]['count'].to_i * score
     end.inject(&:+)
     paid = @pgsql.exec('SELECT SUM(points) FROM withdrawal WHERE author=$1', [@id])[0]['sum'].to_i
-    earned += 1000 if @author.login == '-test-'
+    earned += 1000 if @author.vip?
     @points ||= earned - paid
   end
 

@@ -65,12 +65,14 @@ class Xia::AppTest < Minitest::Test
   end
 
   def test_200_user_pages
-    name = 'bill'
+    name = '-test-'
     login(name)
     pages = [
       '/recent',
       '/submit',
-      '/terms'
+      '/terms',
+      '/sql',
+      '/sql?query=SELECT%20%2A%20FROM%20author'
     ]
     pages.each do |p|
       get(p)
