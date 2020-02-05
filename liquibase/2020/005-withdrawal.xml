@@ -29,6 +29,7 @@ SOFTWARE.
         id SERIAL PRIMARY KEY,
         author INT NOT NULL REFERENCES author(id),
         wallet VARCHAR(64) NOT NULL,
+        points INT NOT NULL,
         zents BIGINT NOT NULL,
         created TIMESTAMPTZ DEFAULT now() NOT NULL
       );

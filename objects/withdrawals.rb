@@ -45,8 +45,8 @@ class Xia::Withdrawals
     job = wts.pay(keygap, wallet, zld, "#{points} codexia karma points")
     wts.wait(job)
     @pgsql.exec(
-      'INSERT INTO withdrawal (author, wallet, zents) VALUES ($1, $2, $3) RETURNING id',
-      [@author.login, wallet, zld.to_i]
+      'INSERT INTO withdrawal (author, wallet, points, zents) VALUES ($1, $2, $3, $4) RETURNING id',
+      [@author.login, wallet, points, zld.to_i]
     )[0]['id'].to_i
   end
 
@@ -61,6 +61,7 @@ class Xia::Withdrawals
       {
         id: r['id'].to_i,
         zld: Zold::Amount.new(zents: r['zents'].to_i),
+        points: r['points'].to_i,
         wallet: r['wallet'],
         created: Time.parse(r['created'])
       }

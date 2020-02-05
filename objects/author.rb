@@ -63,8 +63,8 @@ class Xia::Author
         'SELECT COUNT(*) FROM review WHERE author=$1 AND deleted IS NOT NULL'
       ],
       [
-        -50,
-        'SELECT COUNT(*) FROM review WHERE author=$1 AND deleted IS NOT NULL'
+        -1,
+        'SELECT SUM(points) FROM withdrawal WHERE author=$1'
       ]
     ]
     @karma ||= queries.map do |score, q|
