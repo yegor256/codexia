@@ -121,6 +121,13 @@ post '/do-submit' do
   flash('/recent', "A new project #{project.id} has been submitted!")
 end
 
+get '/terms' do
+  haml :terms, layout: :layout, locals: merged(
+    title: '/terms',
+    legend: the_author.legend
+  )
+end
+
 def the_author
   redirect '/welcome' unless @locals[:author]
   require_relative 'objects/authors'

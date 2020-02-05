@@ -69,7 +69,8 @@ class Xia::AppTest < Minitest::Test
     login(name)
     pages = [
       '/recent',
-      '/submit'
+      '/submit',
+      '/terms'
     ]
     pages.each do |p|
       get(p)
