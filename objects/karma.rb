@@ -41,26 +41,52 @@ class Xia::Karma
   def legend
     [
       [
-        +5,
+        +1,
         'SELECT * FROM project AS t WHERE author=$1 AND deleted IS NULL',
         'each project submitted',
         'Project #[id]:[coordinates] submitted'
       ],
       [
-        +10,
+        +5,
+        [
+          'SELECT t.* FROM (',
+          '  SELECT *, (SELECT COUNT(*) FROM badge WHERE badge.project=project.id) AS badges',
+          '  FROM project',
+          '  WHERE author=$1 AND deleted IS NULL',
+          ') AS t WHERE badges >= 10'
+        ].join(' '),
+        'each project with more than one badge',
+        'Project #[id]:[coordinates] submitted and got a few badges'
+      ],
+      [
+        +1,
         'SELECT * FROM review AS t WHERE author=$1 AND deleted IS NULL',
         'each review submitted',
         'Review #[id] submitted'
       ],
       [
+        +10,
+        'SELECT * FROM review AS t WHERE author=$1 AND deleted IS NULL',
+        'each review with 10+ upvotes',
+        'Review #[id] has been upvoted 10+ times'
+      ],
+      [
         0,
-        'SELECT * FROM vote AS t JOIN review ON t.review=review.id WHERE review.author=$1 AND positive=true',
+        [
+          'SELECT * FROM vote AS t',
+          'JOIN review ON t.review=review.id',
+          'WHERE review.author=$1 AND positive=true'
+        ].join(' '),
         'each review up-voted',
         'Review #[id] up-voted'
       ],
       [
         -5,
-        'SELECT * FROM vote AS t JOIN review ON t.review=review.id WHERE review.author=$1 AND positive=false',
+        [
+          'SELECT * FROM vote AS t',
+          'JOIN review ON t.review=review.id',
+          'WHERE review.author=$1 AND positive=false'
+        ].join(' '),
         'each review down-voted',
         'Review #[id] down-voted'
       ],
