@@ -42,6 +42,7 @@ class Xia::Projects
   def submit(platform, coordinates)
     raise Xia::Urror, 'Not enough karma to submit a project' if @author.karma.points.negative?
     raise Xia::Urror, 'You are submitting too fast' if quota.negative?
+    raise Xia::Urror, 'Coordinates are wrong' unless %r{^[a-z0-9-]+/[a-z0-9-]+$}.match?(coordinates)
     id = @pgsql.exec(
       'INSERT INTO project (platform, coordinates, author) VALUES ($1, $2, $3) RETURNING id',
       [platform, coordinates, @author.id]
