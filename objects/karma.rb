@@ -44,7 +44,7 @@ class Xia::Karma
         +1,
         'SELECT * FROM project AS t WHERE author=$1 AND deleted IS NULL',
         'each project you submitted',
-        'Project #[id]:[coordinates] submitted'
+        'The project #[id]:[coordinates] you submitted'
       ],
       [
         +5,
@@ -56,19 +56,25 @@ class Xia::Karma
           ') AS t WHERE badges >= 10'
         ].join(' '),
         'each project with more than one badge',
-        'Project #[id]:[coordinates] submitted and got a few badges'
+        'The project #[id]:[coordinates] you submitted got a few badges'
       ],
       [
         +1,
         'SELECT * FROM review AS t WHERE author=$1 AND deleted IS NULL',
         'each review you submitted',
-        'Review #[id] submitted'
+        'The review #[id] you submitted'
       ],
       [
         +10,
-        'SELECT * FROM review AS t WHERE author=$1 AND deleted IS NULL',
+        [
+          'SELECT t.* FROM (',
+          '  SELECT *, (SELECT COUNT(*) FROM vote WHERE review.id=vote.review AND positive=true) AS votes',
+          '  FROM review',
+          '  WHERE author=$1 AND deleted IS NULL',
+          ') AS t WHERE votes >= 10'
+        ].join(' '),
         'each review of yours, which collected 10+ upvotes',
-        'Review #[id] has been upvoted 10+ times'
+        'Your review #[id] was upvoted 10+ times'
       ],
       [
         0,
@@ -78,7 +84,7 @@ class Xia::Karma
           'WHERE review.author=$1 AND positive=true'
         ].join(' '),
         'each review of yours, which was up-voted',
-        'Review #[id] up-voted'
+        'You review #[id] was up-voted'
       ],
       [
         -5,
@@ -88,19 +94,19 @@ class Xia::Karma
           'WHERE review.author=$1 AND positive=false'
         ].join(' '),
         'each review of yours, which was down-voted',
-        'Review #[id] down-voted'
+        'Your review #[id] was down-voted'
       ],
       [
         -25,
         'SELECT * FROM project AS t WHERE author=$1 AND deleted IS NOT NULL',
         'each project you submitted, which was deleted later',
-        'Project #[id]:[coordinates] deleted'
+        'The roject #[id]:[coordinates] you submitted was deleted'
       ],
       [
         -50,
         'SELECT * FROM review AS t WHERE author=$1 AND deleted IS NOT NULL',
         'each review you submitted, which was deleted later',
-        'Review #[id] deleted'
+        'The review #[id] you submitted was deleted'
       ]
     ]
   end

@@ -41,7 +41,7 @@ class Xia::Project
   end
 
   def coordinates
-    row['coordinates']
+    row[:coordinates]
   end
 
   def reviews
@@ -63,11 +63,17 @@ class Xia::Project
   private
 
   def row
-    row = @pgsql.exec(
+    r = @pgsql.exec(
       'SELECT * FROM project WHERE id=$1',
       [@id]
     )[0]
-    raise Xia::Urror, "Project ##{@id} not found in the database" if row.nil?
-    row
+    raise Xia::Urror, "Project ##{@id} not found in the database" if r.nil?
+    {
+      id: r['id'].to_i,
+      platform: r['platform'],
+      coordinates: r['coordinates'],
+      author: r['author'].to_i,
+      created: Time.parse(r['created'])
+    }
   end
 end

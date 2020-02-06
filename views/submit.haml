@@ -7,4 +7,12 @@
     %input{type: 'text', name: 'platform', size: 18, value: 'github', readonly: true}
     %label Where exactly there:
     %input{type: 'text', name: 'coordinates', size: 35, tabindex: 1, autofocus: true, placeholder: 'e.g., yegor256/takes', required: true}
-    %button{type: 'submit'} Add
+    %button{type: 'submit', onclick: 'return confirm("Are you sure?");'} Add
+    %label
+      = succeed ':' do
+        %strong.firebrick
+          ATTENTION
+      Read our
+      %a{href: iri.cut('/terms')}
+        terms of use
+      and don't abuse the platform.
