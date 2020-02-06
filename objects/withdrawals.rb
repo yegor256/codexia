@@ -54,10 +54,11 @@ class Xia::Withdrawals
     q = [
       'SELECT *',
       'FROM withdrawal',
+      'WHERE author=$1',
       'ORDER BY created DESC',
-      'LIMIT $1'
+      'LIMIT $2'
     ].join(' ')
-    @pgsql.exec(q, [limit]).map do |r|
+    @pgsql.exec(q, [@author.id, limit]).map do |r|
       {
         id: r['id'].to_i,
         zld: Zold::Amount.new(zents: r['zents'].to_i),
