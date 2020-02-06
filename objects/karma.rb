@@ -67,7 +67,7 @@ class Xia::Karma
       [
         +10,
         'SELECT * FROM review AS t WHERE author=$1 AND deleted IS NULL',
-        'each review with 10+ upvotes',
+        'each review of yours, which collected 10+ upvotes',
         'Review #[id] has been upvoted 10+ times'
       ],
       [
@@ -77,7 +77,7 @@ class Xia::Karma
           'JOIN review ON t.review=review.id',
           'WHERE review.author=$1 AND positive=true'
         ].join(' '),
-        'each review up-voted',
+        'each review of yours, which was up-voted',
         'Review #[id] up-voted'
       ],
       [
@@ -87,7 +87,7 @@ class Xia::Karma
           'JOIN review ON t.review=review.id',
           'WHERE review.author=$1 AND positive=false'
         ].join(' '),
-        'each review down-voted',
+        'each review of yours, which was down-voted',
         'Review #[id] down-voted'
       ],
       [

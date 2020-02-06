@@ -40,7 +40,7 @@ class Xia::Reviews
   end
 
   def post(text)
-    raise Xia::Urror, 'Not enough karma to post a review' unless @project.author.karma.points.positive?
+    raise Xia::Urror, 'Not enough karma to post a review' if @project.author.karma.points.negative?
     raise Xia::Urror, 'The review is too short' if text.length < 100 && @project.author.login != '-test-'
     raise Xia::Urror, 'You are reviewing too fast' if quota.negative?
     id = @pgsql.exec(
@@ -51,7 +51,7 @@ class Xia::Reviews
   end
 
   def quota
-    5 - @pgsql.exec(
+    (@project.author.vip? ? 1000 : 5) - @pgsql.exec(
       'SELECT COUNT(*) FROM review WHERE created > NOW() - INTERVAL \'1 DAY\' AND author=$1',
       [@project.author.id]
     )[0]['count'].to_i
@@ -64,11 +64,11 @@ class Xia::Reviews
       '(SELECT COUNT(*) FROM vote AS v WHERE v.review=r.id AND positive=false) AS down',
       'FROM review AS r',
       'JOIN author ON author.id=r.author',
-      'WHERE r.deleted IS NULL',
+      'WHERE project=$1 AND r.deleted IS NULL',
       'ORDER BY r.created DESC',
-      'LIMIT $1'
+      'LIMIT $2'
     ].join(' ')
-    @pgsql.exec(q, [limit]).map do |r|
+    @pgsql.exec(q, [@project.id, limit]).map do |r|
       {
         id: r['id'].to_i,
         text: r['text'],

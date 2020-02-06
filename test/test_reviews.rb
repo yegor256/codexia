@@ -35,4 +35,12 @@ class Xia::ReviewsTest < Minitest::Test
     assert(!review.id.nil?)
     assert(!reviews.recent.empty?)
   end
+
+  def test_fetches_only_right_reviews
+    author = Xia::Authors.new(t_pgsql).named('-test-')
+    projects = author.projects
+    project = projects.submit('github', "yegor256/foo#{rand(999)}")
+    project.reviews.post('How are you?')
+    assert_equal(1, project.reviews.recent.size)
+  end
 end
