@@ -43,7 +43,7 @@ class Xia::Karma
       [
         +1,
         'SELECT * FROM project AS t WHERE author=$1 AND deleted IS NULL',
-        'each project submitted',
+        'each project you submitted',
         'Project #[id]:[coordinates] submitted'
       ],
       [
@@ -61,7 +61,7 @@ class Xia::Karma
       [
         +1,
         'SELECT * FROM review AS t WHERE author=$1 AND deleted IS NULL',
-        'each review submitted',
+        'each review you submitted',
         'Review #[id] submitted'
       ],
       [
@@ -93,13 +93,13 @@ class Xia::Karma
       [
         -25,
         'SELECT * FROM project AS t WHERE author=$1 AND deleted IS NOT NULL',
-        'each project deleted',
+        'each project you submitted, which was deleted later',
         'Project #[id]:[coordinates] deleted'
       ],
       [
         -50,
         'SELECT * FROM review AS t WHERE author=$1 AND deleted IS NOT NULL',
-        'each review deleted',
+        'each review you submitted, which was deleted later',
         'Review #[id] deleted'
       ]
     ]
