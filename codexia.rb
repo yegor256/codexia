@@ -38,6 +38,7 @@ require 'telebot'
 require 'time'
 require 'yaml'
 require 'zache'
+require_relative 'objects/tgm'
 require_relative 'objects/urror'
 require_relative 'version'
 
@@ -57,6 +58,10 @@ configure do
     'zold' => {
       'token' => '?',
       'keygap' => '?'
+    },
+    'telegram' => {
+      'token' => '?',
+      'channel' => '?'
     },
     'sentry' => ''
   }
@@ -79,6 +84,7 @@ configure do
   set :server_settings, timeout: 25
   set :zache, Zache.new(dirty: true)
   set :codec, GLogin::Codec.new(config['github']['encryption_secret'])
+  set :tgm, Xia::Tgm.new(settings.config['telegram']['token'], settings.config['telegram']['channel'])
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
     config['github']['client_secret'],
@@ -156,7 +162,11 @@ end
 def the_author
   redirect '/welcome' unless @locals[:author]
   require_relative 'objects/authors'
-  Xia::Authors.new(settings.pgsql, log: settings.log).named(@locals[:author][:login].downcase)
+  Xia::Authors.new(
+    settings.pgsql,
+    log: settings.log,
+    tgm: settings.tgm
+  ).named(@locals[:author][:login].downcase)
 end
 
 def iri

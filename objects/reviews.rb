@@ -23,16 +23,18 @@
 require 'loog'
 require_relative 'xia'
 require_relative 'review'
+require_relative 'tgm'
 
 # Reviews.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2020 Yegor Bugayenko
 # License:: MIT
 class Xia::Reviews
-  def initialize(pgsql, project, log: Loog::NULL)
+  def initialize(pgsql, project, log: Loog::NULL, tgm: Xia::Tgm::Fake.new)
     @pgsql = pgsql
     @project = project
     @log = log
+    @tgm = tgm
   end
 
   def get(id)
@@ -47,6 +49,10 @@ class Xia::Reviews
       'INSERT INTO review (project, author, text) VALUES ($1, $2, $3) RETURNING id',
       [@project.id, @project.author.id, text]
     )[0]['id'].to_i
+    @tgm.post(
+      "New review has been posted for the project `#{@project.coordinates}`",
+      "by [@#{@project.author.login}](https://github.com/#{@project.author.login})"
+    )
     get(id)
   end
 

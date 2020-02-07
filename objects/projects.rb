@@ -23,20 +23,22 @@
 require 'loog'
 require_relative 'xia'
 require_relative 'project'
+require_relative 'tgm'
 
 # Projects.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2020 Yegor Bugayenko
 # License:: MIT
 class Xia::Projects
-  def initialize(pgsql, author, log: Loog::NULL)
+  def initialize(pgsql, author, log: Loog::NULL, tgm: Xia::Tgm::Fake.new)
     @pgsql = pgsql
     @author = author
     @log = log
+    @tgm = tgm
   end
 
   def get(id)
-    Xia::Project.new(@pgsql, @author, id, log: @log)
+    Xia::Project.new(@pgsql, @author, id, log: @log, tgm: @tgm)
   end
 
   def submit(platform, coordinates)
@@ -49,6 +51,10 @@ class Xia::Projects
     )[0]['id'].to_i
     project = get(id)
     project.badges.attach('newbie')
+    @tgm.post(
+      "New #{platform} project `#{coordinates}` has been submitted",
+      "by [@#{@author.login}](https://github.com/#{@author.login})"
+    )
     project
   end
 

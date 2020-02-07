@@ -36,7 +36,7 @@
                   = '/login'
               - if defined?(author)
                 %li
-                  %span.gray{title: 'You can\'t submit because your karma is too low'}
+                  %a{href: iri.cut('/submit'), title: 'Submit a new project'}
                     = '/submit'
               - if defined?(author)
                 %li{title: 'Your karma'}

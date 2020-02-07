@@ -33,11 +33,12 @@ class Xia::Project
   attr_reader :id
   attr_reader :author
 
-  def initialize(pgsql, author, id, log: Loog::NULL)
+  def initialize(pgsql, author, id, log: Loog::NULL, tgm: Xia::Tgm::Fake.new)
     @pgsql = pgsql
     @author = author
     @id = id
     @log = log
+    @tgm = tgm
   end
 
   def coordinates
@@ -45,7 +46,7 @@ class Xia::Project
   end
 
   def reviews
-    Xia::Reviews.new(@pgsql, self, log: @log)
+    Xia::Reviews.new(@pgsql, self, log: @log, tgm: @tgm)
   end
 
   def badges
@@ -57,6 +58,10 @@ class Xia::Project
     @pgsql.exec(
       'UPDATE project SET deleted = $2 WHERE id=$1',
       [@id, "Deleted by @#{@author.login} on #{Time.now.utc.iso8601}"]
+    )
+    @tgm.post(
+      "The project ##{@id} `#{row[:coordinates]}` has been deleted",
+      "by [@#{@author.login}](https://github.com/#{@author.login})"
     )
   end
 

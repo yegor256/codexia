@@ -20,52 +20,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'loog'
+require 'telepost'
 require_relative 'xia'
-require_relative 'urror'
-require_relative 'projects'
-require_relative 'withdrawals'
-require_relative 'karma'
 
-# One author.
+# Telegram gateway.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2020 Yegor Bugayenko
 # License:: MIT
-class Xia::Author
-  attr_reader :id
-
-  def initialize(pgsql, id, log: Loog::NULL, tgm: Xia::Tgm::Fake.new)
-    @pgsql = pgsql
-    @id = id
-    @log = log
-    @tgm = tgm
+class Xia::Tgm
+  # Fake Tgm
+  class Fake
+    def post(*lines)
+      # Nothing to do
+    end
   end
 
-  def vip?
-    login == 'yegor256' || login == '-test-'
+  def initialize(token, channel)
+    @telepost = Telepost.new(token)
+    @channel = channel
   end
 
-  def login
-    row['login']
-  end
-
-  def karma
-    Xia::Karma.new(@pgsql, self, log: @log)
-  end
-
-  def projects
-    Xia::Projects.new(@pgsql, self, log: @log, tgm: @tgm)
-  end
-
-  def withdrawals
-    Xia::Withdrawals.new(@pgsql, self, log: @log, tgm: @tgm)
-  end
-
-  private
-
-  def row
-    row = @pgsql.exec('SELECT * FROM author WHERE id=$1', [@id])[0]
-    raise Xia::Urror, "Author @#{@login} not found in the database" if row.nil?
-    row
+  def post(*lines)
+    @telepost.post(@channel, lines.is_a?(Array) ? lines.join(' ') : lines)
   end
 end

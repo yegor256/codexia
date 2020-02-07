@@ -29,14 +29,15 @@ require_relative 'author'
 # Copyright:: Copyright (c) 2020 Yegor Bugayenko
 # License:: MIT
 class Xia::Authors
-  def initialize(pgsql, log: Loog::NULL)
+  def initialize(pgsql, log: Loog::NULL, tgm: Xia::Tgm::Fake.new)
     @pgsql = pgsql
     @log = log
+    @tgm = tgm
   end
 
   def named(login)
     @pgsql.exec('INSERT INTO author (login) VALUES ($1) ON CONFLICT DO NOTHING', [login])
     id = @pgsql.exec('SELECT id FROM author WHERE login=$1', [login])[0]['id'].to_i
-    Xia::Author.new(@pgsql, id, log: @log)
+    Xia::Author.new(@pgsql, id, log: @log, tgm: @tgm)
   end
 end

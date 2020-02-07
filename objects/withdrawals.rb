@@ -23,16 +23,18 @@
 require 'loog'
 require 'zold/wts'
 require_relative 'xia'
+require_relative 'tgm'
 
 # Withdrawals.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2020 Yegor Bugayenko
 # License:: MIT
 class Xia::Withdrawals
-  def initialize(pgsql, author, log: Loog::NULL)
+  def initialize(pgsql, author, log: Loog::NULL, tgm: Xia::Tgm::Fake.new)
     @pgsql = pgsql
     @author = author
     @log = log
+    @tgm = tgm
   end
 
   # +points+ is the amount of Karma points to pay. Each Karma point will
@@ -49,6 +51,10 @@ class Xia::Withdrawals
       'INSERT INTO withdrawal (author, wallet, points, zents) VALUES ($1, $2, $3, $4) RETURNING id',
       [@author.id, wallet, points, Zold::Amount.new(zld: zld).to_i]
     )[0]['id'].to_i
+    @tgm.post(
+      "New withdrawal for #{points} points (#{zld} ZLD) has been made",
+      "by [@#{@author.login}](https://github.com/#{@author.login})"
+    )
   end
 
   def recent(limit: 10)

@@ -207,6 +207,8 @@ GEM
       faraday
       faraday_middleware
       virtus
+    telepost (0.3.2)
+      telebot (= 0.1.2)
     temple (0.8.2)
     thin (1.7.2)
       daemons (~> 1.0, >= 1.0.9)
@@ -298,7 +300,7 @@ DEPENDENCIES
   sinatra (= 2.0.4)
   sinatra-contrib (= 2.0.4)
   sprockets (= 3.7.2)
-  telebot (= 0.1.2)
+  telepost (>= 0.3.2)
   thin (= 1.7.2)
   xcop (= 0.6)
   zache (>= 0.12.0)
