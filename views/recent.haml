@@ -8,9 +8,7 @@
         &= b
     %br
     %span.smaller.gray
-      %span.item{title: "Author ID: ##{p[:author_id]}"}
-        %img{src: "https://socatar.com/github/#{p[:author]}/192-192", style: 'height: 1em; width: 1em; vertical-align: middle;'}
-        &= p[:author]
+      = partial(:author, locals, id: p[:author_id], login: p[:author])
       %span.item
         = RelativeTime.in_words(p[:created])
       %span.item

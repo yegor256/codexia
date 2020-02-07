@@ -301,6 +301,7 @@ DEPENDENCIES
   telebot (= 0.1.2)
   thin (= 1.7.2)
   xcop (= 0.6)
+  zache (>= 0.12.0)
   zold-ruby-sdk (= 0.2.2)
 
 RUBY VERSION

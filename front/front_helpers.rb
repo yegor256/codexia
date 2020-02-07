@@ -21,19 +21,8 @@
 # SOFTWARE.
 
 helpers do
-  def part(prefix, id)
-    "<a href='#{iri.cut('/ranked').add(q: '+' + id.to_s)}'><code>#{prefix}#{id}</code></a>"
-  end
-
-  def thumb(i)
-    "<img class='#{i[:positive] ? 'up' : 'down'}'/>"
-  end
-
-  def rank(i)
-    rank = i[:rank].to_i
-    css = ''
-    css = 'red' if rank >= 64
-    css = 'green' if rank <= 32
-    "<span class='#{css}'>#{rank}</span>"
+  def partial(name, locals, opts = {})
+    t = settings.zache.get("haml::#{name}") { Haml::Engine.new(File.read("views/_#{name}.haml")) }
+    t.render(self, locals.merge(opts))
   end
 end

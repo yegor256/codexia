@@ -37,6 +37,7 @@ require 'sinatra/cookies'
 require 'telebot'
 require 'time'
 require 'yaml'
+require 'zache'
 require_relative 'objects/urror'
 require_relative 'version'
 
@@ -76,6 +77,7 @@ configure do
   set :logging, true
   set :log, Loog::REGULAR
   set :server_settings, timeout: 25
+  set :zache, Zache.new(dirty: true)
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
     config['github']['client_secret'],

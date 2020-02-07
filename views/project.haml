@@ -16,9 +16,7 @@
 - reviews.each do |r|
   %p
     %span.smaller.gray
-      %span.item{title: "Author ID: ##{r[:author_id]}"}
-        %img{src: "https://socatar.com/github/#{r[:author]}/192-192", style: 'height: 1em; width: 1em; vertical-align: middle;'}
-        &= r[:author]
+      = partial(:author, locals, id: r[:author_id], login: r[:author])
       %span.item
         = RelativeTime.in_words(r[:created])
       %span.item
