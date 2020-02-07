@@ -34,11 +34,11 @@ require_relative 'karma'
 class Xia::Author
   attr_reader :id
 
-  def initialize(pgsql, id, log: Loog::NULL, tgm: Xia::Tgm::Fake.new)
+  def initialize(pgsql, id, log: Loog::NULL, telepost: Telepost::Fake.new)
     @pgsql = pgsql
     @id = id
     @log = log
-    @tgm = tgm
+    @telepost = telepost
   end
 
   def vip?
@@ -54,11 +54,11 @@ class Xia::Author
   end
 
   def projects
-    Xia::Projects.new(@pgsql, self, log: @log, tgm: @tgm)
+    Xia::Projects.new(@pgsql, self, log: @log, telepost: @telepost)
   end
 
   def withdrawals
-    Xia::Withdrawals.new(@pgsql, self, log: @log, tgm: @tgm)
+    Xia::Withdrawals.new(@pgsql, self, log: @log, telepost: @telepost)
   end
 
   private

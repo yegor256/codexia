@@ -50,8 +50,10 @@
                   %a{href: iri.cut('/logout')}
                     = '/logout'
         - if defined?(flash_msg) && !flash_msg.empty?
-          %p{style: 'color:' + flash_color}
-            = flash_msg
+          %nav
+            %ul
+              %li{style: 'color:' + flash_color}
+                = flash_msg
       %article
         = yield
       %footer.smaller.gray

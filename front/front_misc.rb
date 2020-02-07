@@ -49,7 +49,7 @@ error do
   status 503
   e = env['sinatra.error']
   if e.is_a?(Xia::Urror)
-    flash(@locals[:author] ? '/ranked' : '/', e.message, color: 'darkred')
+    flash(@locals[:author] ? '/recent' : '/', e.message, color: 'darkred')
   else
     Raven.capture_exception(e)
     haml(

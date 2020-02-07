@@ -34,11 +34,10 @@ require 'raven'
 require 'relative_time'
 require 'sinatra'
 require 'sinatra/cookies'
-require 'telebot'
+require 'telepost'
 require 'time'
 require 'yaml'
 require 'zache'
-require_relative 'objects/tgm'
 require_relative 'objects/urror'
 require_relative 'version'
 
@@ -84,7 +83,7 @@ configure do
   set :server_settings, timeout: 25
   set :zache, Zache.new(dirty: true)
   set :codec, GLogin::Codec.new(config['github']['encryption_secret'])
-  set :tgm, Xia::Tgm.new(settings.config['telegram']['token'], settings.config['telegram']['channel'])
+  set :telepost, Telepost.new(settings.config['telegram']['token'], chats: [settings.config['telegram']['channel']])
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
     config['github']['client_secret'],
@@ -165,7 +164,7 @@ def the_author
   Xia::Authors.new(
     settings.pgsql,
     log: settings.log,
-    tgm: settings.tgm
+    telepost: settings.telepost
   ).named(@locals[:author][:login].downcase)
 end
 

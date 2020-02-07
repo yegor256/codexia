@@ -23,18 +23,17 @@
 require 'loog'
 require_relative 'xia'
 require_relative 'review'
-require_relative 'tgm'
 
 # Reviews.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2020 Yegor Bugayenko
 # License:: MIT
 class Xia::Reviews
-  def initialize(pgsql, project, log: Loog::NULL, tgm: Xia::Tgm::Fake.new)
+  def initialize(pgsql, project, log: Loog::NULL, telepost: Telepost::Fake.new)
     @pgsql = pgsql
     @project = project
     @log = log
-    @tgm = tgm
+    @telepost = telepost
   end
 
   def get(id)
@@ -43,13 +42,13 @@ class Xia::Reviews
 
   def post(text)
     raise Xia::Urror, 'Not enough karma to post a review' if @project.author.karma.points.negative?
-    raise Xia::Urror, 'The review is too short' if text.length < 100 && @project.author.login != '-test-'
+    raise Xia::Urror, 'The review is too short' if text.length < 60 && @project.author.login != '-test-'
     raise Xia::Urror, 'You are reviewing too fast' if quota.negative?
     id = @pgsql.exec(
       'INSERT INTO review (project, author, text) VALUES ($1, $2, $3) RETURNING id',
       [@project.id, @project.author.id, text]
     )[0]['id'].to_i
-    @tgm.post(
+    @telepost.spam(
       "New review has been posted for the project `#{@project.coordinates}`",
       "by [@#{@project.author.login}](https://github.com/#{@project.author.login})"
     )
