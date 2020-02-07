@@ -53,7 +53,8 @@
           %nav
             %ul
               %li{style: 'color:' + flash_color}
-                = flash_msg
+                %strong
+                  = flash_msg
       %article
         = yield
       %footer.smaller.gray

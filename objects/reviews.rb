@@ -49,7 +49,7 @@ class Xia::Reviews
       [@project.id, @project.author.id, text]
     )[0]['id'].to_i
     @telepost.spam(
-      "New review has been posted for the project `#{@project.coordinates}`",
+      "👍 New review has been posted for the project `#{@project.coordinates}`",
       "by [@#{@project.author.login}](https://github.com/#{@project.author.login})"
     )
     get(id)
