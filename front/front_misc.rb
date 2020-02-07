@@ -64,7 +64,7 @@ error do
 end
 
 def context
-  "#{request.ip} #{request.user_agent} #{Xia::VERSION} #{Time.now.strftime('%Y/%m')}"
+  "#{request.ip} #{Xia::VERSION} #{Time.now.strftime('%Y/%m')}"
 end
 
 def merged(hash = {})

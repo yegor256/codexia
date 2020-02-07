@@ -10,14 +10,14 @@
       &= b
 
 %form{action: iri.cut('/p').append(project.id).append('attach'), method: 'POST'}
-  %input{type: 'text', name: 'text', size: 25, placeholder: 'attach a new badge...'}
+  %input{type: 'text', name: 'text', size: 25, placeholder: 'attach a new badge...', autocomplete: 'off'}
   %button{type: 'submit'} Attach
 
 - reviews.each do |r|
   %p
     %span.smaller.gray
       = partial(:author, locals, id: r[:author_id], login: r[:author])
-      %span.item
+      %span.item{title: "##{r[:id]} on #{r[:created]}"}
         = RelativeTime.in_words(r[:created])
       %span.item
         = r[:up]

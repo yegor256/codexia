@@ -78,6 +78,7 @@ configure do
   set :log, Loog::REGULAR
   set :server_settings, timeout: 25
   set :zache, Zache.new(dirty: true)
+  set :codec, GLogin::Codec.new(config['github']['encryption_secret'])
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
     config['github']['client_secret'],
@@ -112,6 +113,11 @@ get '/recent' do
   )
 end
 
+get '/recent.json' do
+  content_type 'application/json'
+  JSON.pretty_generate(the_author.projects.recent(limit: 25))
+end
+
 get '/submit' do
   haml :submit, layout: :layout, locals: merged(
     title: '/submit'
@@ -127,6 +133,13 @@ get '/terms' do
   haml :terms, layout: :layout, locals: merged(
     title: '/terms',
     legend: the_author.karma.legend
+  )
+end
+
+get '/api' do
+  haml :api, layout: :layout, locals: merged(
+    title: '/api',
+    token: settings.codec.encrypt(the_author.login)
   )
 end
 

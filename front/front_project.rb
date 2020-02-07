@@ -29,6 +29,11 @@ get '/p/{id}' do
   )
 end
 
+get '/p/{id}.json' do
+  content_type 'application/json'
+  JSON.pretty_generate(project.reviews.recent(limit: 25))
+end
+
 get '/p/{id}/delete' do
   project = the_author.projects.get(params[:id].to_i)
   project.delete

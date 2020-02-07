@@ -39,6 +39,15 @@ before '/*' do
       cookies.delete(:glogin)
     end
   end
+  token = (request.env['HTTP_X_CODEXIA_TOKEN'] || '').strip
+  unless token.empty?
+    begin
+      login = settings.codec.decrypt(token)
+      @locals[:author] = { login: login }
+    rescue OpenSSL::Cipher::CipherError
+      raise Xia::Urror, "Invalid token #{token.inspect} for #{login.inspect}, sorry"
+    end
+  end
 end
 
 get '/github-callback' do

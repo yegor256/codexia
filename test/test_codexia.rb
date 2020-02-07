@@ -72,12 +72,18 @@ class Xia::AppTest < Minitest::Test
       '/submit',
       '/terms',
       '/sql',
-      '/sql?query=SELECT%20%2A%20FROM%20author'
+      '/sql?query=SELECT%20%2A%20FROM%20author',
+      '/api'
     ]
     pages.each do |p|
       get(p)
       assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
     end
+  end
+
+  def test_api_submit
+    get('/recent.json', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
   end
 
   private

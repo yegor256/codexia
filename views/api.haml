@@ -1,0 +1,33 @@
+%h2
+  API
+
+%p
+  To connect to us via HTTP, add `X-Codexia-Token` header to your
+  requests, with this value (keep it secret):
+
+%p
+  %code
+    &= token
+
+%p
+  Most important entry points:
+
+%ul
+  %li
+    %code POST /submit?platform=github&coordinates=...
+    to submit a new project
+  %li
+    %code POST /p/123/post?text=...
+    to submit a review
+  %li
+    %code GET /recent.json?page=...
+    to list all visible projects
+  %li
+    %code GET /p/123.json?page=...
+    to list all reviews per project
+
+%p
+  If something doesn't work,
+  %a{href: 'https://github.com/yegor256/codexia'}
+    submit a ticket
+  to GitHub.

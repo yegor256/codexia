@@ -9,7 +9,7 @@
     %br
     %span.smaller.gray
       = partial(:author, locals, id: p[:author_id], login: p[:author])
-      %span.item
+      %span.item{title: "##{p[:id]} on #{p[:created]}"}
         = RelativeTime.in_words(p[:created])
       %span.item
         %a{href: iri.cut('/p').append(p[:id]).append('delete'), onclick: 'return confirm("Are you sure?");'}<
