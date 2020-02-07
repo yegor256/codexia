@@ -79,7 +79,7 @@ class Xia::Karma
       [
         0,
         [
-          'SELECT * FROM vote AS t',
+          'SELECT t.* FROM vote AS t',
           'JOIN review ON t.review=review.id',
           'WHERE review.author=$1 AND positive=true'
         ].join(' '),
@@ -89,7 +89,7 @@ class Xia::Karma
       [
         -5,
         [
-          'SELECT * FROM vote AS t',
+          'SELECT t.* FROM vote AS t',
           'JOIN review ON t.review=review.id',
           'WHERE review.author=$1 AND positive=false'
         ].join(' '),
