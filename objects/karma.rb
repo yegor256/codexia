@@ -135,6 +135,6 @@ class Xia::Karma
           created: Time.parse(r['created'])
         }
       end
-    end.flatten.sort_by { |r| r[:created] }.reverse.take(limit)
+    end.flatten.reject { |r| r[:points].zero? }.sort_by { |r| r[:created] }.reverse.take(limit)
   end
 end

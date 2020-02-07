@@ -36,12 +36,8 @@
                   = '/login'
               - if defined?(author)
                 %li
-                  - if the_author.karma.points.negative?
-                    %span.gray{title: 'You can\'t submit because your karma is too low'}
-                      = '/submit'
-                  - else
-                    %a{href: iri.cut('/submit')}
-                      = '/submit'
+                  %span.gray{title: 'You can\'t submit because your karma is too low'}
+                    = '/submit'
               - if defined?(author)
                 %li{title: 'Your karma'}
                   %a{href: iri.cut('/karma')}

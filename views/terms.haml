@@ -5,12 +5,18 @@
   This is how many points you earn:
 
 %ul
-  - legend.each do |score, _, text|
+  - legend.reject { |r| r[0].zero? }.each do |score, _, text|
     %li
       %strong
         = format('%+d', score)
       per
       = text
+
+%p
+  Each karma point earned is worth $1 (one US dollar) and
+  can instantly be cashed-out via
+  %a{href: 'https://wts.zold.io'} WTS
+  to ZLD currency, which you can instantly convert to Bitcoins.
 
 %p
   We are interested only in projects, which are

@@ -14,9 +14,5 @@
       %span.item
         = RelativeTime.in_words(p[:created])
       %span.item
-        - if the_author.karma.points >= 500
-          %a{href: iri.cut('/p').append(p[:id]).append('delete'), onclick: 'return confirm("Are you sure?");'}
-            = '/delete'
-        - else
-          %span.gray{title: 'You can\'t delete this project because your karma is too low'}
-            = '/delete'
+        %a{href: iri.cut('/p').append(p[:id]).append('delete'), onclick: 'return confirm("Are you sure?");'}<
+          = '/delete'
