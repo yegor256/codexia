@@ -129,8 +129,12 @@ get '/submit' do
   )
 end
 
-post '/do-submit' do
-  project = the_author.projects.submit(params[:platform], params[:coordinates])
+post '/submit' do
+  platform = params[:platform]
+  raise Xia::Urror, '"platform" is a mandatory parameter' if platform.nil?
+  coordinates = params[:coordinates]
+  raise Xia::Urror, '"coordinates" is a mandatory parameter' if candidates.nil?
+  project = the_author.projects.submit(platform, coordinates)
   flash('/recent', "A new project #{project.id} has been submitted!")
 end
 

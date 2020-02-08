@@ -2,8 +2,10 @@
   API
 
 %p
-  To connect to us via HTTP, add `X-Codexia-Token` header to your
-  requests, with this value (keep it secret):
+  To connect to us via HTTP, add
+  %code X-Codexia-Token
+  header to your
+  requests, with this value (keep it secret, it's your authentication token):
 
 %p
   %code
@@ -18,13 +20,13 @@
     to submit a new project
   %li
     %code POST /p/123/post?text=...
-    to submit a review
+    to submit a review, where 123 is the project ID
   %li
     %code GET /recent.json?page=...
     to list all visible projects
   %li
     %code GET /p/123.json?page=...
-    to list all reviews per project
+    to list all reviews per project, where 123 is the project ID
 
 %p
   If something doesn't work,

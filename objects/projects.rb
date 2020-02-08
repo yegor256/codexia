@@ -51,7 +51,7 @@ class Xia::Projects
     project = get(id)
     project.badges.attach('newbie')
     @telepost.spam(
-      "New #{platform} project `#{coordinates}` has been submitted",
+      "😍 New #{platform} project `#{coordinates}` has been submitted",
       "by [@#{@author.login}](https://github.com/#{@author.login})"
     )
     project

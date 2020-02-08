@@ -45,17 +45,17 @@
                 %li
                   %a{href: iri.cut('/terms')}
                     = '/terms'
+                %li
+                  %a{href: iri.cut('/api')}
+                    = '/api'
               - if defined?(author)
                 %li
                   %a{href: iri.cut('/logout')}
                     = '/logout'
-        - if defined?(flash_msg) && !flash_msg.empty?
-          %nav
-            %ul
-              %li{style: 'color:' + flash_color}
-                %strong
-                  = flash_msg
       %article
+        - if defined?(flash_msg) && !flash_msg.empty?
+          %p{style: "background-color:#{flash_color}; color:white; border-radius:2px; padding:0.2em 0.4em;"}
+            = flash_msg
         = yield
       %footer.smaller.gray
         - if defined?(author) && the_author.vip?
