@@ -25,7 +25,7 @@ get '/p/{id}' do
   haml :project, layout: :layout, locals: merged(
     title: project.coordinates,
     project: project,
-    reviews: project.reviews.recent(limit: 25)
+    reviews: project.reviews.recent(limit: 25, show_deleted: the_author.karma.points > 100)
   )
 end
 

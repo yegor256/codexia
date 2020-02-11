@@ -14,15 +14,17 @@
     %kbd
       &= b
 
-%form{action: iri.cut('/p').append(project.id).append('attach'), method: 'POST'}
-  %input{type: 'text', name: 'text', size: 25, placeholder: 'attach a new badge...', autocomplete: 'off'}
-  %button{type: 'submit'} Attach
+- if project.deleted.nil?
+  %form{action: iri.cut('/p').append(project.id).append('attach'), method: 'POST'}
+    %input{type: 'text', name: 'text', size: 25, placeholder: 'attach a new badge...', autocomplete: 'off'}
+    %button{type: 'submit'} Attach
 
 - reviews.each do |r|
   %p
     - if r[:deleted]
       %span.strong.firebrick
         &= r[:deleted]
+      %br
     %span.smaller.gray
       = partial(:author, locals, id: r[:author_id], login: r[:author])
       %span.item{title: "##{r[:id]} on #{r[:created]}", style: (r[:deleted] ? 'text-decoration:line-through' : '')}
@@ -41,16 +43,17 @@
     %br
     &= r[:text].gsub('\n\n', '<br/><br/>')
 
-%form{action: iri.cut('/p').append(project.id).append('post'), method: 'POST'}
-  %fieldset
-    %label What do you think about it?
-    %textarea{name: 'text', style: 'width: 100%; height: 8em;', readonly: the_author.karma.points.negative?}
-    %button{type: 'submit', onclick: 'return confirm("Are you sure?");'} Post
-    %label
-      = succeed ':' do
-        %strong.firebrick
-          ATTENTION
-      Read our
-      %a{href: iri.cut('/terms')}
-        terms of use
-      and don't abuse the platform.
+- if project.deleted.nil?
+  %form{action: iri.cut('/p').append(project.id).append('post'), method: 'POST'}
+    %fieldset
+      %label What do you think about it?
+      %textarea{name: 'text', style: 'width: 100%; height: 8em;', readonly: the_author.karma.points.negative?}
+      %button{type: 'submit', onclick: 'return confirm("Are you sure?");'} Post
+      %label
+        = succeed ':' do
+          %strong.firebrick
+            ATTENTION
+        Read our
+        %a{href: iri.cut('/terms')}
+          terms of use
+        and don't abuse the platform.
