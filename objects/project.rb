@@ -45,6 +45,10 @@ class Xia::Project
     row[:coordinates]
   end
 
+  def deleted
+    row[:deleted]
+  end
+
   def reviews
     Xia::Reviews.new(@pgsql, self, log: @log, telepost: @telepost)
   end

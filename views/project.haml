@@ -5,9 +5,9 @@
     %a{href: "https://github.com/#{project.coordinates}"}<
       %img{src: iri.cut('/github-logo.svg'), style: 'vertical-align: middle; width: 1em;'}
 
-- if !project.row[:deleted].nil?
+- if !project.deleted.nil?
   %p.strong.firebrick
-    &= project.row[:deleted]
+    &= project.deleted
 
 %p
   - project.badges.all.each do |b|
