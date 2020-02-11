@@ -72,3 +72,15 @@ post '/p/{id}/attach' do
   badge = project.badges.attach(params[:text].strip)
   flash(iri.cut('/p').append(project.id), "A new badge ##{badge.id} has been attached to the project ##{project.id}")
 end
+
+get '/p/{id}/meta' do
+  project = the_author.projects.get(params[:id].to_i)
+  content_type 'text/plain'
+  project.meta.value(params[:key].strip)
+end
+
+post '/p/{id}/meta' do
+  project = the_author.projects.get(params[:id].to_i)
+  id = project.meta.set(params[:key].strip, params[:value].strip)
+  flash(iri.cut('/p').append(project.id), "A new meta ##{id} set for the project ##{project.id}")
+end

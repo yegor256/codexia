@@ -24,6 +24,7 @@ require 'loog'
 require_relative 'xia'
 require_relative 'reviews'
 require_relative 'badges'
+require_relative 'meta'
 
 # Project.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -63,6 +64,10 @@ class Xia::Project
 
   def badges
     Xia::Badges.new(@pgsql, self, log: @log)
+  end
+
+  def meta
+    Xia::Meta.new(@pgsql, self, log: @log, telepost: @telepost)
   end
 
   def delete

@@ -20,25 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'loog'
-require 'telepost'
-require_relative 'xia'
-require_relative 'author'
+require 'minitest/autorun'
+require_relative 'test__helper'
+require_relative '../objects/xia'
+require_relative '../objects/authors'
 
-# Authors.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2020 Yegor Bugayenko
-# License:: MIT
-class Xia::Authors
-  def initialize(pgsql, log: Loog::NULL, telepost: Telepost::Fake.new)
-    @pgsql = pgsql
-    @log = log
-    @telepost = telepost
-  end
-
-  def named(login)
-    @pgsql.exec('INSERT INTO author (login) VALUES ($1) ON CONFLICT DO NOTHING', [login])
-    id = @pgsql.exec('SELECT id FROM author WHERE login=$1', [login])[0]['id'].to_i
-    Xia::Author.new(@pgsql, id, log: @log, telepost: @telepost)
+class Xia::MetaTest < Minitest::Test
+  def test_set_and_read
+    author = Xia::Authors.new(t_pgsql).named('-test-')
+    projects = author.projects
+    project = projects.submit('github', "yegor256/takes#{rand(999)}")
+    meta = project.meta
+    id = meta.set('ABC', 'works?')
+    assert(!id.nil?)
+    assert_equal(id, meta.set('ABC', 'second'))
+    assert('second', meta.value('-test-:ABC'))
   end
 end

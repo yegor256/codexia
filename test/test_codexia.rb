@@ -95,6 +95,15 @@ class Xia::AppTest < Minitest::Test
     assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
   end
 
+  def test_meta
+    post('/submit?platform=github&coordinates=hey%2Fdef', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
+    post('/p/1/meta?key=test&value=22', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
+    get('/p/1/meta?key=-test-:test', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
+  end
+
   private
 
   def login(name)
