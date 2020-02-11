@@ -83,7 +83,11 @@ configure do
   set :server_settings, timeout: 25
   set :zache, Zache.new(dirty: true)
   set :codec, GLogin::Codec.new(config['github']['encryption_secret'])
-  set :telepost, Telepost.new(settings.config['telegram']['token'], chats: [settings.config['telegram']['channel']])
+  if ENV['RACK_ENV'] == 'test'
+    set :telepost, Telepost::Fake.new
+  else
+    set :telepost, Telepost.new(settings.config['telegram']['token'], chats: [settings.config['telegram']['channel']])
+  end
   set :glogin, GLogin::Auth.new(
     config['github']['client_id'],
     config['github']['client_secret'],
@@ -133,7 +137,7 @@ post '/submit' do
   platform = params[:platform]
   raise Xia::Urror, '"platform" is a mandatory parameter' if platform.nil?
   coordinates = params[:coordinates]
-  raise Xia::Urror, '"coordinates" is a mandatory parameter' if candidates.nil?
+  raise Xia::Urror, '"coordinates" is a mandatory parameter' if coordinates.nil?
   project = the_author.projects.submit(platform, coordinates)
   flash('/recent', "A new project #{project.id} has been submitted!")
 end
