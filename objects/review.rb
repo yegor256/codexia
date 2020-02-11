@@ -37,6 +37,10 @@ class Xia::Review
     @log = log
   end
 
+  def deleted
+    row[:deleted]
+  end
+
   def delete
     raise Xia::Urror, 'Not enough karma to delete a review' if @project.author.karma.points < 500
     @pgsql.exec(
@@ -56,6 +60,8 @@ class Xia::Review
     raise Xia::Urror, 'Not enough karma to upvote a review' if @project.author.karma.points < 100
     raise Xia::Urror, 'Not enough karma to downvote a review' if !up && @project.author.karma.points < 200
     raise Xia::Urror, 'You are voting too fast' if quota.negative?
+    raise Xia::Urror, 'It is already deleted, can\'t vote' if deleted
+    raise Xia::Urror, 'The project is deleted, can\'t vote' if @project.deleted
     @pgsql.exec(
       [
         'INSERT INTO vote (review, author, positive)',
@@ -65,5 +71,23 @@ class Xia::Review
       ].join(' '),
       [@id, @project.author.id, up]
     )[0]['id'].to_i
+  end
+
+  private
+
+  def row
+    r = @pgsql.exec(
+      'SELECT * FROM review WHERE id=$1',
+      [@id]
+    )[0]
+    raise Xia::Urror, "Project ##{@id} not found in the database" if r.nil?
+    {
+      id: r['id'].to_i,
+      platform: r['platform'],
+      coordinates: r['coordinates'],
+      author: r['author'].to_i,
+      deleted: r['deleted'],
+      created: Time.parse(r['created'])
+    }
   end
 end
