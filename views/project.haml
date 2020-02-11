@@ -1,8 +1,9 @@
 %p
   %span.monospace
-    &= project.coordinates
-  %a{href: "https://github.com/#{project.coordinates}"}
-    %img{src: iri.cut('/github-logo.svg'), style: 'vertical-align: middle; width: 1em;'}
+    %a{href: "https://github.com/#{project.coordinates}"}<
+      &= project.coordinates
+    %a{href: "https://github.com/#{project.coordinates}"}<
+      %img{src: iri.cut('/github-logo.svg'), style: 'vertical-align: middle; width: 1em;'}
 
 - if !project.row[:deleted].nil?
   %p.strong.firebrick
