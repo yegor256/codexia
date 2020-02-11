@@ -118,13 +118,13 @@ end
 get '/recent' do
   haml :recent, layout: :layout, locals: merged(
     title: '/recent',
-    list: the_author.projects.recent(limit: 25)
+    list: the_author.projects.recent(limit: 25, show_deleted: the_author.karma.points > 100)
   )
 end
 
 get '/recent.json' do
   content_type 'application/json'
-  JSON.pretty_generate(the_author.projects.recent(limit: 25))
+  JSON.pretty_generate(the_author.projects.recent(limit: 25, show_deleted: true))
 end
 
 get '/submit' do

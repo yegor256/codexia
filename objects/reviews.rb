@@ -63,14 +63,15 @@ class Xia::Reviews
     )[0]['count'].to_i
   end
 
-  def recent(limit: 10)
+  def recent(limit: 10, show_deleted: false)
     q = [
       'SELECT r.*, author.login, author.id AS author_id,',
       '(SELECT COUNT(*) FROM vote AS v WHERE v.review=r.id AND positive=true) AS up,',
       '(SELECT COUNT(*) FROM vote AS v WHERE v.review=r.id AND positive=false) AS down',
       'FROM review AS r',
       'JOIN author ON author.id=r.author',
-      'WHERE project=$1 AND r.deleted IS NULL',
+      'WHERE project=$1',
+      show_deleted ? '' : ' AND r.deleted IS NULL',
       'ORDER BY r.created DESC',
       'LIMIT $2'
     ].join(' ')
@@ -81,6 +82,7 @@ class Xia::Reviews
         author: r['login'],
         author_id: r['author_id'].to_i,
         up: r['up'].to_i,
+        deleted: r['deleted'],
         down: r['down'].to_i,
         created: Time.parse(r['created'])
       }

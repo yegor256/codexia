@@ -78,6 +78,7 @@ class Xia::Project
       platform: r['platform'],
       coordinates: r['coordinates'],
       author: r['author'].to_i,
+      deleted: r['deleted'],
       created: Time.parse(r['created'])
     }
   end

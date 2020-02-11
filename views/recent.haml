@@ -1,6 +1,6 @@
 - list.each do |p|
   %p
-    %a{href: iri.cut('/p').append(p[:id])}
+    %a{href: iri.cut('/p').append(p[:id]), style: (p[:deleted] ? 'text-decoration:line-through' : '')}
       &= p[:coordinates]
     %br
     - p[:badges].each do |b|

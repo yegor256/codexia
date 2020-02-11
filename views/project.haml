@@ -4,6 +4,10 @@
   %a{href: "https://github.com/#{project.coordinates}"}
     %img{src: iri.cut('/github-logo.svg'), style: 'vertical-align: middle; width: 1em;'}
 
+- if !project.row[:deleted].nil?
+  %p.strong.firebrick
+    &= project.row[:deleted]
+
 %p
   - project.badges.all.each do |b|
     %kbd
@@ -15,9 +19,12 @@
 
 - reviews.each do |r|
   %p
+    - if r[:deleted]
+      %span.strong.firebrick
+        &= r[:deleted]
     %span.smaller.gray
       = partial(:author, locals, id: r[:author_id], login: r[:author])
-      %span.item{title: "##{r[:id]} on #{r[:created]}"}
+      %span.item{title: "##{r[:id]} on #{r[:created]}", style: (r[:deleted] ? 'text-decoration:line-through' : '')}
         = RelativeTime.in_words(r[:created])
       %span.item
         = r[:up]

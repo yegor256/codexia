@@ -45,6 +45,11 @@ class Xia::Projects
     raise Xia::Urror, 'You are submitting too fast' if quota.negative?
     raise Xia::Urror, 'Coordinates are wrong' unless %r{^[a-z0-9-]+/[a-z0-9-]+$}.match?(coordinates)
     raise Xia::Urror, 'The only possible platform now is "github"' unless platform == 'github'
+    row = @pgsql.exec(
+      'SELECT id FROM project WHERE platform=$1 AND coordinates=$2',
+      [platform, coordinates]
+    )[0]
+    return get(row['id'].to_i) unless row.nil?
     id = @pgsql.exec(
       'INSERT INTO project (platform, coordinates, author) VALUES ($1, $2, $3) RETURNING id',
       [platform, coordinates, @author.id]
@@ -65,13 +70,13 @@ class Xia::Projects
     )[0]['count'].to_i
   end
 
-  def recent(limit: 10)
+  def recent(limit: 10, show_deleted: false)
     q = [
       'SELECT p.*, author.login, author.id AS author_id,',
       'ARRAY(SELECT text FROM badge WHERE project=p.id) as badges',
       'FROM project AS p',
       'JOIN author ON author.id=p.author',
-      'WHERE p.deleted IS NULL',
+      show_deleted ? '' : 'WHERE p.deleted IS NULL',
       'ORDER BY p.created DESC',
       'LIMIT $1'
     ].join(' ')
@@ -81,6 +86,7 @@ class Xia::Projects
         coordinates: r['coordinates'],
         author: r['login'],
         author_id: r['author_id'].to_i,
+        deleted: r['deleted'],
         badges: r['badges'][1..-2].split(','),
         created: Time.parse(r['created'])
       }

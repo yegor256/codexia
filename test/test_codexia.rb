@@ -89,6 +89,8 @@ class Xia::AppTest < Minitest::Test
   def test_api_submit
     post('/submit?platform=github&coordinates=abc%2Fdef', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
+    post('/submit?platform=github&coordinates=abc%2Fdef', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
   end
 
   private
