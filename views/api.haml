@@ -27,6 +27,12 @@
   %li
     %code GET /p/123.json?page=...
     to list all reviews per project, where 123 is the project ID
+  %li
+    %code POST /p/123/meta?key=A&value=B
+    to set a single meta for the project
+  %li
+    %code GET /p/123/meta?key=login:A
+    to read a single meta for the project
 
 %p
   If something doesn't work,
