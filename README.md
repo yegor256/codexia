@@ -8,6 +8,7 @@ our funds to the most promising teams and projects.
 
 [![Build Status](https://travis-ci.org/yegor256/codexia.svg?branch=master)](https://travis-ci.org/yegor256/codexia)
 [![codecov](https://codecov.io/gh/yegor256/codexia/branch/master/graph/badge.svg)](https://codecov.io/gh/yegor256/codexia)
+[![Maintainability](https://api.codeclimate.com/v1/badges/b84839a6064ac08ba41c/maintainability)](https://codeclimate.com/github/yegor256/codexia/maintainability)
 
 Read our [Terms of Use](https://www.codexia.org/terms).
 
