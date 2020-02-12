@@ -67,6 +67,7 @@ class Xia::Project
   end
 
   def meta
+    raise Xia::Urror, 'You are not allowed to use meta' unless @author.bot?
     Xia::Meta.new(@pgsql, self, log: @log, telepost: @telepost)
   end
 
