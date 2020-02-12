@@ -6,8 +6,7 @@ interesting emerging open source projects. According to
 the selection made by the community we want to donate
 our funds to the most promising teams and projects.
 
-[![Build Status](https://travis-ci.org/yegor256/codexia.svg?branch=master)](https://travis-ci.org/yegor256/codexia
-)
+[![Build Status](https://travis-ci.org/yegor256/codexia.svg?branch=master)](https://travis-ci.org/yegor256/codexia)
 [![codecov](https://codecov.io/gh/yegor256/codexia/branch/master/graph/badge.svg)](https://codecov.io/gh/yegor256/codexia)
 
 ## How it works?
@@ -32,15 +31,3 @@ enough reputation, for example older reviews may be visible
 only by more reputable users.
 
 Users may _sell_ their reputation to us.
-
-## Build and Run the project (you need postgres locally)
-
-```bash
-npm i
-npm run build
-npm run local
-```
-
-## Check postgresql connection:
-
-[http://localhost:8000/postgres](http://localhost:8000/postgres)

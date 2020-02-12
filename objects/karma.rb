@@ -40,86 +40,86 @@ class Xia::Karma
 
   def legend
     [
-      [
-        +1,
-        'SELECT * FROM project AS t WHERE author=$1 AND deleted IS NULL',
-        'each project you submitted',
-        'The project #[id]:[coordinates] you submitted'
-      ],
-      [
-        +5,
-        [
+      {
+        points: +1,
+        query: 'SELECT * FROM project AS t WHERE author=$1 AND deleted IS NULL',
+        terms: 'each project you submitted',
+        history: 'The project #[id]:[coordinates] you submitted'
+      },
+      {
+        points: +5,
+        query: [
           'SELECT t.* FROM (',
           '  SELECT *, (SELECT COUNT(*) FROM badge WHERE badge.project=project.id) AS badges',
           '  FROM project',
           '  WHERE author=$1 AND deleted IS NULL',
           ') AS t WHERE badges >= 10'
         ].join(' '),
-        'each project with more than one badge',
-        'The project #[id]:[coordinates] you submitted got a few badges'
-      ],
-      [
-        +1,
-        'SELECT * FROM review AS t WHERE author=$1 AND deleted IS NULL',
-        'each review you submitted',
-        'The review #[id] you submitted'
-      ],
-      [
-        +10,
-        [
+        terms: 'each project with more than one badge',
+        history: 'The project #[id]:[coordinates] you submitted got a few badges'
+      },
+      {
+        points: +1,
+        query: 'SELECT * FROM review AS t WHERE author=$1 AND deleted IS NULL',
+        terms: 'each review you submitted',
+        history: 'The review #[id] you submitted'
+      },
+      {
+        points: +10,
+        query: [
           'SELECT t.* FROM (',
           '  SELECT *, (SELECT COUNT(*) FROM vote WHERE review.id=vote.review AND positive=true) AS votes',
           '  FROM review',
           '  WHERE author=$1 AND deleted IS NULL',
           ') AS t WHERE votes >= 10'
         ].join(' '),
-        'each review of yours, which collected 10+ upvotes',
-        'Your review #[id] was upvoted 10+ times'
-      ],
-      [
-        0,
-        [
+        terms: 'each review of yours, which collected 10+ upvotes',
+        history: 'Your review #[id] was upvoted 10+ times'
+      },
+      {
+        points: 0,
+        query: [
           'SELECT t.* FROM vote AS t',
           'JOIN review ON t.review=review.id',
           'WHERE review.author=$1 AND positive=true'
         ].join(' '),
-        'each review of yours, which was up-voted',
-        'You review #[id] was up-voted'
-      ],
-      [
-        -5,
-        [
+        terms: 'each review of yours, which was up-voted',
+        history: 'You review #[id] was up-voted'
+      },
+      {
+        points: -5,
+        query: [
           'SELECT t.* FROM vote AS t',
           'JOIN review ON t.review=review.id',
           'WHERE review.author=$1 AND positive=false'
         ].join(' '),
-        'each review of yours, which was down-voted',
-        'Your review #[id] was down-voted'
-      ],
-      [
-        -25,
-        'SELECT * FROM project AS t WHERE author=$1 AND deleted IS NOT NULL',
-        'each project you submitted, which was deleted later',
-        'The roject #[id]:[coordinates] you submitted was deleted'
-      ],
-      [
-        -50,
-        'SELECT * FROM review AS t WHERE author=$1 AND deleted IS NOT NULL',
-        'each review you submitted, which was deleted later',
-        'The review #[id] you submitted was deleted'
-      ]
+        terms: 'each review of yours, which was down-voted',
+        history: 'Your review #[id] was down-voted'
+      },
+      {
+        points: -25,
+        query: 'SELECT * FROM project AS t WHERE author=$1 AND deleted IS NOT NULL',
+        terms: 'each project you submitted, which was deleted later',
+        history: 'The roject #[id]:[coordinates] you submitted was deleted'
+      },
+      {
+        points: -50,
+        query: 'SELECT * FROM review AS t WHERE author=$1 AND deleted IS NOT NULL',
+        terms: 'each review you submitted, which was deleted later',
+        history: 'The review #[id] you submitted was deleted'
+      }
     ]
   end
 
   def points(safe: false)
-    earned = legend.map do |score, q, _text, _summary|
+    earned = legend.map do |g|
       @pgsql.exec(
         [
-          "SELECT COUNT(*) FROM (#{q}) AS q",
+          "SELECT COUNT(*) FROM (#{g[:query]}) AS q",
           safe ? 'WHERE q.created < NOW() - INTERVAL \'2 DAY\'' : ''
         ].join(' '),
         [@author.id]
-      )[0]['count'].to_i * score
+      )[0]['count'].to_i * g[:points]
     end.inject(&:+)
     paid = @pgsql.exec('SELECT SUM(points) FROM withdrawal WHERE author=$1', [@id])[0]['sum'].to_i
     earned += 1000 if @author.vip?
@@ -127,11 +127,11 @@ class Xia::Karma
   end
 
   def recent(limit: 10)
-    legend.map do |score, q, _text, summary|
-      @pgsql.exec("#{q} ORDER BY t.created DESC LIMIT $2", [@author.id, limit]).map do |r|
+    legend.map do |g|
+      @pgsql.exec("#{g[:query]} ORDER BY t.created DESC LIMIT $2", [@author.id, limit]).map do |r|
         {
-          text: summary.gsub(/\[([a-z]+)\]/) { r[Regexp.last_match[1]] },
-          points: score,
+          text: g[:history].gsub(/\[([a-z]+)\]/) { r[Regexp.last_match[1]] },
+          points: g[:points],
           created: Time.parse(r['created'])
         }
       end

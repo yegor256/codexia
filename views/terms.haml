@@ -5,12 +5,12 @@
   This is how many points you earn:
 
 %ul
-  - legend.reject { |r| r[0].zero? }.each do |score, _, text|
+  - legend.reject { |g| g[:points].zero? }.each do |g|
     %li
       %strong
-        = format('%+d', score)
+        = format('%+d', g[:points])
       per
-      = text
+      = g[:terms]
 
 %p
   Each karma point earned is worth $1 (one US dollar) and
