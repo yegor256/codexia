@@ -5,12 +5,13 @@
     %a{href: "https://github.com/#{project.coordinates}"}<
       %img{src: iri.cut('/github-logo.svg'), style: 'vertical-align: middle; width: 1em;'}
   %br
-  = partial(:author, locals, id: project.author.id, login: project.author.login)
-  %span.item{title: "##{project.id} on #{project.created}"}
-    = RelativeTime.in_words(project.created)
-  %span.item
-    %a{href: iri.cut('/p').append(project.id).append('delete'), onclick: 'return confirm("Are you sure?");'}<
-      = '/delete'
+  %span.gray.smaller
+    = partial(:author, locals, id: project.author.id, login: project.author.login)
+    %span.item{title: "##{project.id} on #{project.created}"}
+      = RelativeTime.in_words(project.created)
+    %span.item
+      %a{href: iri.cut('/p').append(project.id).append('delete'), onclick: 'return confirm("Are you sure?");'}<
+        = '/delete'
 
 - if !project.deleted.nil?
   %p
