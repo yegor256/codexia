@@ -2,7 +2,51 @@
   Terms of Use
 
 %p
-  This is how many points you earn:
+  Any open source
+  %i project
+  can be added to the list.
+
+%p
+  Each project may get either manual or automated
+  %i reviews
+  (via API).
+
+%p
+  A review can be
+  %i voted
+  (up or down) by a user.
+
+%p
+  Users have
+  %i karma
+  points, which depend on
+  1) the amount of votes their reviews collected,
+  2) the amount of reviews they posted, and
+  3) the amount of projects they submitted.
+
+%p
+  Projects may get and lose
+  %i badges
+  according to some rules. For example,
+  if a project has a review which is less than 6 months old and
+  has more than 100 upvotes, the badge
+  %code trending
+  gets attached.
+
+%p
+  Certain
+  %i features
+  may be available only for users with big
+  enough reputation, for example older reviews may be visible
+  only by more reputable users.
+
+%p
+  Users may
+  %i sell
+  their reputation to us.
+
+%p
+  This is how many points a user earns:
 
 %ul
   - legend.reject { |g| g[:points].zero? }.each do |g|
@@ -16,19 +60,19 @@
   Each karma point earned is worth $1 (one US dollar) and
   can instantly be cashed-out via
   %a{href: 'https://wts.zold.io'} WTS
-  to ZLD currency, which you can instantly convert to Bitcoins.
+  to ZLD currency, which can be instantly converted to Bitcoins.
 
 %p
   We are interested only in projects, which are
   1) not yet super popular (less than 1K GitHub stars),
   2) tools for developers,
   3) larger than 10K lines of code.
-  If you submit a project, which doesn't satisfy one of these
-  criteria, it will be deleted.
+  A project, which doesn't satisfy one of these
+  criteria, will be deleted.
 
 %p
   We are interested in detailed reviews, which emphasize
-  pros and cons of projects, from your professional subjective
-  point of view. Your review may be deleted, if it is either
+  pros and cons of projects, from a professional subjective
+  point of view of a user. A review may be deleted, if it is either
   1) too short, 2) too obvious, 3) copied from somewhere,
   or 4) too offensive.
