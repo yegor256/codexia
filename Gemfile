@@ -22,7 +22,7 @@
 source 'https://rubygems.org'
 ruby '2.6.0'
 
-gem 'bundler', '2.0.1'
+gem 'bundler', '2.1.4'
 gem 'codecov', '0.1.14'
 gem 'eslintrb', '2.1.0'
 gem 'glogin', '0.6.0'
