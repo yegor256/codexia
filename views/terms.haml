@@ -6,7 +6,7 @@
 
 %ul
   - legend.reject { |g| g[:points].zero? }.each do |g|
-    %li
+    %li{style: the_author.bot? && g[:points].negative? ? 'text-decoration:line-through' : ''}
       %strong
         = format('%+d', g[:points])
       per

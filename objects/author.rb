@@ -41,8 +41,12 @@ class Xia::Author
     @telepost = telepost
   end
 
+  def bot?
+    ['yegor256', '-test-'].include?(login)
+  end
+
   def vip?
-    login == 'yegor256' || login == '-test-'
+    ['yegor256', '-test-'].include?(login)
   end
 
   def login

@@ -112,7 +112,7 @@ class Xia::Karma
   end
 
   def points(safe: false)
-    earned = legend.map do |g|
+    earned = legend.reject { |g| g[:points].negative? && @author.bot? }.map do |g|
       @pgsql.exec(
         [
           "SELECT COUNT(*) FROM (#{g[:query]}) AS q",

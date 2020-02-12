@@ -13,8 +13,9 @@
       = '/delete'
 
 - if !project.deleted.nil?
-  %p.strong.firebrick
-    &= project.deleted
+  %p
+    %strong.firebrick
+      &= project.deleted
 
 %p
   - project.badges.all.each do |b|
@@ -29,7 +30,7 @@
 - reviews.each do |r|
   %p
     - if r[:deleted]
-      %span.strong.firebrick
+      %strong.firebrick
         &= r[:deleted]
       %br
     %span.smaller.gray

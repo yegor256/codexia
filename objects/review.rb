@@ -50,6 +50,8 @@ class Xia::Review
   end
 
   def quota
+    return 1 if @project.author.bot?
+    return 1 if @project.author.vip?
     10 - @pgsql.exec(
       'SELECT COUNT(*) FROM vote WHERE created > NOW() - INTERVAL \'1 DAY\' AND author=$1',
       [@project.author.id]

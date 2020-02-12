@@ -64,7 +64,9 @@ class Xia::Projects
   end
 
   def quota
-    (@author.vip? ? 1000 : 5) - @pgsql.exec(
+    return 1 if @author.bot?
+    return 1 if @author.vip?
+    5 - @pgsql.exec(
       'SELECT COUNT(*) FROM project WHERE created > NOW() - INTERVAL \'1 DAY\' AND author=$1',
       [@author.id]
     )[0]['count'].to_i

@@ -31,6 +31,10 @@
               - if defined?(author)
                 %span{title: "Author ID: ##{the_author.id}"}
                   = "@#{author[:login]}"
+                  - if the_author.vip?
+                    %span{title: 'You are VIP user'}= '🍏'
+                  - if the_author.bot?
+                    %span{title: 'You are a supervised bot'}= '⚙️'
               - else
                 %a{href: login_link}
                   = '/login'
