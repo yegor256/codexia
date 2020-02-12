@@ -37,6 +37,10 @@ class Xia::Meta
   end
 
   def set(key, value)
+    raise Xia::Urror, 'The value can\'t be empty' if value.empty?
+    raise Xia::Urror, 'The key can\'t be empty' if key.empty?
+    raise Xia::Urror, 'The key may include letters, numbers, and dashes only' unless /^[a-zA-Z0-9-]+$/.match?(key)
+    raise Xia::Urror, 'The value is too large (over 256)' if value.length > 256
     id = @pgsql.exec(
       [
         'INSERT INTO meta (project, author, key, value) VALUES ($1, $2, $3, $4)',
