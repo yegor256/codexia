@@ -82,8 +82,13 @@ class Xia::AppTest < Minitest::Test
   end
 
   def test_api_fetch_json
+    post('/submit?platform=github&coordinates=ff%2Ftt', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    post('/p/1/post?text=hello', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     get('/recent.json', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
+    get('/p/1.json', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
+    assert(!JSON.parse(last_response.body).empty?)
   end
 
   def test_api_submit

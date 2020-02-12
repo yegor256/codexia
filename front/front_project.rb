@@ -20,6 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+get '/p/{id}.json' do
+  project = the_author.projects.get(params[:id].to_i)
+  content_type 'application/json'
+  JSON.pretty_generate(project.reviews.recent(limit: 25))
+end
+
 get '/p/{id}' do
   project = the_author.projects.get(params[:id].to_i)
   haml :project, layout: :layout, locals: merged(
@@ -27,11 +33,6 @@ get '/p/{id}' do
     project: project,
     reviews: project.reviews.recent(limit: 25, show_deleted: the_author.karma.points > 100)
   )
-end
-
-get '/p/{id}.json' do
-  content_type 'application/json'
-  JSON.pretty_generate(project.reviews.recent(limit: 25))
 end
 
 get '/p/{id}/delete' do
