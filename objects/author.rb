@@ -42,7 +42,7 @@ class Xia::Author
   end
 
   def bot?
-    ['yegor256', '-test-', 'cdxbot', 'iakunin-codexia-bot'].include?(login)
+    ['yegor256', '-test-', 'cdxbot', 'iakunin-codexia-bot', 'codexia-hunter'].include?(login)
   end
 
   def vip?
