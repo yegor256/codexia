@@ -78,7 +78,7 @@ class Xia::Project
       [@id, "Deleted by @#{@author.login} on #{Time.now.utc.iso8601}"]
     )
     @telepost.spam(
-      "The project no.#{@id} `#{row[:coordinates]}` has been deleted",
+      "The project no.#{@id} [#{row[:coordinates]}](https://github.com/#{row[:coordinates]}) has been deleted",
       "by [@#{@author.login}](https://github.com/#{@author.login})",
       "(it was earlier submitted by [@#{submitter}](https://github.com/#{submitter}))"
     )

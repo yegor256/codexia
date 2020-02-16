@@ -49,8 +49,8 @@ class Xia::Meta
       [@project.id, @project.author.id, key, value]
     )[0]['id'].to_i
     @telepost.spam(
-      "New meta `#{key}` set for the project",
-      "[`#{@project.coordinates}`](https://www.codexia.org/p/#{@project.id})",
+      "New meta \"`#{key}`\" set for the project",
+      "[#{@project.coordinates}](https://www.codexia.org/p/#{@project.id})",
       "by [@#{@project.author.login}](https://github.com/#{@project.author.login})"
     )
     id
