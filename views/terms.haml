@@ -17,14 +17,6 @@
   (up or down) by a user.
 
 %p
-  Users have
-  %i karma
-  points, which depend on
-  1) the amount of votes their reviews collected,
-  2) the amount of reviews they posted, and
-  3) the amount of projects they submitted.
-
-%p
   Projects may get and lose
   %i badges
   according to some rules. For example,
@@ -41,12 +33,9 @@
   only by more reputable users.
 
 %p
-  Users may
-  %i sell
-  their reputation to us.
-
-%p
-  This is how many points a user earns:
+  Users may earn
+  %i karma
+  points:
 
 %ul
   - legend.reject { |g| g[:points].zero? }.each do |g|
@@ -66,7 +55,8 @@
   We are interested only in projects, which are
   1) not yet super popular (less than 1K GitHub stars),
   2) tools for developers,
-  3) larger than 10K lines of code.
+  3) larger than 10K lines of code, and
+  4) can become a market leader if we help.
   A project, which doesn't satisfy one of these
   criteria, will be deleted.
 
