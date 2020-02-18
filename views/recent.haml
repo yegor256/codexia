@@ -14,3 +14,5 @@
       %span.item
         %a{href: iri.cut('/p').append(p[:id]).append('delete'), onclick: 'return confirm("Are you sure?");'}<
           = '/delete'
+
+= partial(:paging, locals, page: page, list: list)

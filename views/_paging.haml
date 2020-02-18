@@ -1,0 +1,5 @@
+%p
+  - if page.positive?
+    %a.item{href: iri.over(page: page - 1)} Previous page
+  - if list.count == 25
+    %a.item{href: iri.over(page: page + 1)} Next page

@@ -52,12 +52,14 @@
     %br
     &= r[:text].gsub('\n\n', '<br/><br/>')
 
+= partial(:paging, locals, page: page, list: reviews)
+
 - if project.deleted.nil?
   %form{action: iri.cut('/p').append(project.id).append('post'), method: 'POST'}
     %fieldset
       %label What do you think about it?
       %textarea{name: 'text', style: 'width: 100%; height: 8em;', readonly: the_author.karma.points.negative?}
-      %button{type: 'submit', onclick: 'return confirm("Are you sure?");'} Post
+      %button{type: 'submit'} Post
       %label
         = succeed ':' do
           %strong.firebrick

@@ -116,11 +116,13 @@ get '/welcome' do
 end
 
 get '/recent' do
+  page = (params[:page] || '0').strip.to_i
   haml :recent, layout: :layout, locals: merged(
     title: '/recent',
+    page: page,
     list: the_author.projects.recent(
       limit: 25,
-      offset: (params[:page] || '0').strip.to_i * 25,
+      offset: page * 25,
       show_deleted: the_author.karma.points > 100
     )
   )
