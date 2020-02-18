@@ -23,7 +23,12 @@
 get '/p/{id}.json' do
   project = the_author.projects.get(params[:id].to_i)
   content_type 'application/json'
-  JSON.pretty_generate(project.reviews.recent(limit: 25))
+  JSON.pretty_generate(
+    project.reviews.recent(
+      limit: 25,
+      offset: (params[:page] || '0').strip.to_i * 25
+    )
+  )
 end
 
 get '/p/{id}' do
@@ -31,7 +36,11 @@ get '/p/{id}' do
   haml :project, layout: :layout, locals: merged(
     title: project.coordinates,
     project: project,
-    reviews: project.reviews.recent(limit: 25, show_deleted: the_author.karma.points > 100)
+    reviews: project.reviews.recent(
+      limit: 25,
+      offset: (params[:page] || '0').strip.to_i * 25,
+      show_deleted: the_author.karma.points > 100
+    )
   )
 end
 

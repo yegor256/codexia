@@ -75,7 +75,7 @@ class Xia::Projects
     )[0]['count'].to_i
   end
 
-  def recent(limit: 10, show_deleted: false)
+  def recent(limit: 10, offset: 0, show_deleted: false)
     q = [
       'SELECT p.*, author.login, author.id AS author_id,',
       'ARRAY(SELECT text FROM badge WHERE project=p.id) as badges',
@@ -83,9 +83,9 @@ class Xia::Projects
       'JOIN author ON author.id=p.author',
       show_deleted ? '' : 'WHERE p.deleted IS NULL',
       'ORDER BY p.created DESC',
-      'LIMIT $1'
+      'LIMIT $1 OFFSET $2'
     ].join(' ')
-    @pgsql.exec(q, [limit]).map do |r|
+    @pgsql.exec(q, [limit, offset]).map do |r|
       {
         id: r['id'].to_i,
         coordinates: r['coordinates'],

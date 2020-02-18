@@ -66,7 +66,7 @@ class Xia::Reviews
     )[0]['count'].to_i
   end
 
-  def recent(limit: 10, show_deleted: false)
+  def recent(limit: 10, offset: 0, show_deleted: false)
     q = [
       'SELECT r.*, author.login, author.id AS author_id,',
       '(SELECT COUNT(*) FROM vote AS v WHERE v.review=r.id AND positive=true) AS up,',
@@ -76,9 +76,9 @@ class Xia::Reviews
       'WHERE project=$1',
       show_deleted ? '' : ' AND r.deleted IS NULL',
       'ORDER BY r.created DESC',
-      'LIMIT $2'
+      'LIMIT $2 OFFSET $3'
     ].join(' ')
-    @pgsql.exec(q, [@project.id, limit]).map do |r|
+    @pgsql.exec(q, [@project.id, limit, offset]).map do |r|
       {
         id: r['id'].to_i,
         text: r['text'],
