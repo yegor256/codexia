@@ -13,12 +13,12 @@
     %script{src: 'https://code.jquery.com/jquery-3.3.1.min.js'}
     :css
       body { padding: 1em; }
-      section { margin-left: 0; width: 700px; }
+      section { width: 700px; }
       article { border: 0 }
       header, article, footer { padding: 1em; }
-      nav ul { text-align: left; margin-bottom: 0.1em; }
+      nav ul { margin-bottom: 0.1em; }
       .item { margin-right: 1em; }
-      .logo { width: 1em; height: 1em; vertical-align: middle; }
+      .logo { width: 32px; height: 32px; vertical-align: middle; }
   %body
     %section
       %header
@@ -27,15 +27,21 @@
             %li
               %a{href: url('/')}
                 %img.logo{src: iri.cut('/logo.svg'), alt: 'Logo'}
-            %li
-              - if defined?(author)
+          - if defined?(author)
+            %ul
+              %li
                 %span{title: "Author ID: ##{the_author.id}"}
                   = "@#{author[:login]}"
                   - if the_author.vip?
                     %span{title: 'You are VIP user'}= '🍏'
                   - if the_author.bot?
                     %span{title: 'You are a supervised bot'}= '⚙️'
-              - else
+              %li{title: 'Your karma'}
+                %a{href: iri.cut('/karma')}
+                  = format('%+d', the_author.karma.points)
+          %ul
+            %li
+              - unless defined?(author)
                 %a{href: login_link}
                   = '/login'
               - if defined?(author)
@@ -43,9 +49,6 @@
                   %a{href: iri.cut('/submit'), title: 'Submit a new project'}
                     = '/submit'
               - if defined?(author)
-                %li{title: 'Your karma'}
-                  %a{href: iri.cut('/karma')}
-                    = format('%+d', the_author.karma.points)
                 %li
                   %a{href: iri.cut('/terms')}
                     = '/terms'
