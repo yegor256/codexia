@@ -4,6 +4,11 @@
   %input{type: 'text', name: 'points', size: 5, tabindex: 2, placeholder: 'Points'}
   %button{type: 'submit', tabindex: 3} Send
 
+%p
+  You can withdraw up to
+  = the_author.karma.points(safe: true)
+  points.
+
 - if withdrawals.empty?
   %p
     You can convert your karma to real cash. In order to do that,
