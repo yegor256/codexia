@@ -40,7 +40,6 @@ class Xia::Withdrawals
   # be converted to 1 USD.
   def pay(wallet, points, wts, keygap)
     raise Xia::Urror, 'Not enough karma to pay that much' if @author.karma.points(safe: true) < points
-    raise Xia::Urror, 'You need to have more than 100 points to cash out' if @author.karma.points(safe: true) < 100
     rate = wts.usd_rate
     zld = (points / rate).round(4)
     # wts.wait(wts.pull)
