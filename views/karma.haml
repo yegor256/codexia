@@ -5,9 +5,13 @@
   %button{type: 'submit', tabindex: 3} Send
 
 %p
-  You can withdraw up to
-  = the_author.karma.points(safe: true)
-  points.
+  - safe = the_author.karma.points(safe: true)
+  - if safe.positive?
+    You can withdraw up to
+    = the_author.karma.points(safe: true)
+    points.
+  - else
+    You can't withdraw anything at the moment.
 
 - if withdrawals.empty?
   %p
