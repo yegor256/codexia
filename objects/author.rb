@@ -65,6 +65,13 @@ class Xia::Author
     Xia::Withdrawals.new(@pgsql, self, log: @log, telepost: @telepost)
   end
 
+  def token(codec)
+    loop do
+      t = codec.encrypt(login)
+      return t if t.length == 44 || t == login
+    end
+  end
+
   private
 
   def row

@@ -164,7 +164,7 @@ end
 get '/api' do
   haml :api, layout: :layout, locals: merged(
     title: '/api',
-    token: settings.codec.encrypt(the_author.login)
+    token: the_author.token(settings.codec)
   )
 end
 

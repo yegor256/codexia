@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 require 'minitest/autorun'
+require 'glogin'
 require_relative 'test__helper'
 require_relative '../objects/xia'
 require_relative '../objects/authors'
@@ -30,5 +31,12 @@ class Xia::AuthorTest < Minitest::Test
     authors = Xia::Authors.new(t_pgsql)
     author = authors.named('-test-')
     assert(!author.id.nil?)
+  end
+
+  def test_generates_token
+    authors = Xia::Authors.new(t_pgsql)
+    author = authors.named('te')
+    codec = GLogin::Codec.new('the-secret')
+    assert_equal(44, author.token(codec).length)
   end
 end
