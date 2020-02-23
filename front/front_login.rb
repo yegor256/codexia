@@ -59,7 +59,7 @@ get '/github-callback' do
     settings.config['github']['encryption_secret'],
     context
   ).to_s
-  flash('/', "You have been logged in as #{u[:glogin]}")
+  flash('/', "You have been logged in as #{u[:login]}")
 end
 
 get '/logout' do
