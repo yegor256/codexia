@@ -43,7 +43,7 @@ class Xia::Projects
   def submit(platform, coordinates)
     raise Xia::Urror, 'Not enough karma to submit a project' if @author.karma.points.negative?
     raise Xia::Urror, 'You are submitting too fast' if quota.negative?
-    unless %r{^[a-z0-9-]+/[a-z0-9\-_]+$}.match?(coordinates)
+    unless %r{^[A-Za-z0-9\-\.]+/[A-Za-z0-9\-_\.]+$}.match?(coordinates)
       raise Xia::Urror, "Coordinates #{coordinates.inspect} are wrong"
     end
     raise Xia::Urror, 'The only possible platform now is "github"' unless platform == 'github'
