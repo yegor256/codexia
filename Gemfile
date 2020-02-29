@@ -35,7 +35,7 @@ gem 'pgtk', '0.7.5'
 gem 'rack', '2.0.6'
 gem 'rack-ssl', '1.4.1'
 gem 'rack-test', '1.1.0'
-gem 'rake', '12.3.1', require: false
+gem 'rake', '12.3.3', require: false
 gem 'relative_time', '1.1.0'
 gem 'rerun', '0.13.0', require: false
 gem 'rspec-rails', '3.8.1', require: false
