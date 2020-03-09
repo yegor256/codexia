@@ -32,7 +32,7 @@ class Xia::KarmaTest < Minitest::Test
     author = authors.named(login)
     project = author.projects.submit('github', "yegor256/takes#{rand(999)}")
     reviews = project.reviews
-    reviews.post('How are you?')
+    reviews.post('How are you?', 'hey')
     karma = authors.named(login).karma.points
     assert(karma.positive?, "The karma is #{karma}")
     assert(!authors.named(login).karma.points(safe: true).nil?)

@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'digest'
+
 get '/p/{id}.json' do
   project = the_author.projects.get(params[:id].to_i)
   content_type 'application/json'
@@ -76,7 +78,9 @@ end
 
 post '/p/{id}/post' do
   project = the_author.projects.get(params[:id].to_i)
-  review = project.reviews.post(params[:text].strip)
+  text = params[:text].strip
+  hash = params[:hash] || Digest::MD5.hexdigest(text)
+  review = project.reviews.post(text, hash.strip)
   flash(iri.cut('/p').append(project.id), "A new review ##{review.id} has been posted to the project ##{project.id}")
 end
 

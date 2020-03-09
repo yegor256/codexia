@@ -40,13 +40,14 @@ class Xia::Reviews
     Xia::Review.new(@pgsql, @project, id, log: @log)
   end
 
-  def post(text)
+  def post(text, hash)
     raise Xia::Urror, 'Not enough karma to post a review' if @project.author.karma.points.negative?
     raise Xia::Urror, 'The review is too short' if text.length < 60 && @project.author.login != '-test-'
     raise Xia::Urror, 'You are reviewing too fast' if quota.negative?
+    raise Xia::Urror, 'Hash can\'t be empty' if hash.empty?
     id = @pgsql.exec(
-      'INSERT INTO review (project, author, text) VALUES ($1, $2, $3) RETURNING id',
-      [@project.id, @project.author.id, text]
+      'INSERT INTO review (project, author, text, hash) VALUES ($1, $2, $3, $4) RETURNING id',
+      [@project.id, @project.author.id, text, hash]
     )[0]['id'].to_i
     @telepost.spam(
       "👍 New review no.#{id} has been posted for the project",
