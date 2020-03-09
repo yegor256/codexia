@@ -9,14 +9,11 @@ assets:
   id_rsa.pub: yegor256/home#assets/heroku-key.pub
 install: |-
   export PATH=$PATH:/usr/lib/postgresql/10/bin
-  sudo apt-get -y update
-  sudo apt-get -y install libpq-dev
-  sudo rvm install ruby-2.6.0
-  rvm use 2.6.0
-  sudo gem install pdd -v 0.20.5
+  apt-get -y update
+  apt-get -y install libpq-dev
   git config --global user.email "server@codexia.org"
   git config --global user.name "codexia.org"
-  sudo gem update bundler
+  gem update bundler
 release:
   sensitive:
     - config.yml
