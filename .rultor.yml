@@ -1,5 +1,5 @@
 docker:
-  image: yegor256/rultor-image:1.1
+  image: yegor256/rultor-image:1.2
 readers:
   - "urn:github:526301"
 assets:
