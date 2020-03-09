@@ -19,8 +19,12 @@
     %code POST /submit?platform=github&coordinates=...
     to submit a new project
   %li
-    %code POST /p/123/post?text=...
-    to submit a review, where 123 is the project ID
+    %code POST /p/123/post?text=...&hash=...
+    to submit a review, where 123 is the project ID,
+    %code text
+    is the text to post and
+    %code hash
+    is anything you like, which is unique per project
   %li
     %code GET /recent.json?page=...
     to list all visible projects
