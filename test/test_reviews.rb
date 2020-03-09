@@ -43,4 +43,14 @@ class Xia::ReviewsTest < Minitest::Test
     project.reviews.post('How are you?', 'abc')
     assert_equal(1, project.reviews.recent.size)
   end
+
+  def test_rejects_duplicate_markers
+    author = Xia::Authors.new(t_pgsql).named('-test-')
+    projects = author.projects
+    project = projects.submit('github', "yegor256/foo#{rand(999)}")
+    project.reviews.post('The test', 'hash')
+    assert_raises do
+      project.reviews.post('Another test', 'hash')
+    end
+  end
 end
