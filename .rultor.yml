@@ -13,7 +13,7 @@ install: |-
   git config --global user.email "server@codexia.org"
   git config --global user.name "codexia.org"
   gem update bundler
-  sudo bundle install --no-color
+  bundle install --no-color
 release:
   sensitive:
     - config.yml
