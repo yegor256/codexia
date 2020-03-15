@@ -57,17 +57,23 @@
 - if project.deleted.nil?
   %form{action: iri.cut('/p').append(project.id).append('post'), method: 'POST'}
     %fieldset
-      %label What do you think about it?
-      %textarea{name: 'text', style: 'width: 100%; height: 8em;', readonly: the_author.karma.points.negative?}
-      %button{type: 'submit'} Post
       %label
-        = succeed ':' do
-          %strong.firebrick
-            ATTENTION
-        Read our
-        %a{href: iri.cut('/terms')}
-          terms of use
-        and don't abuse the platform.
+        What do you think about it
+        (in
+        = succeed ',' do
+          %a{href: 'https://daringfireball.net/projects/markdown/syntax'} Markdown
+        please)?
+      %textarea{name: 'text', style: 'width: 100%; height: 8em;', readonly: the_author.karma.points.negative?}
+      %span
+        %button{type: 'submit'} Post
+        %label
+          = succeed ':' do
+            %strong.firebrick
+              ATTENTION
+          Read our
+          %a{href: iri.cut('/terms')}
+            terms of use
+          and don't abuse the platform.
 
 - if project.deleted.nil? && the_author.bot?
   - metas = project.meta.all
