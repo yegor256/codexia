@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 require 'loog'
+require 'redcarpet'
 require_relative 'xia'
 require_relative 'review'
 
@@ -69,6 +70,7 @@ class Xia::Reviews
   end
 
   def recent(limit: 10, offset: 0, show_deleted: false)
+    carpet = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
     q = [
       'SELECT r.*, author.login, author.id AS author_id,',
       '(SELECT COUNT(*) FROM vote AS v WHERE v.review=r.id AND positive=true) AS up,',
@@ -84,6 +86,7 @@ class Xia::Reviews
       {
         id: r['id'].to_i,
         text: r['text'],
+        html: carpet.render(r['text']),
         author: r['login'],
         author_id: r['author_id'].to_i,
         up: r['up'].to_i,
