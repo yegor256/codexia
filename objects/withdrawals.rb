@@ -41,7 +41,7 @@ class Xia::Withdrawals
   def pay(wallet, points, wts, keygap)
     raise Xia::Urror, 'Not enough karma to pay that much' if @author.karma.points(safe: true) < points
     rate = wts.usd_rate
-    zld = (points / rate).round(4)
+    zld = (points / rate).round(4).to_f
     # wts.wait(wts.pull)
     wts.pay(keygap, wallet, zld, "#{points} codexia karma points")
     # wts.wait(job)

@@ -121,7 +121,7 @@ class Xia::Karma
         [@author.id]
       )[0]['count'].to_i * g[:points]
     end.inject(&:+)
-    paid = @pgsql.exec('SELECT SUM(points) FROM withdrawal WHERE author=$1', [@id])[0]['sum'].to_i
+    paid = @pgsql.exec('SELECT SUM(points) FROM withdrawal WHERE author=$1', [@author.id])[0]['sum'].to_i
     earned += 1000 if @author.vip?
     earned -= 100 if safe
     @points ||= earned - paid

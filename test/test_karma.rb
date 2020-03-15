@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 require 'minitest/autorun'
+require 'zold/wts'
 require_relative 'test__helper'
 require_relative '../objects/xia'
 require_relative '../objects/authors'
@@ -44,5 +45,17 @@ class Xia::KarmaTest < Minitest::Test
     author = authors.named(login)
     author.projects.submit('github', "yegor256/takes#{rand(999)}")
     assert(!author.karma.recent.empty?)
+  end
+
+  def test_takes_withdrawals_into_account
+    authors = Xia::Authors.new(t_pgsql)
+    login = '-test-'
+    author = authors.named(login)
+    author.projects.submit('github', "yegor256/takes#{rand(999)}")
+    before = author.karma.points
+    puts before
+    wts = Zold::WTS::Fake.new
+    author.withdrawals.pay('0000111122223333', 1, wts, 'keygap')
+    assert(author.karma.points != before)
   end
 end
