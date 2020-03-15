@@ -50,7 +50,7 @@
         %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('delete'), onclick: 'return confirm("Are you sure?");'}<
           = '/delete'
     %br
-    &= r[:text].gsub('\n\n', '<br/><br/>')
+    = r[:html]
 
 = partial(:paging, locals, page: page, list: reviews)
 
