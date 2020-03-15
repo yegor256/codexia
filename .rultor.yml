@@ -11,7 +11,7 @@ install: |-
   git config --global user.email "server@codexia.org"
   git config --global user.name "codexia.org"
   sudo gem update bundler
-  sudo bundle install --no-color
+  sudo bundle install --no-color "--gemfile=$(pwd)/Gemfile"
 release:
   sensitive:
     - config.yml
