@@ -36,6 +36,17 @@ class Xia::ReviewsTest < Minitest::Test
     assert(!reviews.recent.empty?)
   end
 
+  def test_rejects_review_for_deleted_project
+    author = Xia::Authors.new(t_pgsql).named('-test-')
+    projects = author.projects
+    project = projects.submit('github', "yegor256/takes#{rand(999)}")
+    project.delete
+    reviews = project.reviews
+    assert_raises(Xia::Urror) do
+      reviews.post('How are you?', '--')
+    end
+  end
+
   def test_fetches_only_right_reviews
     author = Xia::Authors.new(t_pgsql).named('-test-')
     projects = author.projects

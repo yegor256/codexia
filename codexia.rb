@@ -151,7 +151,7 @@ post '/submit' do
   coordinates = params[:coordinates]
   raise Xia::Urror, '"coordinates" is a mandatory parameter' if coordinates.nil?
   project = the_author.projects.submit(platform, coordinates)
-  flash('/recent', "A new project #{project.id} has been submitted!")
+  flash(iri.cut('/p').append(project.id), "A new project #{project.id} has been submitted!")
 end
 
 get '/terms' do

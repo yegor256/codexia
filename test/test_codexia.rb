@@ -82,11 +82,13 @@ class Xia::AppTest < Minitest::Test
   end
 
   def test_api_fetch_json
-    post('/submit?platform=github&coordinates=ff%2Ftt', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
-    post('/p/1/post?text=hello', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    post('/submit?platform=github&coordinates=ff%2Ftt09', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
+    id = last_response.header['Location'].gsub(%r{^.*/p/(\d+)$}, '\1')
+    post("/p/#{id}/post?text=hello", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     get('/recent.json', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
-    get('/p/1.json', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    get("/p/#{id}.json", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
     assert(!JSON.parse(last_response.body).empty?)
   end
@@ -96,16 +98,18 @@ class Xia::AppTest < Minitest::Test
     assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
     post('/submit?platform=github&coordinates=abc%2Fdef', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
-    get('/p/1', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    id = last_response.header['Location'].gsub(%r{^.*/p/(\d+)$}, '\1')
+    get("/p/#{id}", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
   end
 
   def test_meta
     post('/submit?platform=github&coordinates=hey%2Fdef', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
-    post('/p/1/meta?key=test&value=22', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    id = last_response.header['Location'].gsub(%r{^.*/p/(\d+)$}, '\1')
+    post("/p/#{id}/meta?key=test&value=22", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
-    get('/p/1/meta?key=-test-:test', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    get("/p/#{id}/meta?key=-test-:test", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
   end
 
