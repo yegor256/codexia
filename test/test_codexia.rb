@@ -111,9 +111,9 @@ class Xia::AppTest < Minitest::Test
     id = last_response.header['Location'].gsub(%r{^.*/p/(\d+)$}, '\1')
     get("/p/#{id}", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
-    post("/p/#{id}/post?text=hello", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    post("/p/#{id}/post?text=hello&hash=123", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
-    post("/p/#{id}/post?text=hello", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    post("/p/#{id}/post?text=hello&hash=123", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
   end
 
