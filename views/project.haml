@@ -29,69 +29,72 @@
     %button{type: 'submit'} Attach
 
 - reviews.each do |r|
-  %p
-    - if r[:deleted]
-      %strong.firebrick
-        &= r[:deleted]
-      %br
-    %span.smaller.gray
-      = partial(:author, locals, id: r[:author_id], login: r[:author])
-      %span.item{title: "##{r[:id]} on #{r[:created]}", style: (r[:deleted] ? 'text-decoration:line-through' : '')}
-        = RelativeTime.in_words(r[:created])
-      %span.item
-        = r[:up]
-        %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('up')}<
-          = '/up'
-      %span.item
-        = r[:down]
-        %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('down')}<
-          = '/down'
-      %span.item
-        %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('delete'), onclick: 'return confirm("Are you sure?");'}<
-          = '/delete'
-  = r[:html]
+  %div.block{style: 'border-left: 2px solid lightgray; padding-left: 1em;'}
+    %p{style: 'margin-bottom: 1em;'}
+      - if r[:deleted]
+        %strong.firebrick
+          &= r[:deleted]
+        %br
+      %span.smaller.gray
+        = partial(:author, locals, id: r[:author_id], login: r[:author])
+        %span.item{title: "##{r[:id]} on #{r[:created]}", style: (r[:deleted] ? 'text-decoration:line-through' : '')}
+          = RelativeTime.in_words(r[:created])
+        %span.item
+          = r[:up]
+          %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('up')}<
+            = '/up'
+        %span.item
+          = r[:down]
+          %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('down')}<
+            = '/down'
+        %span.item
+          %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('delete'), onclick: 'return confirm("Are you sure?");'}<
+            = '/delete'
+    = r[:html]
 
 = partial(:paging, locals, page: page, list: reviews)
 
 - if project.deleted.nil?
-  %form{action: iri.cut('/p').append(project.id).append('post'), method: 'POST'}
-    %fieldset
-      %label
-        What do you think about it
-        (in
-        = succeed ',' do
-          %a{href: 'https://daringfireball.net/projects/markdown/syntax'} Markdown
-        please)?
-      %textarea{name: 'text', style: 'width: 100%; height: 8em;', readonly: the_author.karma.points.negative?}
-      %span
-        %button{type: 'submit'} Post
+  %div.block
+    %form{action: iri.cut('/p').append(project.id).append('post'), method: 'POST'}
+      %fieldset
         %label
-          = succeed ':' do
-            %strong.firebrick ATTENTION
-          Read our
-          %a{href: iri.cut('/terms')}
-            terms of use
-          and don't abuse the platform.
+          What do you think about it
+          (in
+          = succeed ',' do
+            %a{href: 'https://daringfireball.net/projects/markdown/syntax'} Markdown
+          please)?
+        %textarea{name: 'text', style: 'width: 100%; height: 8em;', readonly: the_author.karma.points.negative?}
+        %span
+          %button{type: 'submit'} Post
+          %label
+            = succeed ':' do
+              %strong.firebrick ATTENTION
+            Read our
+            %a{href: iri.cut('/terms')}
+              terms of use
+            and don't abuse the platform.
 
 - if project.deleted.nil? && the_author.bot?
-  - metas = project.meta.all
-  - unless metas.empty?
-    %table
-      %thead
-        %tr
-          %th Key
-          %th Value
-      %tbody
-        - metas.each do |m|
+  %div.block
+    - metas = project.meta.all
+    - unless metas.empty?
+      %table
+        %thead
           %tr
-            %td
-              %code
-                &= m[:key]
-            %td.monospace
-              &= m[:value]
-  %form{action: iri.cut('/p').append(project.id).append('meta'), method: 'POST'}
-    %label Meta:
-    %input{type: 'text', name: 'key', size: 15, placeholder: 'key', autocomplete: 'off'}
-    %input{type: 'text', name: 'value', size: 25, placeholder: 'value', autocomplete: 'off'}
-    %button{type: 'submit'} Set
+            %th Key
+            %th Value
+        %tbody
+          - metas.each do |m|
+            %tr
+              %td
+                %code
+                  &= m[:key]
+              %td.monospace
+                &= m[:value]
+    %form{action: iri.cut('/p').append(project.id).append('meta'), method: 'POST'}
+      %label Meta:
+      %input{type: 'text', name: 'key', size: 15, placeholder: 'key', autocomplete: 'off'}
+      %input{type: 'text', name: 'value', size: 25, placeholder: 'value', autocomplete: 'off'}
+      %button{type: 'submit'} Set
 
