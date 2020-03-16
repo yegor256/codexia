@@ -30,6 +30,9 @@ require_relative 'review'
 # Copyright:: Copyright (c) 2020 Yegor Bugayenko
 # License:: MIT
 class Xia::Reviews
+  # When such a review already exists and we can't post a new one.
+  class DuplicateError < Xia::Urror; end
+
   def initialize(pgsql, project, log: Loog::NULL, telepost: Telepost::Fake.new)
     @pgsql = pgsql
     @project = project
@@ -41,12 +44,21 @@ class Xia::Reviews
     Xia::Review.new(@pgsql, @project, id, log: @log)
   end
 
+  # A review with this hash already exists?
+  def exists?(hash)
+    !@pgsql.exec(
+      'SELECT COUNT(*) FROM review WHERE project=$1 AND hash=$2',
+      [@project.id, hash]
+    )[0]['count'].to_i.zero?
+  end
+
   def post(text, hash)
     raise Xia::Urror, 'The project is dead, can\'t review' unless @project.deleted.nil?
     raise Xia::Urror, 'Not enough karma to post a review' if @project.author.karma.points.negative?
     raise Xia::Urror, 'The review is too short' if text.length < 60 && @project.author.login != '-test-'
     raise Xia::Urror, 'You are reviewing too fast' if quota.negative?
     raise Xia::Urror, 'Hash can\'t be empty' if hash.empty?
+    raise DuplicateError, 'A review with this hash already exists' if exists?(hash)
     id = @pgsql.exec(
       'INSERT INTO review (project, author, text, hash) VALUES ($1, $2, $3, $4) RETURNING id',
       [@project.id, @project.author.id, text, hash]

@@ -60,7 +60,7 @@ class Xia::ReviewsTest < Minitest::Test
     projects = author.projects
     project = projects.submit('github', "yegor256/foo#{rand(999)}")
     project.reviews.post('The test', 'hash')
-    assert_raises do
+    assert_raises(Xia::Reviews::DuplicateError) do
       project.reviews.post('Another test', 'hash')
     end
   end
