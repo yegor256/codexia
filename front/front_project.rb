@@ -76,12 +76,18 @@ get '/p/{id}/r/{rid}/down' do
   flash(iri.cut('/p').append(project.id), "The review ##{review.id} in the project ##{project.id} downvoted")
 end
 
+get '/duplicate/{id}' do
+  flash(iri.cut('/p').append(project.id))
+end
+
 post '/p/{id}/post' do
   project = the_author.projects.get(params[:id].to_i)
   text = params[:text].strip
   hash = params[:hash] || Digest::MD5.hexdigest(text)
   review = project.reviews.post(text, hash.strip)
   flash(iri.cut('/p').append(project.id), "A new review ##{review.id} has been posted to the project ##{project.id}")
+rescue Xia::Reviews::DuplicateError => e
+  flash(iri.cut('/duplicate'), "Duplicate review: #{e.message}")
 end
 
 post '/p/{id}/attach' do
