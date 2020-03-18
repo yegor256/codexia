@@ -49,7 +49,7 @@ error do
   status 503
   e = env['sinatra.error']
   if e.is_a?(Xia::Urror)
-    flash(@locals[:author] ? '/recent' : '/', e.message, color: 'darkred')
+    flash(@locals[:author] ? '/recent' : '/', e.message, color: 'darkred', code: 303)
   else
     Raven.capture_exception(e)
     haml(
@@ -79,8 +79,8 @@ def merged(hash = {})
   out
 end
 
-def flash(uri, msg = '', color: 'darkgreen')
+def flash(uri, msg = '', color: 'darkgreen', code: 302)
   cookies[:flash_msg] = msg
   cookies[:flash_color] = color
-  redirect(uri)
+  redirect to(uri), code
 end
