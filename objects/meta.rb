@@ -36,11 +36,22 @@ class Xia::Meta
     @telepost = telepost
   end
 
+  def exists?(key)
+    raise Xia::Urror, 'The key can\'t be empty' if key.empty?
+    raise Xia::Urror, 'The key may include letters, numbers, and dashes only' unless /^[a-zA-Z0-9-]+$/.match?(key)
+    a, k = key.split(':', 2)
+    !@pgsql.exec(
+      'SELECT COUNT(*) FROM meta JOIN author ON author.id=meta.author WHERE project=$1 AND login=$2 AND key=$3',
+      [@project.id, a, k]
+    )[0]['count'].to_i.zero?
+  end
+
   def set(key, value)
     raise Xia::Urror, 'The value can\'t be empty' if value.empty?
     raise Xia::Urror, 'The key can\'t be empty' if key.empty?
     raise Xia::Urror, 'The key may include letters, numbers, and dashes only' unless /^[a-zA-Z0-9-]+$/.match?(key)
     raise Xia::Urror, 'The value is too large (over 256)' if value.length > 256
+    exists = exists?(key)
     id = @pgsql.exec(
       [
         'INSERT INTO meta (project, author, key, value) VALUES ($1, $2, $3, $4)',
@@ -48,11 +59,19 @@ class Xia::Meta
       ].join(' '),
       [@project.id, @project.author.id, key, value]
     )[0]['id'].to_i
-    @telepost.spam(
-      "New meta \"`#{key}`\" set for the project",
-      "[#{@project.coordinates}](https://www.codexia.org/p/#{@project.id})",
-      "by [@#{@project.author.login}](https://github.com/#{@project.author.login})"
-    )
+    if exists
+      @telepost.spam(
+        "The meta \"`#{key}`\" re-set for the project",
+        "[#{@project.coordinates}](https://www.codexia.org/p/#{@project.id})",
+        "by [@#{@project.author.login}](https://github.com/#{@project.author.login})"
+      )
+    else
+      @telepost.spam(
+        "A new meta \"`#{key}`\" set for the project",
+        "[#{@project.coordinates}](https://www.codexia.org/p/#{@project.id})",
+        "by [@#{@project.author.login}](https://github.com/#{@project.author.login})"
+      )
+    end
     id
   end
 
