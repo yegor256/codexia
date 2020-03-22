@@ -29,8 +29,15 @@
   Certain
   %i features
   may be available only for users with big
-  enough reputation, for example older reviews may be visible
-  only by more reputable users.
+  enough reputation, for example:
+
+%ul
+  - rank_legend.reject { |g| g[:min].zero? }.sort_by { |g| g[:min] }.each do |g|
+    %li
+      = succeed ':' do
+        %strong= "#{g[:min]}+"
+      to
+      = g[:text]
 
 %p
   Users may earn
@@ -38,10 +45,10 @@
   points:
 
 %ul
-  - legend.reject { |g| g[:points].zero? }.each do |g|
+  - karma_legend.reject { |g| g[:points].zero? }.each do |g|
     %li{style: the_author.bot? && g[:points].negative? ? 'text-decoration:line-through' : ''}
-      %strong
-        = format('%+d', g[:points])
+      = succeed ':' do
+        %strong{class: g[:points].positive? ? 'seagreen' : 'firebrick'}= format('%+d', g[:points])
       per
       = g[:terms]
 

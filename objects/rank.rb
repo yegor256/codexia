@@ -39,7 +39,7 @@ class Xia::Rank
       {
         task: 'withdraw',
         min: 100,
-        text: 'pay that much'
+        text: 'convert karma to cash'
       },
       {
         task: 'projects.submit',
@@ -78,7 +78,7 @@ class Xia::Rank
       },
       {
         task: 'badges.detach',
-        min: 500,
+        min: 2000,
         text: 'detach an existing badge'
       }
     ]
