@@ -82,5 +82,5 @@ end
 def flash(uri, msg = '', color: 'darkgreen', code: 302)
   cookies[:flash_msg] = msg
   cookies[:flash_color] = color
-  redirect to(uri), code
+  redirect uri, code
 end

@@ -82,9 +82,7 @@ class Xia::AppTest < Minitest::Test
   end
 
   def test_api_fetch_json
-    post('/submit?platform=github&coordinates=ff%2Ftt09', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
-    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
-    id = last_response.header['Location'].gsub(%r{^.*/p/(\d+)$}, '\1')
+    id = post_project('tt/ttt')
     post("/p/#{id}/post?text=hello", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     get('/recent.json', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
@@ -93,34 +91,31 @@ class Xia::AppTest < Minitest::Test
     assert(!JSON.parse(last_response.body).empty?)
   end
 
-  def test_api_submit
-    post('/submit?platform=github&coordinates=abc%2Fdef', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+  def test_api_post_review
+    name = 'abc/ddd'
+    id = post_project(name)
+    assert_equal(post_project(name), id)
+    post("/p/#{id}/post?text=hello&hash=123", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
-    post('/submit?platform=github&coordinates=abc%2Fdef', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    post("/p/#{id}/post?text=hello&hash=123", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
-    id = last_response.header['Location'].gsub(%r{^.*/p/(\d+)$}, '\1')
-    get("/p/#{id}", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
-    assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
   end
 
-  def test_api_post_review
-    post('/submit?platform=github&coordinates=abc%2Fdef', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+  def test_attach_detach_badge
+    id = post_project('abc/my-badges')
+    post("/p/#{id}/attach?text=thebadge", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
-    post('/submit?platform=github&coordinates=abc%2Fdef', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
-    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
-    id = last_response.header['Location'].gsub(%r{^.*/p/(\d+)$}, '\1')
-    get("/p/#{id}", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    get("/p/#{id}/badges.json", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
-    post("/p/#{id}/post?text=hello&hash=123", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
-    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
-    post("/p/#{id}/post?text=hello&hash=123", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    json = JSON.parse(last_response.body)
+    assert(json.length.positive?, json.to_s)
+    badge = json[0]['id'].to_i
+    get("/p/#{id}/detach/#{badge}", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
   end
 
   def test_meta
-    post('/submit?platform=github&coordinates=hey%2Fdef', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
-    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
-    id = last_response.header['Location'].gsub(%r{^.*/p/(\d+)$}, '\1')
+    id = post_project('hey/def')
     post("/p/#{id}/meta?key=test&value=22", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
     get("/p/#{id}/meta?key=-test-:test", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
@@ -131,5 +126,15 @@ class Xia::AppTest < Minitest::Test
 
   def login(name)
     set_cookie('glogin=' + name)
+  end
+
+  # Post a new project and return its ID
+  def post_project(name)
+    post(Iri.new('/submit').add(platform: 'github', coordinates: name).to_s, nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
+    id = last_response.header['Location'].gsub(%r{^.*/p/(\d+)$}, '\1')
+    get("/p/#{id}", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
+    id
   end
 end

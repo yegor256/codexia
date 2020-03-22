@@ -79,7 +79,7 @@ configure do
   set :dump_errors, ENV['RACK_ENV'] == 'test'
   set :config, config
   set :logging, true
-  set :log, Loog::REGULAR
+  set :log, ENV['TEST_QUIET_LOG'] ? Loog::NULL : Loog::REGULAR
   set :server_settings, timeout: 25
   set :zache, Zache.new(dirty: true)
   set :codec, GLogin::Codec.new(config['github']['encryption_secret'])

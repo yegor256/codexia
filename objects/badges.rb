@@ -29,10 +29,21 @@ require_relative 'badge'
 # Copyright:: Copyright (c) 2020 Yegor Bugayenko
 # License:: MIT
 class Xia::Badges
+  # When such a badge already exists and we can't attach a new one.
+  class DuplicateError < Xia::Urror; end
+
   def initialize(pgsql, project, log: Loog::NULL)
     @pgsql = pgsql
     @project = project
     @log = log
+  end
+
+  # A badge is already attached?
+  def exists?(text)
+    !@pgsql.exec(
+      'SELECT COUNT(*) FROM badge WHERE project=$1 AND text=$2',
+      [@project.id, text]
+    )[0]['count'].to_i.zero?
   end
 
   def get(id)
@@ -40,12 +51,18 @@ class Xia::Badges
   end
 
   def all
-    @pgsql.exec('SELECT text FROM badge WHERE project=$1', [@project.id]).map { |r| r['text'] }
+    @pgsql.exec('SELECT * FROM badge WHERE project=$1', [@project.id]).map do |r|
+      {
+        id: r['id'].to_i,
+        text: r['text']
+      }
+    end
   end
 
   def attach(text)
     raise Xia::Urror, 'Not enough karma to attach a badge' if @project.author.karma.points.negative?
     raise Xia::Urror, "The badge #{text.inspect} looks wrong" unless /^[a-z0-9]{3,12}$/.match?(text)
+    raise DuplicateError, "The badge #{text.inspect} already attached" if exists?(text)
     id = @pgsql.exec(
       'INSERT INTO badge (project, text) VALUES ($1, $2) RETURNING id',
       [@project.id, text]

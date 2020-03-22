@@ -34,7 +34,7 @@ class Xia::BadgesTest < Minitest::Test
     text = 'jey'
     badge = badges.attach(text)
     assert_equal(2, badges.all.size)
-    assert(badges.all.include?(text))
+    assert(badges.all.map { |b| b[:text] }.include?(text))
     assert(!badge.id.nil?)
     badge.detach
   end

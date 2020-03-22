@@ -21,7 +21,9 @@
 %p
   - project.badges.all.each do |b|
     %kbd
-      &= b
+      &= b[:text]
+      %a.lemonchiffon{href: iri.cut('/p').append(project.id).append('detach').append(b[:id]), onclick: 'return confirm("Are you sure?");'}<
+        = '✘'
 
 - if project.deleted.nil?
   %form{action: iri.cut('/p').append(project.id).append('attach'), method: 'POST'}

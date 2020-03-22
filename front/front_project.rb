@@ -94,6 +94,20 @@ post '/p/{id}/attach' do
   project = the_author.projects.get(params[:id].to_i)
   badge = project.badges.attach(params[:text].strip)
   flash(iri.cut('/p').append(project.id), "A new badge ##{badge.id} has been attached to the project ##{project.id}")
+rescue Xia::Badges::DuplicateError => e
+  flash(iri.cut('/duplicate'), "Duplicate badge: #{e.message}")
+end
+
+get '/p/{id}/detach/{badge}' do
+  project = the_author.projects.get(params[:id].to_i)
+  badge = project.badges.get(params[:badge].to_i)
+  badge.detach
+  flash(iri.cut('/p').append(project.id), "The badge ##{badge.id} has been detached from the project ##{project.id}")
+end
+
+get '/p/{id}/badges.json' do
+  project = the_author.projects.get(params[:id].to_i)
+  JSON.pretty_generate(project.badges.all)
 end
 
 get '/p/{id}/meta' do
