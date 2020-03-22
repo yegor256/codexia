@@ -31,13 +31,23 @@
   may be available only for users with big
   enough reputation, for example:
 
-%ul
-  - rank_legend.reject { |g| g[:min].zero? }.sort_by { |g| g[:min] }.each do |g|
-    %li
-      = succeed ':' do
-        %strong= "#{g[:min]}+"
-      to
-      = g[:text]
+%table
+  %colgroup
+    %col{style: 'width: 5em'}
+  %thead
+    %tr
+      %th
+        Min karma required
+      %th
+        Features available
+  %tbody
+    - rank_legend.reject { |g| g[:min].zero? }.sort_by { |g| g[:min] }.group_by { |g| g[:min] }.each do |min, gs|
+      %tr
+        %td.right.monospace
+          = min
+        %td
+          To
+          = gs.map { |g| g[:text] }.join('<br/>To ')
 
 %p
   Users may earn
@@ -48,7 +58,7 @@
   - karma_legend.reject { |g| g[:points].zero? }.each do |g|
     %li{style: the_author.bot? && g[:points].negative? ? 'text-decoration:line-through' : ''}
       = succeed ':' do
-        %strong{class: g[:points].positive? ? 'seagreen' : 'firebrick'}= format('%+d', g[:points])
+        %strong.monospace{class: g[:points].positive? ? 'seagreen' : 'firebrick'}= format('%+d', g[:points])
       per
       = g[:terms]
 

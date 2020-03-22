@@ -39,7 +39,8 @@ class Xia::Rank
       {
         task: 'withdraw',
         min: 100,
-        text: 'convert karma to cash'
+        text: 'convert karma to cash',
+        bot_forbid: true
       },
       {
         task: 'projects.submit',
@@ -49,7 +50,8 @@ class Xia::Rank
       {
         task: 'projects.delete',
         min: 500,
-        text: 'delete an existing project'
+        text: 'delete an existing project',
+        bot_forbid: true
       },
       {
         task: 'reviews.post',
@@ -59,17 +61,68 @@ class Xia::Rank
       {
         task: 'reviews.delete',
         min: 500,
-        text: 'delete an existing review'
+        text: 'delete an existing review',
+        bot_forbid: true
       },
       {
         task: 'reviews.upvote',
         min: 100,
-        text: 'upvote a review'
+        text: 'upvote a review',
+        bot_forbid: true
       },
       {
         task: 'reviews.downvote',
         min: 200,
-        text: 'downvote a review'
+        text: 'downvote a review',
+        bot_forbid: true
+      },
+      {
+        task: 'badges.promote-to-L1',
+        min: 500,
+        text: 'promote a project to L1',
+        bot_forbid: true
+      },
+      {
+        task: 'badges.promote-to-L2',
+        min: 2000,
+        text: 'promote a project to L2',
+        bot_forbid: true
+      },
+      {
+        task: 'badges.promote-to-L3',
+        min: 5000,
+        text: 'promote a project to L3',
+        bot_forbid: true
+      },
+      {
+        task: 'badges.promote-to-L4',
+        min: 25_000,
+        text: 'promote a project to L4',
+        bot_forbid: true
+      },
+      {
+        task: 'badges.degrade-from-L4',
+        min: 10_000,
+        text: 'degrade an L4 project',
+        bot_forbid: true
+      },
+      {
+        task: 'badges.degrade-from-L3',
+        min: 3000,
+        text: 'degrade an L3 project',
+        bot_forbid: true
+      },
+      {
+        task: 'badges.degrade-from-L2',
+        min: 1000,
+        text: 'degrade an L2 project',
+        bot_forbid: true
+      },
+      {
+        task: 'badges.degrade-from-L1',
+        min: 300,
+        text: 'degrade an L1 project',
+        bot_forbid: true
       },
       {
         task: 'badges.attach',
@@ -88,6 +141,7 @@ class Xia::Rank
     return if @author.vip?
     info = legend.find { |i| i[:task] == task }
     raise "Unknown task #{task.inspect}" if info.nil?
+    raise Xia::Urror, "A bot can't #{info[:text]}" if info[:bot_forbid] && @actor.bot?
     karma = @author.karma.points(safe: safe)
     txt = format('%+d', karma)
     if info[:min] && karma < info[:min]

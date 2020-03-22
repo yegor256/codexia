@@ -46,6 +46,14 @@ class Xia::Badges
     )[0]['count'].to_i.zero?
   end
 
+  # Get current level of the project, either 0 (newbie) or 1 (L1), 2 (L2), etc.
+  def level
+    txt = all.map { |b| b[:text] }.find { |b| /^(L[0-9]|newbie)$/.match?(b) }
+    return 0 if txt.nil?
+    return 0 if txt == 'newbie'
+    txt[1].to_i
+  end
+
   def get(id)
     Xia::Badge.new(@pgsql, @project, id, log: @log)
   end
@@ -61,9 +69,16 @@ class Xia::Badges
 
   def attach(text)
     Xia::Rank.new(@project.author).enter('badges.attach')
-    raise Xia::Urror, "The badge #{text.inspect} looks wrong" unless /^[a-z0-9]{3,12}$/.match?(text)
-    raise Xia::Urror, 'Too many badges already' if all.length >= 5
-    raise DuplicateError, "The badge #{text.inspect} already attached" if exists?(text)
+    raise DuplicateError, "The badge #{text.inspect} is already attached" if exists?(text)
+    raise Xia::Urror, "The badge #{text.inspect} looks wrong" unless /^([a-z0-9]{3,12}|L[0-9])$/.match?(text)
+    if /^(newbie|L[0-9])$/.match?(text)
+      after = text == 'newbie' ? 0 : text[1].to_i
+      before = level
+      Xia::Rank.new(@project.author).enter("badges.promote-to-#{text}") if after > before
+      Xia::Rank.new(@project.author).enter("badges.degrade-from-L#{before}") if after < before
+    elsif all.length >= 5
+      raise Xia::Urror, 'Too many badges already'
+    end
     id = @pgsql.exec(
       'INSERT INTO badge (project, text) VALUES ($1, $2) RETURNING id',
       [@project.id, text]
