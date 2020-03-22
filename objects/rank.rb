@@ -126,7 +126,7 @@ class Xia::Rank
       },
       {
         task: 'badges.attach',
-        min: 100,
+        min: 1,
         text: 'attach a new badge'
       },
       {
@@ -137,16 +137,25 @@ class Xia::Rank
     ]
   end
 
+  def ok?(task, safe: false)
+    return true if @author.vip?
+    info = legend.find { |i| i[:task] == task }
+    raise "Unknown task #{task.inspect}" if info.nil?
+    karma = @author.karma.points(safe: safe)
+    return false if info[:min] && karma < info[:min]
+    true
+  end
+
   def enter(task, safe: false)
     return if @author.vip?
     info = legend.find { |i| i[:task] == task }
     raise "Unknown task #{task.inspect}" if info.nil?
-    raise Xia::Urror, "A bot can't #{info[:text]}" if info[:bot_forbid] && @actor.bot?
+    raise Xia::Urror, "A bot can't #{info[:text]}" if info[:bot_forbid] && @author.bot?
     karma = @author.karma.points(safe: safe)
     txt = format('%+d', karma)
     if info[:min] && karma < info[:min]
       raise Xia::Urror, "Can't #{info[:text]} with a negative karma #{txt}" if karma.negative?
-      raise Xia::Urror, "Not enough karma #{txt} to #{info[:text]}"
+      raise Xia::Urror, "Karma #{txt} is not enough to #{info[:text]} (must be #{info[:min]}+)"
     end
     karma
   end

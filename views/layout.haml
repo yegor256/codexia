@@ -45,7 +45,7 @@
               - unless defined?(author)
                 %a{href: login_link}
                   = '/login'
-              - if defined?(author)
+              - if defined?(author) && Xia::Rank.new(the_author).ok?('projects.submit')
                 %li
                   %a{href: iri.cut('/submit'), title: 'Submit a new project'}
                     = '/submit'
@@ -53,9 +53,10 @@
                 %li
                   %a{href: iri.cut('/terms')}
                     = '/terms'
-                %li
-                  %a{href: iri.cut('/api')}
-                    = '/api'
+                - if the_author.bot?
+                  %li
+                    %a{href: iri.cut('/api')}
+                      = '/api'
               - if defined?(author)
                 %li
                   %a{href: iri.cut('/logout')}
