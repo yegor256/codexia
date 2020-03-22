@@ -9,9 +9,10 @@
     = partial(:author, locals, id: nil, login: project.submitter)
     %span.item{title: "##{project.id} on #{project.created}"}
       = RelativeTime.in_words(project.created)
-    %span.item
-      %a{href: iri.cut('/p').append(project.id).append('delete'), onclick: 'return confirm("Are you sure?");'}<
-        = '/delete'
+    - if Xia::Rank.new(the_author).ok?('projects.delete')
+      %span.item
+        %a{href: iri.cut('/p').append(project.id).append('delete'), onclick: 'return confirm("Are you sure?");'}<
+          = '/delete'
 
 - if !project.deleted.nil?
   %p
@@ -43,17 +44,20 @@
         = partial(:author, locals, id: r[:author_id], login: r[:author])
         %span.item{title: "##{r[:id]} on #{r[:created]}", style: (r[:deleted] ? 'text-decoration:line-through' : '')}
           = RelativeTime.in_words(r[:created])
-        %span.item
-          = r[:up]
-          %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('up')}<
-            = '/up'
-        %span.item
-          = r[:down]
-          %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('down')}<
-            = '/down'
-        %span.item
-          %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('delete'), onclick: 'return confirm("Are you sure?");'}<
-            = '/delete'
+        - if Xia::Rank.new(the_author).ok?('reviews.upvote')
+          %span.item
+            = r[:up]
+            %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('up')}<
+              = '/up'
+        - if Xia::Rank.new(the_author).ok?('reviews.downvote')
+          %span.item
+            = r[:down]
+            %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('down')}<
+              = '/down'
+        - if Xia::Rank.new(the_author).ok?('reviews.delete')
+          %span.item
+            %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('delete'), onclick: 'return confirm("Are you sure?");'}<
+              = '/delete'
     = r[:html]
 
 = partial(:paging, locals, page: page, list: reviews)
