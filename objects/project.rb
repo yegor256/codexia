@@ -25,6 +25,7 @@ require_relative 'xia'
 require_relative 'reviews'
 require_relative 'badges'
 require_relative 'meta'
+require_relative 'rank'
 
 # Project.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -72,7 +73,7 @@ class Xia::Project
   end
 
   def delete
-    raise Xia::Urror, 'Not enough karma to delete a project' if @author.karma.points < 500
+    Xia::Rank.new(@author).enter('projects.delete')
     @pgsql.exec(
       'UPDATE project SET deleted = $2 WHERE id=$1',
       [@id, "Deleted by @#{@author.login} on #{Time.now.utc.iso8601}"]

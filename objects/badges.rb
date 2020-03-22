@@ -60,7 +60,7 @@ class Xia::Badges
   end
 
   def attach(text)
-    raise Xia::Urror, 'Not enough karma to attach a badge' if @project.author.karma.points.negative?
+    Xia::Rank.new(@project.author).enter('badges.attach')
     raise Xia::Urror, "The badge #{text.inspect} looks wrong" unless /^[a-z0-9]{3,12}$/.match?(text)
     raise DuplicateError, "The badge #{text.inspect} already attached" if exists?(text)
     id = @pgsql.exec(

@@ -23,6 +23,7 @@
 require 'loog'
 require_relative 'xia'
 require_relative 'project'
+require_relative 'rank'
 
 # Projects.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -41,7 +42,7 @@ class Xia::Projects
   end
 
   def submit(platform, coordinates)
-    raise Xia::Urror, 'Not enough karma to submit a project' if @author.karma.points.negative?
+    Xia::Rank.new(@author).enter('projects.submit')
     raise Xia::Urror, 'You are submitting too fast' if quota.negative?
     unless %r{^[A-Za-z0-9\-\.]+/[A-Za-z0-9\-_\.]+$}.match?(coordinates)
       raise Xia::Urror, "Coordinates #{coordinates.inspect} are wrong"

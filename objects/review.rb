@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 require_relative 'xia'
+require_relative 'rank'
 
 # Review.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -42,7 +43,7 @@ class Xia::Review
   end
 
   def delete
-    raise Xia::Urror, 'Not enough karma to delete a review' if @project.author.karma.points < 500
+    Xia::Rank.new(@project.author).enter('reviews.delete')
     @pgsql.exec(
       'UPDATE review SET deleted = $2 WHERE id=$1',
       [@id, "Deleted by @#{@project.author.login} on #{Time.now.utc.iso8601}"]
@@ -60,8 +61,8 @@ class Xia::Review
   end
 
   def vote(up)
-    raise Xia::Urror, 'Not enough karma to upvote a review' if @project.author.karma.points < 100
-    raise Xia::Urror, 'Not enough karma to downvote a review' if !up && @project.author.karma.points < 200
+    Xia::Rank.new(@project.author).enter('reviews.upvote') if up
+    Xia::Rank.new(@project.author).enter('reviews.downvote') unless up
     raise Xia::Urror, 'You are voting too fast' if quota.negative?
     raise Xia::Urror, 'It is already deleted, can\'t vote' if deleted
     raise Xia::Urror, 'The project is deleted, can\'t vote' if @project.deleted

@@ -24,6 +24,7 @@ require 'loog'
 require 'redcarpet'
 require_relative 'xia'
 require_relative 'review'
+require_relative 'rank'
 
 # Reviews.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -53,8 +54,8 @@ class Xia::Reviews
   end
 
   def post(text, hash)
+    Xia::Rank.new(@project.author).enter('reviews.post')
     raise Xia::Urror, 'The project is dead, can\'t review' unless @project.deleted.nil?
-    raise Xia::Urror, 'Not enough karma to post a review' if @project.author.karma.points.negative?
     raise Xia::Urror, 'The review is too short' if text.length < 60 && @project.author.login != '-test-'
     raise Xia::Urror, 'You are reviewing too fast' if quota.negative?
     raise Xia::Urror, 'Hash can\'t be empty' if hash.empty?

@@ -22,6 +22,7 @@
 
 require 'loog'
 require_relative 'xia'
+require_relative 'rank'
 
 # Badges.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -38,7 +39,7 @@ class Xia::Badge
   end
 
   def detach
-    raise Xia::Urror, 'Not enough karma to detach a badge' unless @project.author.karma.points.positive?
+    Xia::Rank.new(@project.author).enter('badges.detach')
     raise Xia::Urror, 'Can\'t delete the last badge' if @project.badges.all.count < 2
     @pgsql.exec('DELETE FROM badge WHERE id=$1', [@id])
   end
