@@ -62,6 +62,7 @@ class Xia::Badges
   def attach(text)
     Xia::Rank.new(@project.author).enter('badges.attach')
     raise Xia::Urror, "The badge #{text.inspect} looks wrong" unless /^[a-z0-9]{3,12}$/.match?(text)
+    raise Xia::Urror, 'Too many badges already' if all.length >= 5
     raise DuplicateError, "The badge #{text.inspect} already attached" if exists?(text)
     id = @pgsql.exec(
       'INSERT INTO badge (project, text) VALUES ($1, $2) RETURNING id',
