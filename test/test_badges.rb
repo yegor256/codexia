@@ -38,4 +38,16 @@ class Xia::BadgesTest < Minitest::Test
     assert(!badge.id.nil?)
     badge.detach
   end
+
+  def test_promotes_and_degrades
+    author = Xia::Authors.new(t_pgsql).named('-test-')
+    projects = author.projects
+    project = projects.submit('github', "yegor256/cactoos#{rand(999)}")
+    badges = project.badges
+    badges.attach('L3')
+    assert_equal(1, badges.all.count)
+    assert_equal(3, badges.level)
+    badges.attach('newbie')
+    assert_equal(0, badges.level)
+  end
 end

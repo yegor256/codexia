@@ -22,6 +22,7 @@
 
 require 'loog'
 require 'redcarpet'
+require 'securerandom'
 require_relative 'xia'
 require_relative 'review'
 require_relative 'rank'
@@ -53,7 +54,7 @@ class Xia::Reviews
     )[0]['count'].to_i.zero?
   end
 
-  def post(text, hash)
+  def post(text, hash = SecureRandom.hex)
     Xia::Rank.new(@project.author).enter('reviews.post')
     raise Xia::Urror, 'The project is dead, can\'t review' unless @project.deleted.nil?
     raise Xia::Urror, 'The review is too short' if text.length < 60 && @project.author.login != '-test-'
