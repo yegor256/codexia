@@ -81,6 +81,11 @@ class Xia::AppTest < Minitest::Test
     end
   end
 
+  def test_submits_wrong_coordinates
+    post(Iri.new('/submit').add(platform: 'github', coordinates: '-').to_s, nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    assert_equal(303, last_response.status, "#{p} fails: #{last_response.body}")
+  end
+
   def test_api_fetch_json
     id = post_project('tt/ttt')
     post("/p/#{id}/post?text=hello", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
