@@ -21,11 +21,10 @@
 
 %p
   - project.badges.all.each do |b|
-    %kbd
-      &= b[:text]
-      - if Xia::Rank.new(the_author).ok?('badges.detach')
-        %a.lemonchiffon{href: iri.cut('/p').append(project.id).append('detach').append(b[:id]), onclick: 'return confirm("Are you sure?");'}<
-          = '✘'
+    = partial(:badge, locals, text: b[:text])
+    - if Xia::Rank.new(the_author).ok?('badges.detach')
+      %a.lemonchiffon{href: iri.cut('/p').append(project.id).append('detach').append(b[:id]), onclick: 'return confirm("Are you sure?");'}<
+        = '✘'
 
 - if Xia::Rank.new(the_author).ok?('badges.attach')
   - if project.deleted.nil?

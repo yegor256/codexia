@@ -48,7 +48,7 @@ class Xia::Badges
 
   # Get current level of the project, either 0 (newbie) or 1 (L1), 2 (L2), etc.
   def level
-    txt = all.map { |b| b[:text] }.find { |b| /^(L[0-9]|newbie)$/.match?(b) }
+    txt = all.map { |b| b[:text] }.find { |b| /^(L[123]|newbie)$/.match?(b) }
     return 0 if txt.nil?
     return 0 if txt == 'newbie'
     txt[1].to_i
@@ -70,9 +70,9 @@ class Xia::Badges
   def attach(text)
     Xia::Rank.new(@project.author).enter('badges.attach')
     raise DuplicateError, "The badge #{text.inspect} is already attached" if exists?(text)
-    raise Xia::Urror, "The badge #{text.inspect} looks wrong" unless /^([a-z0-9]{3,12}|L[0-9])$/.match?(text)
+    raise Xia::Urror, "The badge #{text.inspect} looks wrong" unless /^([a-z0-9]{3,12}|L[123])$/.match?(text)
     id = @pgsql.transaction do |t|
-      if /^(newbie|L[0-9])$/.match?(text)
+      if /^(newbie|L[123])$/.match?(text)
         after = text == 'newbie' ? 0 : text[1].to_i
         before = level
         reviews = Xia::Reviews.new(@pgsql, @project, log: @log)
@@ -85,7 +85,7 @@ class Xia::Badges
           reviews.post("The project has been degraded from L#{before} to L#{after}")
         end
         t.exec(
-          'DELETE FROM badge WHERE project=$1 AND text SIMILAR TO \'(newbie|L[0-9])\'',
+          'DELETE FROM badge WHERE project=$1 AND text SIMILAR TO \'(newbie|L[123])\'',
           [@project.id]
         )
       elsif all.length >= 5

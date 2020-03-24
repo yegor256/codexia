@@ -1,18 +1,20 @@
-- list.each do |p|
+- if list.empty?
   %p
-    %a{href: iri.cut('/p').append(p[:id]), style: (p[:deleted] ? 'text-decoration:line-through' : '')}
-      &= p[:coordinates]
-    %br
-    - p[:badges].each do |b|
-      %kbd
-        &= b
-    %br
-    %span.smaller.gray
-      = partial(:author, locals, id: p[:author_id], login: p[:author])
-      %span.item{title: "##{p[:id]} on #{p[:created]}"}
-        = RelativeTime.in_words(p[:created])
-      %span.item
-        %a{href: iri.cut('/p').append(p[:id]).append('delete'), onclick: 'return confirm("Are you sure?");'}<
-          = '/delete'
-
-= partial(:paging, locals, page: page, list: list)
+    No projects found :(
+- else
+  - list.each do |p|
+    %p
+      %a{href: iri.cut('/p').append(p[:id]), style: (p[:deleted] ? 'text-decoration:line-through' : '')}
+        &= p[:coordinates]
+      %br
+      - p[:badges].each do |b|
+        = partial(:badge, locals, text: b)
+      %br
+      %span.smaller.gray
+        = partial(:author, locals, id: p[:author_id], login: p[:author])
+        %span.item{title: "##{p[:id]} on #{p[:created]}"}
+          = RelativeTime.in_words(p[:created])
+        %span.item
+          %a{href: iri.cut('/p').append(p[:id]).append('delete'), onclick: 'return confirm("Are you sure?");'}<
+            = '/delete'
+  = partial(:paging, locals, page: page, list: list)

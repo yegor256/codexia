@@ -94,18 +94,6 @@ class Xia::Rank
         bot_forbid: true
       },
       {
-        task: 'badges.promote-to-L4',
-        min: 25_000,
-        text: 'promote a project to L4',
-        bot_forbid: true
-      },
-      {
-        task: 'badges.degrade-from-L4',
-        min: 10_000,
-        text: 'degrade an L4 project',
-        bot_forbid: true
-      },
-      {
         task: 'badges.degrade-from-L3',
         min: 3000,
         text: 'degrade an L3 project',

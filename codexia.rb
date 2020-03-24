@@ -116,6 +116,7 @@ get '/welcome' do
 end
 
 get '/recent' do
+  badges = (params[:badges] || '').strip.split(',')
   page = (params[:page] || '0').strip.to_i
   haml :recent, layout: :layout, locals: merged(
     title: '/recent',
@@ -123,6 +124,7 @@ get '/recent' do
     list: the_author.projects.recent(
       limit: 25,
       offset: page * 25,
+      badges: badges,
       show_deleted: the_author.karma.points > 100
     )
   )

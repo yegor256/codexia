@@ -28,11 +28,22 @@ require_relative '../objects/projects'
 
 class Xia::ProjectsTest < Minitest::Test
   def test_submits_project
-    author = Xia::Authors.new(t_pgsql).named('yegor256')
+    author = Xia::Authors.new(t_pgsql).named('eee')
     projects = author.projects
     project = projects.submit('github', "yegor-1A.o/takes_#{rand(999)}")
     assert(!project.id.nil?)
     assert(!projects.recent.empty?)
+  end
+
+  def test_fetches_recent_projects_by_badge
+    author = Xia::Authors.new(t_pgsql).named('fss99')
+    projects = author.projects
+    projects.submit('github', "dd/fdfs#{rand(999)}")
+    project = projects.submit('github', "dd/fsss#{rand(999)}")
+    project.badges.attach('test')
+    assert(projects.recent.length >= 2)
+    assert(projects.recent(badges: ['badge-is-absent']).empty?)
+    assert(!projects.recent(badges: ['test']).empty?)
   end
 
   def test_adds_badges_and_fetches_them

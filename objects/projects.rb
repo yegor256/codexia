@@ -76,13 +76,17 @@ class Xia::Projects
     )[0]['count'].to_i
   end
 
-  def recent(limit: 10, offset: 0, show_deleted: false)
+  def recent(badges: [], limit: 10, offset: 0, show_deleted: false)
+    terms = []
+    terms << 'p.deleted IS NULL' unless show_deleted
+    terms << 'badge.text IN (' + badges.map { |b| "'#{b}'" }.join(',') + ')' unless badges.empty?
     q = [
-      'SELECT p.*, author.login, author.id AS author_id,',
+      'SELECT DISTINCT p.*, author.login, author.id AS author_id,',
       'ARRAY(SELECT text FROM badge WHERE project=p.id) as badges',
       'FROM project AS p',
+      'LEFT JOIN badge ON p.id=badge.project',
       'JOIN author ON author.id=p.author',
-      show_deleted ? '' : 'WHERE p.deleted IS NULL',
+      terms.empty? ? '' : 'WHERE ' + terms.join(' AND '),
       'ORDER BY p.created DESC',
       'LIMIT $1 OFFSET $2'
     ].join(' ')

@@ -61,6 +61,19 @@
                 %li
                   %a{href: iri.cut('/logout')}
                     = '/logout'
+          %ul
+            %li
+              %a{href: iri.cut('/recent').add(badges: 'newbie')}
+                = partial(:badge, locals, text: 'newbie')
+            %li
+              %a{href: iri.cut('/recent').add(badges: 'L1')}
+                = partial(:badge, locals, text: 'L1')
+            %li
+              %a{href: iri.cut('/recent').add(badges: 'L2')}
+                = partial(:badge, locals, text: 'L2')
+            %li
+              %a{href: iri.cut('/recent').add(badges: 'L3')}
+                = partial(:badge, locals, text: 'L3')
       %article
         - if defined?(flash_msg) && !flash_msg.empty?
           %p{style: "background-color:#{flash_color}; color:white; border-radius:2px; padding:0.2em 0.4em;"}
