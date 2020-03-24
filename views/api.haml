@@ -29,8 +29,11 @@
     %code GET /recent.json?page=...
     to list all visible projects
   %li
-    %code GET /p/123.json?page=...
-    to list all reviews per project, where 123 is the project ID
+    %code GET /p/123.json
+    to get info about a project, where 123 is the project ID
+  %li
+    %code GET /p/123/reviews.json?page=...
+    to list all reviews per project
   %li
     %code GET /p/123/badges.json
     to list all badges in the project
