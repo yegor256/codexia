@@ -23,7 +23,7 @@
   - project.badges.all.each do |b|
     = partial(:badge, locals, text: b[:text])
     - if Xia::Rank.new(the_author).ok?('badges.detach')
-      %a.lemonchiffon{href: iri.cut('/p').append(project.id).append('detach').append(b[:id]), onclick: 'return confirm("Are you sure?");'}<
+      %a.tomato{href: iri.cut('/p').append(project.id).append('detach').append(b[:id]), onclick: 'return confirm("Are you sure?");'}<
         = '✘'
 
 - if Xia::Rank.new(the_author).ok?('badges.attach')
