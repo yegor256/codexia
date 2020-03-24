@@ -1,3 +1,17 @@
+%div{style: 'float:right; text-align: right; max-width: 8em; background-color: #eee; border-radius: 10px; border: 1px solid lightgray; padding: 1em;'}
+  - level = project.badges.level
+  %strong.monospace{style: 'font-size: 3em;'}
+    = "L#{level}"
+  %div.smaller{style: 'line-height: 1.2em;'}
+    - if level == 0
+      The project is a total stranger
+    - if level == 1
+      We are keeping an eye on this project
+    - if level == 2
+      We believe in this project and donate regularly
+    - if level == 3
+      We invest into this project
+
 %p
   %span.monospace
     %a{href: "https://github.com/#{project.coordinates}"}<
@@ -21,6 +35,7 @@
 
 %p
   - project.badges.all.each do |b|
+    - next if /^newbie|L[123]$/.match?(b[:text])
     = partial(:badge, locals, text: b[:text])
     - if Xia::Rank.new(the_author).ok?('badges.detach')
       %a.tomato{href: iri.cut('/p').append(project.id).append('detach').append(b[:id]), onclick: 'return confirm("Are you sure?");'}<
@@ -34,7 +49,7 @@
 
 - reviews.each do |r|
   %div.block{style: 'border-left: 2px solid lightgray; padding-left: 1em;'}
-    %p{style: 'margin-bottom: 1em;'}
+    %p{style: 'margin-bottom: 1em; clear: both;'}
       - if r[:deleted]
         %strong.firebrick
           &= r[:deleted]
