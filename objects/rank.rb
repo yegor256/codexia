@@ -39,8 +39,7 @@ class Xia::Rank
       {
         task: 'withdraw',
         min: 100,
-        text: 'convert karma to cash',
-        bot_forbid: true
+        text: 'convert karma to cash'
       },
       {
         task: 'projects.submit',
