@@ -35,7 +35,7 @@ class Xia::AuthorTest < Minitest::Test
 
   def test_generates_token
     authors = Xia::Authors.new(t_pgsql)
-    author = authors.named('te')
+    author = authors.named('-te')
     codec = GLogin::Codec.new('the-secret')
     assert_equal(44, author.token(codec).length)
   end

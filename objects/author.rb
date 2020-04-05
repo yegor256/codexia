@@ -42,11 +42,13 @@ class Xia::Author
   end
 
   def bot?
-    ['yegor256', '-test-', 'cdxbot', 'iakunin-codexia-bot', 'codexia-hunter'].include?(login)
+    return true if login.start_with?('-')
+    ['yegor256', 'cdxbot', 'iakunin-codexia-bot', 'codexia-hunter'].include?(login)
   end
 
   def vip?
-    ['yegor256', '-test-'].include?(login)
+    return true if login.start_with?('-')
+    ['yegor256'].include?(login)
   end
 
   def login

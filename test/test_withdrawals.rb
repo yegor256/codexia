@@ -28,7 +28,7 @@ require_relative '../objects/projects'
 
 class Xia::KarmaTest < Minitest::Test
   def test_list_withdrawals
-    author = Xia::Authors.new(t_pgsql).named('yegor256')
+    author = Xia::Authors.new(t_pgsql).named('-yegor256')
     withdrawals = author.withdrawals
     assert(!withdrawals.recent.nil?)
   end

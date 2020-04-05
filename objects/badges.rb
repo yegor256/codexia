@@ -67,32 +67,39 @@ class Xia::Badges
     end
   end
 
-  def attach(text)
+  def attach(text, force: false)
     Xia::Rank.new(@project.author).enter('badges.attach')
-    raise DuplicateError, "The badge #{text.inspect} is already attached" if exists?(text)
+    raise DuplicateError, "The badge #{text.inspect} is already attached" if exists?(text) && !force
     raise Xia::Urror, "The badge #{text.inspect} looks wrong" unless /^([a-z0-9]{3,12}|L[123])$/.match?(text)
+    delete = false
+    if /^(newbie|L[123])$/.match?(text)
+      after = text == 'newbie' ? 0 : text[1].to_i
+      before = level
+      reviews = Xia::Reviews.new(@pgsql, @project, log: @log)
+      if after > before
+        Xia::Rank.new(@project.author).enter("badges.promote-to-#{text}")
+        reviews.post("The project has been promoted from L#{before} to L#{after}")
+      end
+      if after < before
+        Xia::Rank.new(@project.author).enter("badges.degrade-from-L#{before}")
+        reviews.post("The project has been degraded from L#{before} to L#{after}")
+      end
+      delete = true
+    elsif all.length >= 5
+      raise Xia::Urror, 'Too many badges already'
+    end
     id = @pgsql.transaction do |t|
-      if /^(newbie|L[123])$/.match?(text)
-        after = text == 'newbie' ? 0 : text[1].to_i
-        before = level
-        reviews = Xia::Reviews.new(@pgsql, @project, log: @log)
-        if after > before
-          Xia::Rank.new(@project.author).enter("badges.promote-to-#{text}")
-          reviews.post("The project has been promoted from L#{before} to L#{after}")
-        end
-        if after < before
-          Xia::Rank.new(@project.author).enter("badges.degrade-from-L#{before}")
-          reviews.post("The project has been degraded from L#{before} to L#{after}")
-        end
+      if delete
         t.exec(
           'DELETE FROM badge WHERE project=$1 AND text SIMILAR TO \'(newbie|L[123])\'',
           [@project.id]
         )
-      elsif all.length >= 5
-        raise Xia::Urror, 'Too many badges already'
       end
       t.exec(
-        'INSERT INTO badge (project, text) VALUES ($1, $2) RETURNING id',
+        [
+          'INSERT INTO badge (project, text) VALUES ($1, $2)',
+          'ON CONFLICT (project, text) DO UPDATE SET text = $2 RETURNING id'
+        ].join(' '),
         [@project.id, text]
       )[0]['id'].to_i
     end

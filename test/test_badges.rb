@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'threads'
 require 'minitest/autorun'
 require_relative 'test__helper'
 require_relative '../objects/xia'
@@ -37,6 +38,17 @@ class Xia::BadgesTest < Minitest::Test
     assert(badges.all.map { |b| b[:text] }.include?(text))
     assert(!badge.id.nil?)
     badge.detach
+  end
+
+  def test_attaches_badge_in_threads
+    author = Xia::Authors.new(t_pgsql).named('-test-')
+    projects = author.projects
+    project = projects.submit('github', "yegor256/takes#{rand(999)}")
+    badges = project.badges
+    Threads.new(20).assert do
+      badge = badges.attach('newbie', force: true)
+      assert(!badge.id.nil?)
+    end
   end
 
   def test_promotes_and_degrades

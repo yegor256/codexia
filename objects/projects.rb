@@ -43,7 +43,7 @@ class Xia::Projects
 
   def submit(platform, coordinates)
     Xia::Rank.new(@author).enter('projects.submit')
-    raise Xia::Urror, 'You are submitting too fast' if quota.negative?
+    raise Xia::Urror, "You @#{@author.login} are submitting too fast" if quota.negative?
     unless %r{^[A-Za-z0-9\-\.]+/[A-Za-z0-9\-_\.]+$}.match?(coordinates)
       raise Xia::Urror, "Coordinates #{coordinates.inspect} are wrong"
     end
