@@ -59,7 +59,7 @@
     %li
       = succeed ':' do
         %strong.monospace{class: g[:points].positive? ? 'seagreen' : 'firebrick'}
-          = format('%+d', Xia::Bots.new.is?(the_author) ? g[:bot] : g[:points])
+          = format('%+0.2f', Xia::Bots.new.is?(the_author) ? g[:bot] : g[:points])
       per
       = g[:terms]
 

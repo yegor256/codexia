@@ -104,18 +104,18 @@ class Xia::Karma
         bot: -1
       },
       {
-        points: -25,
+        points: -50,
         query: 'SELECT * FROM project AS t WHERE author=$1 AND deleted IS NOT NULL',
         terms: 'each project you submitted, which was deleted later',
         history: 'The roject #[id]:[coordinates] you submitted was deleted',
-        bot: -5
+        bot: -10
       },
       {
-        points: -50,
+        points: -25,
         query: 'SELECT * FROM review AS t WHERE author=$1 AND deleted IS NOT NULL',
         terms: 'each review you submitted, which was deleted later',
         history: 'The review #[id] you submitted was deleted',
-        bot: -10
+        bot: -5
       }
     ]
   end
@@ -149,10 +149,11 @@ class Xia::Karma
     @points ||= earned
   end
 
-  def recent(limit: 10)
+  def recent(offset: 0, limit: 10)
     bot = Xia::Bots.new.is?(@author)
     legend.map do |g|
-      @pgsql.exec("#{g[:query]} ORDER BY t.created DESC LIMIT $2", [@author.id, limit]).map do |r|
+      q = "#{g[:query]} ORDER BY t.created DESC LIMIT $2 OFFSET $3"
+      @pgsql.exec(q, [@author.id, limit, offset]).map do |r|
         {
           text: g[:history].gsub(/\[([a-z]+)\]/) { r[Regexp.last_match[1]] },
           points: bot ? g[:bot] : g[:points],

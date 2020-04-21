@@ -1,0 +1,21 @@
+%h2
+  Payables for
+  = "@#{author}"
+
+%table.compact
+  %thead
+    %tr
+      %th Time
+      %th.right Points
+      %th Details
+  %tbody
+    - recent.each do |p|
+      %tr
+        %td
+          = p[:created]
+        %td.right.monospace
+          = p[:points]
+        %td
+          = p[:text]
+
+= partial(:paging, locals, page: page, list: recent)
