@@ -59,7 +59,7 @@ class Xia::Meta
       ].join(' '),
       [@project.id, @project.author.id, key, value]
     )[0]['id'].to_i
-    unless Xia::Bots.new.is?(@project.author.login)
+    unless Xia::Bots.new.is?(@project.author)
       if exists
         @telepost.spam(
           "The meta \"`#{key}`\" re-set for the project",

@@ -138,7 +138,7 @@ class Xia::Rank
     return if @author.vip?
     info = legend.find { |i| i[:task] == task }
     raise "Unknown task #{task.inspect}" if info.nil?
-    if info[:bot_forbid] && Xia::Bots.new.is?(@author.login)
+    if info[:bot_forbid] && Xia::Bots.new.is?(@author)
       raise Xia::Urror, "The bot @#{@author.login} can't #{info[:text]}"
     end
     karma = @author.karma.points(safe: safe)

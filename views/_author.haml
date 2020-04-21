@@ -2,3 +2,5 @@
   %a{href: Iri.new('https://github.com/').append(login), style: 'vertical-align:middle;'}<
     %img{src: "https://socatar.com/github/#{login}/192-192", style: 'height:1em;width:1em;'}
   &= "@#{login}"
+  - if Xia::Bots.new.is?(login)
+    %span{title: 'It is a supervised bot'}= '⚙️'

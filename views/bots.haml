@@ -1,0 +1,16 @@
+%h2
+  Bots
+
+%table.compact
+  %thead
+    %tr
+      %th Login
+      %th.right Karma
+
+  %tbody
+    - bots.each do |b|
+      %tr
+        %td
+          = partial(:author, locals, id: nil, login: b.login)
+        %td.right.monospace
+          = b.karma.points

@@ -73,7 +73,7 @@ class Xia::Author
 
   def row
     row = @pgsql.exec('SELECT * FROM author WHERE id=$1', [@id])[0]
-    raise Xia::Urror, "Author @#{@login} not found in the database" if row.nil?
+    raise Xia::Urror, "Author ##{@id} not found in the database" if row.nil?
     row
   end
 end

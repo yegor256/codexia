@@ -71,6 +71,7 @@ class Xia::AppTest < Minitest::Test
       '/recent',
       '/submit',
       '/terms',
+      '/bots',
       '/sql',
       '/sql?query=SELECT%20%2A%20FROM%20author',
       '/api'

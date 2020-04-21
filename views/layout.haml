@@ -35,7 +35,7 @@
                   = "@#{author[:login]}"
                   - if the_author.vip?
                     %span{title: 'You are VIP user'}= '🍏'
-                  - if Xia::Bots.new.is?(the_author.login)
+                  - if Xia::Bots.new.is?(the_author)
                     %span{title: 'You are a supervised bot'}= '⚙️'
               %li{title: 'Your karma'}
                 %a{href: iri.cut('/karma')}
@@ -53,7 +53,7 @@
                 %li
                   %a{href: iri.cut('/terms')}
                     = '/terms'
-                - if Xia::Bots.new.is?(the_author.login)
+                - if Xia::Bots.new.is?(the_author)
                   %li
                     %a{href: iri.cut('/api')}
                       = '/api'
@@ -86,6 +86,9 @@
               %li
                 %a{href: iri.cut('/sql')}
                   = '/sql'
+              %li
+                %a{href: iri.cut('/bots')}
+                  = '/bots'
         %nav
           %ul
             %li

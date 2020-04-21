@@ -171,16 +171,6 @@ get '/api' do
   )
 end
 
-get '/sql' do
-  raise Xia::Urror, 'You are not allowed to see this' unless the_author.vip?
-  query = params[:query] || 'SELECT * FROM author LIMIT 16'
-  haml :sql, layout: :layout, locals: merged(
-    title: '/sql',
-    query: query,
-    result: settings.pgsql.exec(query)
-  )
-end
-
 def the_author
   redirect '/welcome' unless @locals[:author]
   require_relative 'objects/authors'
@@ -200,3 +190,5 @@ require_relative 'front/front_login.rb'
 require_relative 'front/front_helpers.rb'
 require_relative 'front/front_project.rb'
 require_relative 'front/front_karma.rb'
+require_relative 'front/front_sql.rb'
+require_relative 'front/front_bots.rb'
