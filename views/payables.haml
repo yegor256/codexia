@@ -15,7 +15,8 @@
           = format('%+0.2f', p[:points])
         %td
           = p[:text]
-        %td{title: p[:created]}
-          = RelativeTime.in_words(p[:created])
+          %br
+          %span.gray.smaller{title: p[:created]}
+            = RelativeTime.in_words(p[:created])
 
 = partial(:paging, locals, page: page, list: recent)

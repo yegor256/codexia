@@ -46,19 +46,17 @@ class Xia::Karma
         query: 'SELECT * FROM project AS t WHERE author=$1 AND deleted IS NULL',
         terms: 'each project you submitted',
         history: 'The project #[id]:[coordinates] you submitted',
-        bot: +0.2
+        bot: +0.8
       },
       {
         points: +5,
         query: [
-          'SELECT t.* FROM (',
-          '  SELECT *, (SELECT COUNT(*) FROM badge WHERE badge.project=project.id) AS badges',
-          '  FROM project',
-          '  WHERE author=$1 AND deleted IS NULL',
-          ') AS t WHERE badges > 1'
+          'SELECT DISTINCT t.id, t.coordinates, t.created FROM project AS t',
+          'JOIN badge ON badge.project=t.id AND badge.text LIKE \'L%\'',
+          'WHERE t.author=$1 AND t.deleted IS NULL'
         ].join(' '),
-        terms: 'each project with more than one badge',
-        history: 'The project #[id]:[coordinates] you submitted got a few badges',
+        terms: 'each promoted project',
+        history: 'The project #[id]:[coordinates] you submitted got a promotion',
         bot: +2
       },
       {
@@ -66,7 +64,7 @@ class Xia::Karma
         query: 'SELECT * FROM review AS t WHERE author=$1 AND deleted IS NULL',
         terms: 'each review you submitted',
         history: 'The review #[id] you submitted',
-        bot: +0.1
+        bot: +0.5
       },
       {
         points: +10,
@@ -101,13 +99,13 @@ class Xia::Karma
         ].join(' '),
         terms: 'each review of yours, which was down-voted',
         history: 'Your review #[id] was down-voted',
-        bot: -1
+        bot: -3
       },
       {
         points: -50,
-        query: 'SELECT * FROM project AS t WHERE author=$1 AND deleted IS NOT NULL',
+        query: 'SELECT t.* FROM project AS t WHERE author=$1 AND deleted IS NOT NULL',
         terms: 'each project you submitted, which was deleted later',
-        history: 'The roject #[id]:[coordinates] you submitted was deleted',
+        history: 'The project #[id]:[coordinates] you submitted was deleted',
         bot: -10
       },
       {
@@ -115,7 +113,7 @@ class Xia::Karma
         query: 'SELECT * FROM review AS t WHERE author=$1 AND deleted IS NOT NULL',
         terms: 'each review you submitted, which was deleted later',
         history: 'The review #[id] you submitted was deleted',
-        bot: -5
+        bot: -10
       }
     ]
   end

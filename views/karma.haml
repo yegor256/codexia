@@ -9,12 +9,14 @@
   - safe = the_author.karma.points(safe: true)
   - if safe.positive?
     You can withdraw up to
-    = safe
+    = format('%.02f', safe)
     points.
   - else
     You
     %span.firebrick can't
-    withdraw anything at the moment.
+    withdraw anything at the moment
+    = succeed '.' do
+      = "(#{format('%.02f', safe)})"
 
 - if withdrawals.empty?
   %p
@@ -34,7 +36,7 @@
       %span.item
         = "##{w[:id]}"
       %span.item.monospace
-        = w[:points]
+        = format('%+0.2f', w[:points])
         pts
       %span.item.monospace
         = w[:wallet]
@@ -53,7 +55,7 @@
   - recent.each do |r|
     %p
       %strong
-        = format('%+d', r[:points])
+        = format('%+0.2f', r[:points])
       &= r[:text]
       %br
       %span.smaller.gray
