@@ -46,7 +46,7 @@ class Xia::Karma
         query: 'SELECT * FROM project AS t WHERE author=$1 AND deleted IS NULL',
         terms: 'each project you submitted',
         history: 'The project #[id]:[coordinates] you submitted',
-        bot: +0.1
+        bot: +0.2
       },
       {
         points: +5,
@@ -55,11 +55,11 @@ class Xia::Karma
           '  SELECT *, (SELECT COUNT(*) FROM badge WHERE badge.project=project.id) AS badges',
           '  FROM project',
           '  WHERE author=$1 AND deleted IS NULL',
-          ') AS t WHERE badges >= 10'
+          ') AS t WHERE badges >= 1'
         ].join(' '),
         terms: 'each project with more than one badge',
         history: 'The project #[id]:[coordinates] you submitted got a few badges',
-        bot: +1
+        bot: +2
       },
       {
         points: +1,
@@ -79,7 +79,7 @@ class Xia::Karma
         ].join(' '),
         terms: 'each review of yours, which collected 10+ upvotes',
         history: 'Your review #[id] was upvoted 10+ times',
-        bot: 0
+        bot: +1
       },
       {
         points: +2,
