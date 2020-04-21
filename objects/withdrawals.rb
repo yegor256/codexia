@@ -43,13 +43,10 @@ class Xia::Withdrawals
     Xia::Rank.new(@author).enter('withdraw', safe: true)
     rate = wts.usd_rate
     zld = (points / rate).round(4).to_f
-    # wts.wait(wts.pull)
-    wts.pay(keygap, wallet, zld, "#{points} codexia karma points")
-    # wts.wait(job)
-    @pgsql.exec(
-      'INSERT INTO withdrawal (author, wallet, points, zents) VALUES ($1, $2, $3, $4) RETURNING id',
-      [@author.id, wallet, points, Zold::Amount.new(zld: zld).to_i]
-    )[0]['id'].to_i
+    wts.wait(wts.pull)
+    job = wts.pay(keygap, wallet, zld, "#{points} codexia karma points")
+    wts.wait(job)
+    @author.karma.add(points, wallet, Zold::Amount.new(zld: zld).to_i)
     @telepost.spam(
       "New withdrawal for #{points} points (#{zld} ZLD) has been made",
       "by [@#{@author.login}](https://github.com/#{@author.login})"

@@ -28,7 +28,7 @@ require_relative '../objects/authors'
 
 class Xia::BadgesTest < Minitest::Test
   def test_attaches_badge
-    author = Xia::Authors.new(t_pgsql).named('-test-')
+    author = Xia::Authors.new(t_pgsql).named('-test22')
     projects = author.projects
     project = projects.submit('github', "yegor256/takes#{rand(999)}")
     badges = project.badges
@@ -41,18 +41,21 @@ class Xia::BadgesTest < Minitest::Test
   end
 
   def test_attaches_badge_in_threads
-    author = Xia::Authors.new(t_pgsql).named('-test-')
+    author = Xia::Authors.new(t_pgsql).named('-test099')
     projects = author.projects
     project = projects.submit('github', "yegor256/takes#{rand(999)}")
     badges = project.badges
     Threads.new(20).assert do
-      badge = badges.attach('newbie', force: true)
+      badge = badges.attach('newbie')
       assert(!badge.id.nil?)
+    rescue Xia::Badges::DuplicateError => e
+      assert(!e.nil?)
     end
   end
 
   def test_promotes_and_degrades
-    author = Xia::Authors.new(t_pgsql).named('-test-')
+    author = Xia::Authors.new(t_pgsql).named("test#{rand(999)}")
+    author.karma.add(10_000, '0', 0)
     projects = author.projects
     project = projects.submit('github', "yegor256/cactoos#{rand(999)}")
     badges = project.badges

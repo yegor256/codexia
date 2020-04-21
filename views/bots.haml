@@ -6,6 +6,7 @@
     %tr
       %th Login
       %th.right Karma
+      %th.right Payable
 
   %tbody
     - bots.each do |b|
@@ -14,3 +15,5 @@
           = partial(:author, locals, id: nil, login: b.login)
         %td.right.monospace
           = b.karma.points
+        %td.right.monospace
+          = b.karma.points(safe: true)

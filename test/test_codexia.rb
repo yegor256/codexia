@@ -66,7 +66,7 @@ class Xia::AppTest < Minitest::Test
   end
 
   def test_200_user_pages
-    name = '-test-'
+    name = '-test'
     login(name)
     pages = [
       '/recent',
@@ -84,11 +84,13 @@ class Xia::AppTest < Minitest::Test
   end
 
   def test_submits_wrong_coordinates
+    login('-tester5')
     post(Iri.new('/submit').add(platform: 'github', coordinates: '-').to_s, nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(303, last_response.status, "#{p} fails: #{last_response.body}")
   end
 
   def test_api_fetch_json
+    login('-tester4')
     id = post_project('tt/ttt')
     post("/p/#{id}/post?text=hello", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     get('/recent.json', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
@@ -99,6 +101,7 @@ class Xia::AppTest < Minitest::Test
   end
 
   def test_api_post_review
+    login('-tester1')
     name = 'abc/ddd'
     id = post_project(name)
     assert_equal(post_project(name), id)
@@ -111,6 +114,7 @@ class Xia::AppTest < Minitest::Test
   end
 
   def test_attach_detach_badge
+    login('-tester2')
     id = post_project('abc/my-badges')
     post("/p/#{id}/attach?text=thebadge", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
@@ -124,6 +128,7 @@ class Xia::AppTest < Minitest::Test
   end
 
   def test_meta
+    login('-tester3')
     id = post_project('hey/def')
     post("/p/#{id}/meta?key=test&value=22", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")

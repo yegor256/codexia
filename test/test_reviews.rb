@@ -31,7 +31,7 @@ class Xia::ReviewsTest < Minitest::Test
     projects = author.projects
     project = projects.submit('github', "yegor256/takes#{rand(999)}")
     reviews = project.reviews
-    review = reviews.post('How are you?', '--', force: true)
+    review = reviews.post('This is a test review good enough to be posted')
     assert(!review.id.nil?)
     assert(!reviews.recent.empty?)
   end
@@ -43,7 +43,7 @@ class Xia::ReviewsTest < Minitest::Test
     project.delete
     reviews = project.reviews
     assert_raises(Xia::Urror) do
-      reviews.post('How are you?', '--')
+      reviews.post('This is a test review good enough to be posted', '--')
     end
   end
 
@@ -51,7 +51,7 @@ class Xia::ReviewsTest < Minitest::Test
     author = Xia::Authors.new(t_pgsql).named('-test-')
     projects = author.projects
     project = projects.submit('github', "yegor256/foo#{rand(999)}")
-    project.reviews.post('How are you?', 'abc', force: true)
+    project.reviews.post('This is a test review good enough to be posted')
     assert_equal(1, project.reviews.recent.size)
   end
 
@@ -59,9 +59,10 @@ class Xia::ReviewsTest < Minitest::Test
     author = Xia::Authors.new(t_pgsql).named('-test-')
     projects = author.projects
     project = projects.submit('github', "yegor256/foo#{rand(999)}")
-    project.reviews.post('The test', 'hash', force: true)
+    text = 'This is a test review good enough to be posted'
+    project.reviews.post(text, 'hash')
     assert_raises(Xia::Reviews::DuplicateError) do
-      project.reviews.post('Another test', 'hash', force: true)
+      project.reviews.post(text + '.', 'hash')
     end
   end
 end

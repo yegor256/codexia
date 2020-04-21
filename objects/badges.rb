@@ -23,6 +23,7 @@
 require 'loog'
 require_relative 'xia'
 require_relative 'badge'
+require_relative 'bots'
 
 # Badges.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -67,22 +68,25 @@ class Xia::Badges
     end
   end
 
-  def attach(text, force: false)
+  def attach(text)
     Xia::Rank.new(@project.author).enter('badges.attach')
-    raise DuplicateError, "The badge #{text.inspect} is already attached" if exists?(text) && !force
+    raise DuplicateError, "The badge #{text.inspect} is already attached" if exists?(text)
     raise Xia::Urror, "The badge #{text.inspect} looks wrong" unless /^([a-z0-9]{3,12}|L[123])$/.match?(text)
     delete = false
     if /^(newbie|L[123])$/.match?(text)
       after = text == 'newbie' ? 0 : text[1].to_i
+      if Xia::Bots.new.is?(@project.author) && after.positive?
+        raise Xia::Urror, "The bot @#{@project.author.login} can't promote/degrade a project to L#{after}"
+      end
       before = level
       reviews = Xia::Reviews.new(@pgsql, @project, log: @log)
       if after > before
         Xia::Rank.new(@project.author).enter("badges.promote-to-#{text}")
-        reviews.post("The project has been promoted from L#{before} to L#{after}", force: true)
+        reviews.post("The project has been promoted from L#{before} to L#{after}")
       end
       if after < before
         Xia::Rank.new(@project.author).enter("badges.degrade-from-L#{before}")
-        reviews.post("The project has been degraded from L#{before} to L#{after}", force: true)
+        reviews.post("The project has been degraded from L#{before} to L#{after}")
       end
       delete = true
     elsif all.length >= 5

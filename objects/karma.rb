@@ -120,6 +120,14 @@ class Xia::Karma
     ]
   end
 
+  # Forcefully add this points to the karma (the user won't be able to withdraw them).
+  def add(points, wallet, zents)
+    @pgsql.exec(
+      'INSERT INTO withdrawal (author, wallet, points, zents) VALUES ($1, $2, $3, $4) RETURNING id',
+      [@author.id, wallet, points, zents]
+    )[0]['id'].to_i
+  end
+
   def points(safe: false)
     bot = Xia::Bots.new.is?(@author)
     earned = legend.map do |g|
@@ -132,8 +140,13 @@ class Xia::Karma
       )[0]['count'].to_i * (bot ? g[:bot] : g[:points])
     end.inject(&:+)
     paid = @pgsql.exec('SELECT SUM(points) FROM withdrawal WHERE author=$1', [@author.id])[0]['sum'].to_i
-    earned -= 100 if safe
-    @points ||= earned - paid
+    if safe
+      earned -= 100
+      earned -= paid
+    else
+      earned += paid
+    end
+    @points ||= earned
   end
 
   def recent(limit: 10)
