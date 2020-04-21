@@ -55,7 +55,7 @@ class Xia::Karma
           '  SELECT *, (SELECT COUNT(*) FROM badge WHERE badge.project=project.id) AS badges',
           '  FROM project',
           '  WHERE author=$1 AND deleted IS NULL',
-          ') AS t WHERE badges >= 1'
+          ') AS t WHERE badges > 1'
         ].join(' '),
         terms: 'each project with more than one badge',
         history: 'The project #[id]:[coordinates] you submitted got a few badges',

@@ -5,17 +5,17 @@
 %table.compact
   %thead
     %tr
-      %th Time
       %th.right Points
       %th Details
+      %th Time
   %tbody
     - recent.each do |p|
       %tr
-        %td
-          = p[:created]
         %td.right.monospace
           = format('%+0.2f', p[:points])
         %td
           = p[:text]
+        %td{title: p[:created]}
+          = RelativeTime.in_words(p[:created])
 
 = partial(:paging, locals, page: page, list: recent)
