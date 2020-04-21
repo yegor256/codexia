@@ -50,7 +50,12 @@
           = gs.map { |g| g[:text] }.join('<br/>To ')
 
 %p
-  Users may earn
+  - if Xia::Bots.new.is?(the_author)
+    %del Users
+    Bots
+  - else
+    Users
+  may earn these
   %i karma
   points:
 

@@ -1,6 +1,6 @@
 %h2
   Payables for
-  = "@#{author}"
+  = "@#{a.login}"
 
 %table.compact
   %thead
@@ -14,7 +14,7 @@
         %td
           = p[:created]
         %td.right.monospace
-          = p[:points]
+          = format('%+0.2f', p[:points])
         %td
           = p[:text]
 
