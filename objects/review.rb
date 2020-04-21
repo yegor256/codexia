@@ -45,10 +45,14 @@ class Xia::Review
 
   def delete
     Xia::Rank.new(@project.author).enter('reviews.delete')
-    @pgsql.exec(
-      'UPDATE review SET deleted = $2 WHERE id=$1',
-      [@id, "Deleted by @#{@project.author.login} on #{Time.now.utc.iso8601}"]
-    )
+    if row[:author] == @project.author.id
+      @pgsql.exec('DELETE FROM review WHERE id=$1', [@id])
+    else
+      @pgsql.exec(
+        'UPDATE review SET deleted = $2 WHERE id=$1',
+        [@id, "Deleted by @#{@project.author.login} on #{Time.now.utc.iso8601}"]
+      )
+    end
   end
 
   def quota

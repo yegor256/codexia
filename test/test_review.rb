@@ -36,4 +36,27 @@ class Xia::ReviewTest < Minitest::Test
     assert(!id.nil?)
     assert_equal(id, review.vote(false))
   end
+
+  def test_deletes_own_review
+    author = Xia::Authors.new(t_pgsql).named('-test002')
+    projects = author.projects
+    project = projects.submit('github', "yegor256/takes#{rand(999)}")
+    reviews = project.reviews
+    review = reviews.post('This is a test review good enough to be posted')
+    assert(!project.reviews.recent.empty?)
+    review.delete
+    assert(project.reviews.recent.empty?)
+  end
+
+  def test_deletes_someones_review
+    author = Xia::Authors.new(t_pgsql).named('-test0932')
+    projects = author.projects
+    project = projects.submit('github', "yegor256/takes#{rand(999)}")
+    reviewer = Xia::Authors.new(t_pgsql).named('-test228q')
+    review = reviewer.projects.get(project.id).reviews.post(
+      'This is a test review good enough to be posted'
+    )
+    project.reviews.get(review.id).delete
+    assert(project.reviews.recent.empty?)
+  end
 end
