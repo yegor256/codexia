@@ -45,7 +45,8 @@ class Xia::Karma
         points: +1,
         query: 'SELECT * FROM project AS t WHERE author=$1 AND deleted IS NULL',
         terms: 'each project you submitted',
-        history: 'The project #[id]:[coordinates] you submitted'
+        history: 'The project #[id]:[coordinates] you submitted',
+        bot: +0.1
       },
       {
         points: +5,
@@ -57,13 +58,15 @@ class Xia::Karma
           ') AS t WHERE badges >= 10'
         ].join(' '),
         terms: 'each project with more than one badge',
-        history: 'The project #[id]:[coordinates] you submitted got a few badges'
+        history: 'The project #[id]:[coordinates] you submitted got a few badges',
+        bot: +1
       },
       {
         points: +1,
         query: 'SELECT * FROM review AS t WHERE author=$1 AND deleted IS NULL',
         terms: 'each review you submitted',
-        history: 'The review #[id] you submitted'
+        history: 'The review #[id] you submitted',
+        bot: +0.1
       },
       {
         points: +10,
@@ -75,17 +78,19 @@ class Xia::Karma
           ') AS t WHERE votes >= 10'
         ].join(' '),
         terms: 'each review of yours, which collected 10+ upvotes',
-        history: 'Your review #[id] was upvoted 10+ times'
+        history: 'Your review #[id] was upvoted 10+ times',
+        bot: 0
       },
       {
-        points: 0,
+        points: +2,
         query: [
           'SELECT t.* FROM vote AS t',
           'JOIN review ON t.review=review.id',
           'WHERE review.author=$1 AND positive=true'
         ].join(' '),
         terms: 'each review of yours, which was up-voted',
-        history: 'You review #[id] was up-voted'
+        history: 'You review #[id] was up-voted',
+        bot: +0.2
       },
       {
         points: -5,
@@ -95,32 +100,36 @@ class Xia::Karma
           'WHERE review.author=$1 AND positive=false'
         ].join(' '),
         terms: 'each review of yours, which was down-voted',
-        history: 'Your review #[id] was down-voted'
+        history: 'Your review #[id] was down-voted',
+        bot: -1
       },
       {
         points: -25,
         query: 'SELECT * FROM project AS t WHERE author=$1 AND deleted IS NOT NULL',
         terms: 'each project you submitted, which was deleted later',
-        history: 'The roject #[id]:[coordinates] you submitted was deleted'
+        history: 'The roject #[id]:[coordinates] you submitted was deleted',
+        bot: -5
       },
       {
         points: -50,
         query: 'SELECT * FROM review AS t WHERE author=$1 AND deleted IS NOT NULL',
         terms: 'each review you submitted, which was deleted later',
-        history: 'The review #[id] you submitted was deleted'
+        history: 'The review #[id] you submitted was deleted',
+        bot: -10
       }
     ]
   end
 
   def points(safe: false)
-    earned = legend.reject { |g| g[:points].negative? && Xia::Bots.new.is?(@author) }.map do |g|
+    bot = Xia::Bots.new.is?(@author)
+    earned = legend.map do |g|
       @pgsql.exec(
         [
           "SELECT COUNT(*) FROM (#{g[:query]}) AS q",
           safe ? 'WHERE q.created < NOW() - INTERVAL \'2 DAY\'' : ''
         ].join(' '),
         [@author.id]
-      )[0]['count'].to_i * g[:points]
+      )[0]['count'].to_i * (bot ? g[:bot] : g[:points])
     end.inject(&:+)
     paid = @pgsql.exec('SELECT SUM(points) FROM withdrawal WHERE author=$1', [@author.id])[0]['sum'].to_i
     earned -= 100 if safe
@@ -128,11 +137,12 @@ class Xia::Karma
   end
 
   def recent(limit: 10)
+    bot = Xia::Bots.new.is?(@author)
     legend.map do |g|
       @pgsql.exec("#{g[:query]} ORDER BY t.created DESC LIMIT $2", [@author.id, limit]).map do |r|
         {
           text: g[:history].gsub(/\[([a-z]+)\]/) { r[Regexp.last_match[1]] },
-          points: g[:points],
+          points: bot ? g[:bot] : g[:points],
           created: Time.parse(r['created'])
         }
       end

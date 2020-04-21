@@ -58,5 +58,13 @@ post '/submit' do
   coordinates = params[:coordinates]
   raise Xia::Urror, '"coordinates" is a mandatory parameter' if coordinates.nil?
   project = the_author.projects.submit(platform, coordinates)
+  if params[:noredirect]
+    return JSON.pretty_generate(
+      id: project.id,
+      coordinates: project.coordinates,
+      platform: project.platform,
+      uri: iri.cut('/p').append(project.id)
+    )
+  end
   flash(iri.cut('/p').append(project.id), "A new project #{project.id} has been submitted!")
 end

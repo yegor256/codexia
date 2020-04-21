@@ -29,7 +29,7 @@ require_relative '../objects/authors'
 class Xia::KarmaTest < Minitest::Test
   def test_karma
     authors = Xia::Authors.new(t_pgsql)
-    login = '-test-'
+    login = "test#{rand(999)}"
     author = authors.named(login)
     project = author.projects.submit('github', "yegor256/takes#{rand(999)}")
     reviews = project.reviews
