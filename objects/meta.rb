@@ -59,18 +59,20 @@ class Xia::Meta
       ].join(' '),
       [@project.id, @project.author.id, key, value]
     )[0]['id'].to_i
-    if exists
-      @telepost.spam(
-        "The meta \"`#{key}`\" re-set for the project",
-        "[#{@project.coordinates}](https://www.codexia.org/p/#{@project.id})",
-        "by [@#{@project.author.login}](https://github.com/#{@project.author.login})"
-      )
-    else
-      @telepost.spam(
-        "A new meta \"`#{key}`\" set for the project",
-        "[#{@project.coordinates}](https://www.codexia.org/p/#{@project.id})",
-        "by [@#{@project.author.login}](https://github.com/#{@project.author.login})"
-      )
+    unless Xia::Bots.new.is?(@project.author.login)
+      if exists
+        @telepost.spam(
+          "The meta \"`#{key}`\" re-set for the project",
+          "[#{@project.coordinates}](https://www.codexia.org/p/#{@project.id})",
+          "by [@#{@project.author.login}](https://github.com/#{@project.author.login})"
+        )
+      else
+        @telepost.spam(
+          "A new meta \"`#{key}`\" set for the project",
+          "[#{@project.coordinates}](https://www.codexia.org/p/#{@project.id})",
+          "by [@#{@project.author.login}](https://github.com/#{@project.author.login})"
+        )
+      end
     end
     id
   end

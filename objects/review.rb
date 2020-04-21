@@ -22,6 +22,7 @@
 
 require_relative 'xia'
 require_relative 'rank'
+require_relative 'bots'
 
 # Review.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -53,7 +54,7 @@ class Xia::Review
   def quota
     return 1 if @project.author.vip?
     max = 10
-    max = 100 if @project.author.bot?
+    max = 100 if Xia::Bots.new.is?(@project.author.login)
     max - @pgsql.exec(
       'SELECT COUNT(*) FROM vote WHERE created > NOW() - INTERVAL \'1 DAY\' AND author=$1',
       [@project.author.id]

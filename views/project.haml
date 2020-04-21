@@ -98,7 +98,7 @@
                 terms of use
               and don't abuse the platform.
 
-- if project.deleted.nil? && the_author.bot?
+- if project.deleted.nil? && Xia::Bots.new.is?(the_author.login)
   %div.block
     - metas = project.meta.all
     - unless metas.empty?

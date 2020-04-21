@@ -13,21 +13,19 @@
 
 Codexia is an open source incubator. We want to build
 a community of reviewers and advisers to help us select the most
-interesting emerging open source projects. According to
+interesting _emerging_ open source projects. According to
 the selection made by the community we want to donate
 our funds to the most promising teams and projects.
 
 Read our [Terms of Use](https://www.codexia.org/terms).
 
-We have the following bots at the moment:
+We have the following official bots at the moment:
 
-  * `not-found` by @cdxbot: Checks the presence of the repo on GitHub and posts a message if it's absent
-  * `too-small` by @cdxbot: Checks the size of the repo and posts a message if it's too small (by LoC)
-  * `too-many-stars` by @cdxbot: Checks the popularity of the repo and posts a message if it's too popular (over 10K stars)
-  * `stars-up` by @iakunin-codexia-bot: Checks the amount of GitHub stars and posts a message when there is recent growth
-  * `forks-up` by @iakunin-codexia-bot: Checks the amount of GitHub forks and posts a message when the number grows
-  * `seen-on-hn` by @iakunin-codexia-bot: Posts a message when the repo shows up on Hacker News
-  * `seen-on-reddit` by @iakunin-codexia-bot: Posts a message when the repo is seen on Reddit
+  * [iakunin/codexia-bot](https://github.com/iakunin/codexia-bot)
+    as [@iakunin-codexia-bot](https://github.com/iakunin-codexia-bot)
+
+  * [/codexia-hunter](https://github.com/iakunin/codexia-hunter)
+    as [@codexia-hunter](https://github.com/codexia-hunter)
 
 If you want to add yours, join our
 [Telegram group](https://t.me/cdxia) and suggest it.

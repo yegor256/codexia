@@ -26,6 +26,7 @@ require 'securerandom'
 require_relative 'xia'
 require_relative 'review'
 require_relative 'rank'
+require_relative 'bots'
 
 # Reviews.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -65,18 +66,20 @@ class Xia::Reviews
       'INSERT INTO review (project, author, text, hash) VALUES ($1, $2, $3, $4) RETURNING id',
       [@project.id, @project.author.id, text, hash]
     )[0]['id'].to_i
-    @telepost.spam(
-      "👍 New review no.#{id} has been posted for the project",
-      "[#{@project.coordinates}](https://www.codexia.org/p/#{@project.id})",
-      "by [@#{@project.author.login}](https://github.com/#{@project.author.login})"
-    )
+    unless Xia::Bots.new.is?(@project.author.login)
+      @telepost.spam(
+        "👍 New review no.#{id} has been posted for the project",
+        "[#{@project.coordinates}](https://www.codexia.org/p/#{@project.id})",
+        "by [@#{@project.author.login}](https://github.com/#{@project.author.login})"
+      )
+    end
     get(id)
   end
 
   def quota
     return 1 if @project.author.vip?
     max = 5
-    max = 100 if @project.author.bot?
+    max = 100 if Xia::Bots.new.is?(@project.author.login)
     max - @pgsql.exec(
       'SELECT COUNT(*) FROM review WHERE created > NOW() - INTERVAL \'1 DAY\' AND author=$1',
       [@project.author.id]

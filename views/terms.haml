@@ -56,7 +56,7 @@
 
 %ul
   - karma_legend.reject { |g| g[:points].zero? }.each do |g|
-    %li{style: the_author.bot? && g[:points].negative? ? 'text-decoration:line-through' : ''}
+    %li{style: Xia::Bots.new.is?(the_author.login) && g[:points].negative? ? 'text-decoration:line-through' : ''}
       = succeed ':' do
         %strong.monospace{class: g[:points].positive? ? 'seagreen' : 'firebrick'}= format('%+d', g[:points])
       per

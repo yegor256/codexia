@@ -24,6 +24,7 @@ require 'loog'
 require_relative 'xia'
 require_relative 'project'
 require_relative 'rank'
+require_relative 'bots'
 
 # Projects.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -69,7 +70,7 @@ class Xia::Projects
   def quota
     return 1 if @author.vip?
     max = 5
-    max = 100 if @author.bot?
+    max = 100 if Xia::Bots.new.is?(@author.login)
     max - @pgsql.exec(
       'SELECT COUNT(*) FROM project WHERE created > NOW() - INTERVAL \'1 DAY\' AND author=$1',
       [@author.id]

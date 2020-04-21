@@ -23,6 +23,7 @@
 require 'loog'
 require_relative 'xia'
 require_relative 'urror'
+require_relative 'bots'
 
 # The rank of an author.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -137,7 +138,9 @@ class Xia::Rank
     return if @author.vip?
     info = legend.find { |i| i[:task] == task }
     raise "Unknown task #{task.inspect}" if info.nil?
-    raise Xia::Urror, "A bot can't #{info[:text]}" if info[:bot_forbid] && @author.bot?
+    if info[:bot_forbid] && Xia::Bots.new.is?(@author.login)
+      raise Xia::Urror, "The bot @#{@author.login} can't #{info[:text]}"
+    end
     karma = @author.karma.points(safe: safe)
     txt = format('%+d', karma)
     if info[:min] && karma < info[:min]

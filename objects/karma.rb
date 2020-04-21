@@ -24,6 +24,7 @@ require 'loog'
 require_relative 'xia'
 require_relative 'urror'
 require_relative 'withdrawals'
+require_relative 'bots'
 
 # Karma.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -112,7 +113,7 @@ class Xia::Karma
   end
 
   def points(safe: false)
-    earned = legend.reject { |g| g[:points].negative? && @author.bot? }.map do |g|
+    earned = legend.reject { |g| g[:points].negative? && Xia::Bots.new.is?(@author.login) }.map do |g|
       @pgsql.exec(
         [
           "SELECT COUNT(*) FROM (#{g[:query]}) AS q",

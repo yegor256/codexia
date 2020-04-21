@@ -41,11 +41,6 @@ class Xia::Author
     @telepost = telepost
   end
 
-  def bot?
-    return true if login.start_with?('-')
-    ['yegor256', 'cdxbot', 'iakunin-codexia-bot', 'codexia-hunter'].include?(login)
-  end
-
   def vip?
     return true if login.start_with?('-')
     ['yegor256'].include?(login)
