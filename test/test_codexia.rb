@@ -22,6 +22,7 @@
 
 require 'minitest/autorun'
 require 'rack/test'
+require 'iri'
 require_relative 'test__helper'
 require_relative '../codexia'
 require_relative '../objects/xia'
@@ -101,9 +102,11 @@ class Xia::AppTest < Minitest::Test
     name = 'abc/ddd'
     id = post_project(name)
     assert_equal(post_project(name), id)
-    post("/p/#{id}/post?text=hello&hash=123", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    text = 'This is a long enough review to pass all possible checks inside'
+    uri = Iri.new("/p/#{id}/post").add(text: text, hash: 123).to_s
+    post(uri, nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
-    post("/p/#{id}/post?text=hello&hash=123", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    post(uri, nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
   end
 

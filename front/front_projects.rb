@@ -20,20 +20,43 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'minitest/autorun'
-require_relative 'test__helper'
-require_relative '../objects/xia'
-require_relative '../objects/authors'
+get '/recent' do
+  badges = (params[:badges] || '').strip.split(',')
+  page = (params[:page] || '0').strip.to_i
+  haml :recent, layout: :layout, locals: merged(
+    title: '/recent',
+    page: page,
+    list: the_author.projects.recent(
+      limit: 25,
+      offset: page * 25,
+      badges: badges,
+      show_deleted: the_author.karma.points > 100
+    )
+  )
+end
 
-class Xia::ReviewTest < Minitest::Test
-  def test_votes_review
-    author = Xia::Authors.new(t_pgsql).named('-test-')
-    projects = author.projects
-    project = projects.submit('github', "yegor256/takes#{rand(999)}")
-    reviews = project.reviews
-    review = reviews.post('How are you?', 'ab', force: true)
-    id = review.vote(true)
-    assert(!id.nil?)
-    assert_equal(id, review.vote(false))
-  end
+get '/recent.json' do
+  content_type 'application/json'
+  JSON.pretty_generate(
+    the_author.projects.recent(
+      limit: 25,
+      offset: (params[:page] || '0').strip.to_i * 25,
+      show_deleted: true
+    )
+  )
+end
+
+get '/submit' do
+  haml :submit, layout: :layout, locals: merged(
+    title: '/submit'
+  )
+end
+
+post '/submit' do
+  platform = params[:platform]
+  raise Xia::Urror, '"platform" is a mandatory parameter' if platform.nil?
+  coordinates = params[:coordinates]
+  raise Xia::Urror, '"coordinates" is a mandatory parameter' if coordinates.nil?
+  project = the_author.projects.submit(platform, coordinates)
+  flash(iri.cut('/p').append(project.id), "A new project #{project.id} has been submitted!")
 end

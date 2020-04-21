@@ -31,7 +31,7 @@ class Xia::ReviewsTest < Minitest::Test
     projects = author.projects
     project = projects.submit('github', "yegor256/takes#{rand(999)}")
     reviews = project.reviews
-    review = reviews.post('How are you?', '--')
+    review = reviews.post('How are you?', '--', force: true)
     assert(!review.id.nil?)
     assert(!reviews.recent.empty?)
   end
@@ -51,7 +51,7 @@ class Xia::ReviewsTest < Minitest::Test
     author = Xia::Authors.new(t_pgsql).named('-test-')
     projects = author.projects
     project = projects.submit('github', "yegor256/foo#{rand(999)}")
-    project.reviews.post('How are you?', 'abc')
+    project.reviews.post('How are you?', 'abc', force: true)
     assert_equal(1, project.reviews.recent.size)
   end
 
@@ -59,9 +59,9 @@ class Xia::ReviewsTest < Minitest::Test
     author = Xia::Authors.new(t_pgsql).named('-test-')
     projects = author.projects
     project = projects.submit('github', "yegor256/foo#{rand(999)}")
-    project.reviews.post('The test', 'hash')
+    project.reviews.post('The test', 'hash', force: true)
     assert_raises(Xia::Reviews::DuplicateError) do
-      project.reviews.post('Another test', 'hash')
+      project.reviews.post('Another test', 'hash', force: true)
     end
   end
 end

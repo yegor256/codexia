@@ -78,11 +78,11 @@ class Xia::Badges
       reviews = Xia::Reviews.new(@pgsql, @project, log: @log)
       if after > before
         Xia::Rank.new(@project.author).enter("badges.promote-to-#{text}")
-        reviews.post("The project has been promoted from L#{before} to L#{after}")
+        reviews.post("The project has been promoted from L#{before} to L#{after}", force: true)
       end
       if after < before
         Xia::Rank.new(@project.author).enter("badges.degrade-from-L#{before}")
-        reviews.post("The project has been degraded from L#{before} to L#{after}")
+        reviews.post("The project has been degraded from L#{before} to L#{after}", force: true)
       end
       delete = true
     elsif all.length >= 5

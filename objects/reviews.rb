@@ -55,11 +55,13 @@ class Xia::Reviews
     )[0]['count'].to_i.zero?
   end
 
-  def post(text, hash = SecureRandom.hex)
+  def post(text, hash = SecureRandom.hex, force: false)
     Xia::Rank.new(@project.author).enter('reviews.post')
-    raise Xia::Urror, 'The project is dead, can\'t review' unless @project.deleted.nil?
-    raise Xia::Urror, 'The review is too short' if text.length < 60 && @project.author.login != '-test-'
-    raise Xia::Urror, 'You are reviewing too fast' if quota.negative?
+    raise Xia::Urror, 'The project is dead, can\'t review' unless force || @project.deleted.nil?
+    if text.length < 60 && !force
+      raise Xia::Urror, "The review is too short for us, just #{text.length} symbols (must be longer)"
+    end
+    raise Xia::Urror, 'You are reviewing too fast' if quota.negative? && !force
     raise Xia::Urror, 'Hash can\'t be empty' if hash.empty?
     raise DuplicateError, 'A review with this hash already exists' if exists?(hash)
     id = @pgsql.exec(
