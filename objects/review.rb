@@ -44,10 +44,11 @@ class Xia::Review
   end
 
   def delete
-    Xia::Rank.new(@project.author).enter('reviews.delete')
     if row[:author] == @project.author.id
+      Xia::Rank.new(@project.author).enter('reviews.delete-own')
       @pgsql.exec('DELETE FROM review WHERE id=$1', [@id])
     else
+      Xia::Rank.new(@project.author).enter('reviews.delete')
       @pgsql.exec(
         'UPDATE review SET deleted = $2 WHERE id=$1',
         [@id, "Deleted by @#{@project.author.login} on #{Time.now.utc.iso8601}"]

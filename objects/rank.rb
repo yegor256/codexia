@@ -65,6 +65,12 @@ class Xia::Rank
         bot_forbid: true
       },
       {
+        task: 'reviews.delete-own',
+        min: 0,
+        text: 'delete its own existing review',
+        bot_forbid: false
+      },
+      {
         task: 'reviews.upvote',
         min: 100,
         text: 'upvote a review',
