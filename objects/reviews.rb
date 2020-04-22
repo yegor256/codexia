@@ -98,7 +98,7 @@ class Xia::Reviews
       'JOIN author ON author.id=r.author',
       'WHERE project=$1',
       show_deleted ? '' : ' AND r.deleted IS NULL',
-      'ORDER BY r.created DESC',
+      'ORDER BY r.created ASC',
       'LIMIT $2 OFFSET $3'
     ].join(' ')
     @pgsql.exec(q, [@project.id, limit, offset]).map do |r|

@@ -67,11 +67,13 @@
   points:
 
 %ul
-  - karma_legend.reject { |g| g[:points].zero? }.each do |g|
+  - karma_legend.each do |g|
+    - s = Xia::Bots.new.is?(the_author) ? g[:bot] : g[:points]
+    - pts = s.first[1]
     %li
       = succeed ':' do
-        %strong.monospace{class: g[:points].positive? ? 'seagreen' : 'firebrick'}
-          = format('%+0.2f', Xia::Bots.new.is?(the_author) ? g[:bot] : g[:points])
+        %strong.monospace{class: pts.positive? ? 'seagreen' : 'firebrick'}
+          = format('%+0.2f', pts)
       per
       = g[:terms]
 
