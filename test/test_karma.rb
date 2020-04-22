@@ -53,9 +53,9 @@ class Xia::KarmaTest < Minitest::Test
     author = authors.named(login)
     author.projects.submit('github', "yegor256/takes#{rand(999)}")
     before = author.karma.points
-    puts before
     wts = Zold::WTS::Fake.new
     author.withdrawals.pay('0000111122223333', 1, wts, 'keygap')
     assert(author.karma.points != before)
+    assert(author.karma.points(safe: true) != before)
   end
 end

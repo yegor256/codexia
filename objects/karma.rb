@@ -200,12 +200,8 @@ class Xia::Karma
       end.inject(&:+)
     end.inject(&:+)
     paid = @pgsql.exec('SELECT SUM(points) FROM withdrawal WHERE author=$1', [@author.id])[0]['sum'].to_i
-    if safe
-      earned -= 100
-      earned -= paid
-    else
-      earned += paid
-    end
+    earned -= paid + 100 if safe
+    earned += paid unless safe
     @points ||= earned
   end
 
