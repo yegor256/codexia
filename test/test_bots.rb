@@ -29,7 +29,7 @@ require_relative '../objects/authors'
 class Xia::BotsTest < Minitest::Test
   def test_fetches_all_bots
     authors = Xia::Authors.new(t_pgsql)
-    authors.named('yegor256')
+    authors.named('cdxbot')
     bots = Xia::Bots.new(t_pgsql)
     assert(!bots.authors.empty?)
     bot = bots.authors.first
