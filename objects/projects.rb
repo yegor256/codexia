@@ -97,8 +97,7 @@ class Xia::Projects
       {
         id: r['id'].to_i,
         coordinates: r['coordinates'],
-        author: r['login'],
-        author_id: r['author_id'].to_i,
+        author: Xia::Author.new(@pgsql, r['author_id'].to_i, log: @log, telepost: @telepost),
         deleted: r['deleted'],
         badges: r['badges'][1..-2].split(','),
         created: Time.parse(r['created'])

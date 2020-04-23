@@ -11,7 +11,7 @@
     - bots.each do |b|
       %tr
         %td
-          = partial(:author, locals, id: nil, login: b.login)
+          = partial(:author, locals, a: b)
         %td.right.monospace
           %a{href: iri.cut('/payables').add(a: b.login)}<
             = b.karma.points.round

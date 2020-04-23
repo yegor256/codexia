@@ -20,7 +20,7 @@
       %img{src: iri.cut('/github-logo.svg'), style: 'vertical-align: middle; width: 1em;'}
   %br
   %span.gray.smaller
-    = partial(:author, locals, id: nil, login: project.submitter)
+    = partial(:author, locals, a: project.submitter)
     %span.item{title: "##{project.id} on #{project.created}"}
       = RelativeTime.in_words(project.created)
     - if Xia::Rank.new(the_author).ok?('projects.delete')
@@ -55,7 +55,7 @@
           &= r[:deleted]
         %br
       %span.smaller.gray
-        = partial(:author, locals, id: r[:author_id], login: r[:author])
+        = partial(:author, locals, a: r[:author])
         %span.item{title: "##{r[:id]} on #{r[:created]}", style: (r[:deleted] ? 'text-decoration:line-through' : '')}
           = RelativeTime.in_words(r[:created])
         - if Xia::Rank.new(the_author).ok?('reviews.upvote')

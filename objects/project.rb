@@ -94,7 +94,10 @@ class Xia::Project
 
   def row
     r = @pgsql.exec(
-      'SELECT p.*, a.login FROM project AS p JOIN author AS a ON a.id=p.author WHERE p.id=$1',
+      [
+        'SELECT p.*, a.login, a.id AS author_id',
+        'FROM project AS p JOIN author AS a ON a.id=p.author WHERE p.id=$1'
+      ].join(' '),
       [@id]
     )[0]
     raise Xia::Urror, "Project ##{@id} not found in the database" if r.nil?
@@ -102,8 +105,7 @@ class Xia::Project
       id: r['id'].to_i,
       platform: r['platform'],
       coordinates: r['coordinates'],
-      author_id: r['author'].to_i,
-      author: r['login'],
+      author: Xia::Author.new(@pgsql, r['author_id'].to_i, log: @log, telepost: @telepost),
       deleted: r['deleted'],
       created: Time.parse(r['created'])
     }

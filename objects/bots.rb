@@ -38,7 +38,7 @@ class Xia::Bots
   end
 
   def is?(author)
-    login = author.is_a?(Xia::Author) ? author.login : author
+    login = author.login
     return true if login.start_with?('-')
     ALL.include?(login)
   end
