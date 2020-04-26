@@ -35,30 +35,37 @@
 %p
   Certain
   %i features
-  may be available only for users with big
-  enough reputation, for example:
+  may be available only for
+  - if Xia::Bots.new.is?(the_author)
+    %del.firebrick users
+    bots
+  - else
+    users
+  with big enough reputation:
 
 %table
   %colgroup
     %col{style: 'width: 5em'}
   %thead
     %tr
-      %th
-        Min karma required
+      %th.right
+        Karma
       %th
         Features available
   %tbody
     - rank_legend.reject { |g| g[:min].zero? }.sort_by { |g| g[:min] }.group_by { |g| g[:min] }.each do |min, gs|
+      - if Xia::Bots.new.is?(the_author)
+        - next unless gs.find { |g| g[:bot_forbid].nil? }
       %tr
         %td.right.monospace
-          = min
+          = "#{min}+"
         %td
           To
-          = gs.map { |g| g[:text] }.join('<br/>To ')
+          = gs.select { |g| !g[:bot_forbid] || !Xia::Bots.new.is?(the_author) }.map { |g| g[:text] }.join('<br/>To ')
 
 %p
   - if Xia::Bots.new.is?(the_author)
-    %del Users
+    %del.firebrick Users
     Bots
   - else
     Users
@@ -66,16 +73,27 @@
   %i karma
   points:
 
-%ul
-  - karma_legend.each do |g|
-    - s = Xia::Bots.new.is?(the_author) ? g[:bot] : g[:points]
-    - pts = s.first[1]
-    %li
-      = succeed ':' do
-        %strong.monospace{class: pts.positive? ? 'seagreen' : 'firebrick'}
-          = format('%+0.2f', pts)
-      per
-      = g[:terms]
+%table
+  %colgroup
+    %col{style: 'width: 5em'}
+  %thead
+    %tr
+      %th.right
+        Points
+      %th
+        Achievement
+  %tbody
+    - karma_legend.each do |g|
+      - s = Xia::Bots.new.is?(the_author) ? g[:bot] : g[:points]
+      - pts = s.first[1]
+      - next if pts.zero?
+      %tr
+        %td.right.monospace
+          %strong{class: pts.positive? ? 'seagreen' : 'firebrick'}
+            = format('%+0.2f', pts)
+        %td
+          per
+          = g[:terms]
 
 %p
   Each karma point earned is worth $1 (one US dollar) and

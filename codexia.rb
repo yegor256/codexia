@@ -115,14 +115,6 @@ get '/welcome' do
   haml :welcome, layout: nil, locals: merged
 end
 
-get '/terms' do
-  haml :terms, layout: :layout, locals: merged(
-    title: '/terms',
-    karma_legend: the_author.karma.legend,
-    rank_legend: Xia::Rank.new(the_author).legend
-  )
-end
-
 get '/api' do
   haml :api, layout: :layout, locals: merged(
     title: '/api',
@@ -152,4 +144,5 @@ require_relative 'front/front_projects.rb'
 require_relative 'front/front_karma.rb'
 require_relative 'front/front_payables.rb'
 require_relative 'front/front_sql.rb'
+require_relative 'front/front_terms.rb'
 require_relative 'front/front_bots.rb'
