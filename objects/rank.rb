@@ -48,6 +48,11 @@ class Xia::Rank
         text: 'submit a new project'
       },
       {
+        task: 'projects.show-deleted',
+        min: 100,
+        text: 'see deleted projects'
+      },
+      {
         task: 'projects.delete',
         min: 500,
         text: 'delete an existing project',
@@ -57,6 +62,11 @@ class Xia::Rank
         task: 'reviews.post',
         min: 0,
         text: 'post a review'
+      },
+      {
+        task: 'reviews.show-deleted',
+        min: 100,
+        text: 'see deleted reviews'
       },
       {
         task: 'reviews.delete',

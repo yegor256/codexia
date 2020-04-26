@@ -23,6 +23,7 @@
 require 'loog'
 require 'redcarpet'
 require 'securerandom'
+require 'tacky'
 require_relative 'xia'
 require_relative 'review'
 require_relative 'rank'

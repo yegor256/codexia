@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 require 'redcarpet'
+require 'tacky'
 require_relative 'xia'
 require_relative 'rank'
 require_relative 'bots'

@@ -24,6 +24,7 @@ require 'loog'
 require 'telepost'
 require_relative 'xia'
 require_relative 'author'
+require_relative 'veil'
 
 # Authors.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)

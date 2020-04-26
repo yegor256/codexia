@@ -210,6 +210,7 @@ class Xia::Karma
     earned -= paid + 100 if safe
     earned += paid unless safe
     @points ||= earned
+    @log.info("Karma #{@points.round(2)} calculated for @#{author.login}")
     @points.round(4)
   end
 

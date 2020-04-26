@@ -26,14 +26,15 @@ require 'glogin'
 require 'glogin/codec'
 require 'haml'
 require 'iri'
-require 'loog'
 require 'json'
+require 'loog'
 require 'pgtk'
 require 'pgtk/pool'
 require 'raven'
 require 'relative_time'
 require 'sinatra'
 require 'sinatra/cookies'
+require 'tacky'
 require 'telepost'
 require 'time'
 require 'yaml'
@@ -71,8 +72,8 @@ configure do
       c.release = Xia::VERSION
     end
   end
-  disable :show_exceptions
   disable :raise_errors
+  disable :show_exceptions
   enable :logging
   set :bind, '0.0.0.0'
   set :server, :thin
@@ -80,6 +81,7 @@ configure do
   set :config, config
   set :logging, true
   set :log, ENV['TEST_QUIET_LOG'] ? Loog::NULL : Loog::REGULAR
+  set :log, Loog::Tee.new(settings.log, Logger.new('target/log.txt')) if ENV['RACK_ENV'] == 'test'
   set :server_settings, timeout: 25
   set :zache, Zache.new(dirty: true)
   set :codec, GLogin::Codec.new(config['github']['encryption_secret'])
@@ -125,11 +127,23 @@ end
 def the_author
   redirect '/welcome' unless @locals[:author]
   require_relative 'objects/authors'
-  Xia::Authors.new(
+  return @locals[:the_author] if @locals[:the_author]
+  @locals[:the_author] = Tacky.new(
+    Xia::Authors.new(
+      settings.pgsql,
+      log: settings.log,
+      telepost: settings.telepost
+    ).named(@locals[:author][:login].downcase)
+  )
+end
+
+def the_projects(a = the_author)
+  Xia::Projects.new(
     settings.pgsql,
+    a,
     log: settings.log,
     telepost: settings.telepost
-  ).named(@locals[:author][:login].downcase)
+  )
 end
 
 def iri

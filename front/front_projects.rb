@@ -20,17 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require_relative '../objects/rank'
+
 get '/recent' do
   badges = (params[:badges] || '').strip.split(',')
   page = (params[:page] || '0').strip.to_i
   haml :recent, layout: :layout, locals: merged(
     title: '/recent',
     page: page,
-    list: the_author.projects.recent(
+    list: the_projects.recent(
       limit: 25,
       offset: page * 25,
       badges: badges,
-      show_deleted: the_author.karma.points > 100
+      show_deleted: Xia::Rank.new(the_author).ok?('projects.show-deleted')
     )
   )
 end
@@ -38,10 +40,10 @@ end
 get '/recent.json' do
   content_type 'application/json'
   JSON.pretty_generate(
-    the_author.projects.recent(
+    the_projects.recent(
       limit: 25,
       offset: (params[:page] || '0').strip.to_i * 25,
-      show_deleted: true
+      show_deleted: Xia::Rank.new(the_author).ok?('projects.show-deleted')
     )
   )
 end
@@ -57,7 +59,7 @@ post '/submit' do
   raise Xia::Urror, '"platform" is a mandatory parameter' if platform.nil?
   coordinates = params[:coordinates]
   raise Xia::Urror, '"coordinates" is a mandatory parameter' if coordinates.nil?
-  project = the_author.projects.submit(platform, coordinates)
+  project = the_projects.submit(platform, coordinates)
   if params[:noredirect]
     return JSON.pretty_generate(
       id: project.id,

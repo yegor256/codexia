@@ -47,7 +47,7 @@ class Xia::Author
   end
 
   def login
-    row['login']
+    column(:login)
   end
 
   def karma
@@ -71,9 +71,9 @@ class Xia::Author
 
   private
 
-  def row
-    row = @pgsql.exec('SELECT * FROM author WHERE id=$1', [@id])[0]
+  def column(name)
+    row = @pgsql.exec("SELECT #{name} FROM author WHERE id=$1", [@id])[0]
     raise Xia::Urror, "Author ##{@id} not found in the database" if row.nil?
-    row
+    row[name.to_s]
   end
 end
