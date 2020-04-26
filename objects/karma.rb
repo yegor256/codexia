@@ -39,6 +39,13 @@ class Xia::Karma
     @log = log
   end
 
+  def to_json(options)
+    {
+      points: points,
+      safe: points(safe: true)
+    }.to_json(options)
+  end
+
   def legend
     [
       {
@@ -203,6 +210,7 @@ class Xia::Karma
     earned -= paid + 100 if safe
     earned += paid unless safe
     @points ||= earned
+    @points.round(4)
   end
 
   def recent(offset: 0, limit: 10)

@@ -25,6 +25,8 @@ require_relative 'xia'
 require_relative 'project'
 require_relative 'rank'
 require_relative 'bots'
+require_relative 'veil'
+require_relative 'sieve'
 
 # Projects.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -84,8 +86,8 @@ class Xia::Projects
     terms << 'p.deleted IS NULL' unless show_deleted
     terms << 'badge.text IN (' + badges.map { |b| "'#{b}'" }.join(',') + ')' unless badges.empty?
     q = [
-      'SELECT DISTINCT p.*, author.login, author.id AS author_id,',
-      'ARRAY(SELECT text FROM badge WHERE project=p.id) as badges',
+      'SELECT DISTINCT p.*, author.login AS author_login, author.id AS author_id,',
+      'ARRAY(SELECT CONCAT(id,\':\',text) FROM badge WHERE project=p.id) as badges',
       'FROM project AS p',
       'LEFT JOIN badge ON p.id=badge.project',
       'JOIN author ON author.id=p.author',
@@ -94,14 +96,43 @@ class Xia::Projects
       'LIMIT $1 OFFSET $2'
     ].join(' ')
     @pgsql.exec(q, [limit, offset]).map do |r|
-      {
-        id: r['id'].to_i,
-        coordinates: r['coordinates'],
-        author: Xia::Author.new(@pgsql, r['author_id'].to_i, log: @log, telepost: @telepost),
-        deleted: r['deleted'],
-        badges: r['badges'][1..-2].split(','),
-        created: Time.parse(r['created'])
-      }
+      p = get(r['id'].to_i)
+      Xia::Sieve.new(
+        Xia::Veil.new(
+          p,
+          id: p.id,
+          coordinates: r['coordinates'],
+          platform: r['platform'],
+          deleted: r['deleted'],
+          created: Time.parse(r['created']),
+          submitter: Xia::Sieve.new(
+            Xia::Veil.new(
+              Xia::Author.new(@pgsql, r['author_id'].to_i, log: @log, telepost: @telepost),
+              id: r['author_id'].to_i,
+              login: r['author_login']
+            ),
+            :id, :login
+          ),
+          badges: Xia::Sieve.new(
+            Xia::Veil.new(
+              Xia::Badges.new(@pgsql, p, log: @log),
+              to_a: r['badges'][1..-2].split(',').map do |t|
+                id, text = t.split(':', 2)
+                Xia::Sieve.new(
+                  Xia::Veil.new(
+                    Xia::Badge.new(@pgsql, p, id, log: @log),
+                    id: id,
+                    text: text
+                  ),
+                  :id, :text
+                )
+              end
+            ),
+            :to_a
+          )
+        ),
+        :id, :coordinates, :platform, :created, :deleted, :submitter, :badges
+      )
     end
   end
 end

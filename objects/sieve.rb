@@ -20,31 +20,40 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'loog'
 require_relative 'xia'
-require_relative 'rank'
 
-# Badges.
+# JSON-ed object.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2020 Yegor Bugayenko
 # License:: MIT
-class Xia::Badge
-  attr_reader :id
-
-  def initialize(pgsql, project, id, log: Loog::NULL)
-    @pgsql = pgsql
-    @project = project
-    @id = id
-    @log = log
+class Xia::Sieve
+  def initialize(origin, *methods)
+    @origin = origin
+    @methods = methods
   end
 
-  def text
-    @pgsql.exec('SELECT * FROM badge WHERE id=$1', [@id])[0]['text']
+  def to_json(options = nil)
+    return @origin.to_a.to_json(options) if @methods.count(1) && @methods[0] == :to_a
+    @methods.map { |j| [j, __send__(j)] }.to_h.to_json(options)
   end
 
-  def detach
-    Xia::Rank.new(@project.author).enter('badges.detach')
-    raise Xia::Urror, 'Can\'t delete the last badge' if @project.badges.to_a.size < 2
-    @pgsql.exec('DELETE FROM badge WHERE id=$1', [@id])
+  def to_s
+    'JsonedOf:' + method_missing(:to_s)
+  end
+
+  def method_missing(*args)
+    method = args[0]
+    raise "Method #{method} is absent in #{@origin}" unless @origin.respond_to?(method)
+    @origin.__send__(*args) do |*a|
+      yield(*a) if block_given?
+    end
+  end
+
+  def respond_to?(method, include_private = false)
+    @origin.respond_to?(method, include_private)
+  end
+
+  def respond_to_missing?(_method, _include_private = false)
+    true
   end
 end

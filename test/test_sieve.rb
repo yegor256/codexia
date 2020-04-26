@@ -20,31 +20,23 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'loog'
-require_relative 'xia'
-require_relative 'rank'
+require 'minitest/autorun'
+require 'json'
+require_relative 'test__helper'
+require_relative '../objects/sieve'
 
-# Badges.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2020 Yegor Bugayenko
-# License:: MIT
-class Xia::Badge
-  attr_reader :id
-
-  def initialize(pgsql, project, id, log: Loog::NULL)
-    @pgsql = pgsql
-    @project = project
-    @id = id
-    @log = log
+class Xia::SieveTest < Minitest::Test
+  def test_simple
+    obj = Object.new
+    def obj.data
+      123
+    end
+    foo = Xia::Sieve.new(obj, :data)
+    assert_equal(123, JSON.parse(foo.to_json)['data'])
   end
 
-  def text
-    @pgsql.exec('SELECT * FROM badge WHERE id=$1', [@id])[0]['text']
-  end
-
-  def detach
-    Xia::Rank.new(@project.author).enter('badges.detach')
-    raise Xia::Urror, 'Can\'t delete the last badge' if @project.badges.to_a.size < 2
-    @pgsql.exec('DELETE FROM badge WHERE id=$1', [@id])
+  def test_array
+    foo = Xia::Sieve.new([1, 2, 3], :to_a)
+    assert_equal(3, JSON.parse(foo.to_json).count)
   end
 end

@@ -63,7 +63,6 @@ class Xia::ProjectsTest < Minitest::Test
     badge = 'hello'
     project.badges.attach(badge)
     project.badges.attach('something')
-    assert(projects.recent[0][:badges].is_a?(Array))
-    assert(projects.recent[0][:badges].include?(badge))
+    assert_equal(badge, projects.recent[0].badges.to_a[1].text)
   end
 end

@@ -24,6 +24,7 @@ require 'loog'
 require_relative 'xia'
 require_relative 'badge'
 require_relative 'bots'
+require_relative 'veil'
 
 # Badges.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -49,7 +50,7 @@ class Xia::Badges
 
   # Get current level of the project, either 0 (newbie) or 1 (L1), 2 (L2), etc.
   def level
-    txt = all.map { |b| b[:text] }.find { |b| /^(L[123]|newbie)$/.match?(b) }
+    txt = to_a.map(&:text).find { |b| /^(L[123]|newbie)$/.match?(b) }
     return 0 if txt.nil?
     return 0 if txt == 'newbie'
     txt[1].to_i
@@ -59,12 +60,15 @@ class Xia::Badges
     Xia::Badge.new(@pgsql, @project, id, log: @log)
   end
 
-  def all
+  def to_a
     @pgsql.exec('SELECT * FROM badge WHERE project=$1', [@project.id]).map do |r|
-      {
-        id: r['id'].to_i,
-        text: r['text']
-      }
+      Xia::Sieve.new(
+        Xia::Veil.new(
+          get(r['id'].to_i),
+          text: r['text']
+        ),
+        :id, :text
+      )
     end
   end
 
@@ -89,7 +93,7 @@ class Xia::Badges
         reviews.post("The project has been degraded from L#{before} to L#{after}")
       end
       delete = true
-    elsif all.length >= 5
+    elsif to_a.length >= 5
       raise Xia::Urror, 'Too many badges already'
     end
     id = @pgsql.transaction do |t|

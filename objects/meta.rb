@@ -87,7 +87,7 @@ class Xia::Meta
     row['value']
   end
 
-  def all
+  def to_a
     q = [
       'SELECT m.*, author.login AS login',
       'FROM meta AS m',

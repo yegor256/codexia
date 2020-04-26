@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'redcarpet'
 require_relative 'xia'
 require_relative 'rank'
 require_relative 'bots'
@@ -39,12 +40,37 @@ class Xia::Review
     @log = log
   end
 
+  def created
+    Time.parse(column(:created))
+  end
+
   def deleted
-    row[:deleted]
+    column(:deleted)
+  end
+
+  def submitter
+    Xia::Author.new(@pgsql, column(:author).to_i, log: @log, telepost: @telepost)
+  end
+
+  def up
+    @pgsql.exec('SELECT COUNT(*) FROM vote WHERE review=$1 AND positive=$2', [@id, true])[0]['count'].to_i
+  end
+
+  def down
+    @pgsql.exec('SELECT COUNT(*) FROM vote WHERE review=$1 AND positive=$2', [@id, false])[0]['count'].to_i
+  end
+
+  def text
+    column(:text)
+  end
+
+  def html
+    carpet = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
+    carpet.render(text)
   end
 
   def delete
-    if row[:author] == @project.author.id
+    if submitter.id == @project.author.id
       Xia::Rank.new(@project.author).enter('reviews.delete-own')
       @pgsql.exec('DELETE FROM review WHERE id=$1', [@id])
     else
@@ -85,19 +111,9 @@ class Xia::Review
 
   private
 
-  def row
-    r = @pgsql.exec(
-      'SELECT * FROM review WHERE id=$1',
-      [@id]
-    )[0]
-    raise Xia::Urror, "Project ##{@id} not found in the database" if r.nil?
-    {
-      id: r['id'].to_i,
-      platform: r['platform'],
-      coordinates: r['coordinates'],
-      author: r['author'].to_i,
-      deleted: r['deleted'],
-      created: Time.parse(r['created'])
-    }
+  def column(name)
+    r = @pgsql.exec("SELECT #{name} FROM review WHERE id=$1", [@id])[0]
+    raise Xia::Urror, "Review ##{@id} not found in the database" if r.nil?
+    r[name.to_s]
   end
 end

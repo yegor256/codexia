@@ -20,31 +20,23 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'loog'
-require_relative 'xia'
-require_relative 'rank'
+require 'minitest/autorun'
+require 'json'
+require_relative 'test__helper'
+require_relative '../objects/veil'
 
-# Badges.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2020 Yegor Bugayenko
-# License:: MIT
-class Xia::Badge
-  attr_reader :id
+class Xia::VeilTest < Minitest::Test
+  def test_simple
+    obj = Object.new
+    def obj.read(x)
+      x
+    end
 
-  def initialize(pgsql, project, id, log: Loog::NULL)
-    @pgsql = pgsql
-    @project = project
-    @id = id
-    @log = log
-  end
-
-  def text
-    @pgsql.exec('SELECT * FROM badge WHERE id=$1', [@id])[0]['text']
-  end
-
-  def detach
-    Xia::Rank.new(@project.author).enter('badges.detach')
-    raise Xia::Urror, 'Can\'t delete the last badge' if @project.badges.to_a.size < 2
-    @pgsql.exec('DELETE FROM badge WHERE id=$1', [@id])
+    def obj.touch; end
+    foo = Xia::Veil.new(obj, read: 1)
+    assert_equal(1, foo.read(5))
+    foo.to_s
+    foo.touch
+    assert_equal(5, foo.read(5))
   end
 end

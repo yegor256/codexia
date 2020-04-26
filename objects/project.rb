@@ -27,6 +27,7 @@ require_relative 'badges'
 require_relative 'meta'
 require_relative 'rank'
 require_relative 'bots'
+require_relative 'veil'
 
 # Project.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -45,23 +46,23 @@ class Xia::Project
   end
 
   def coordinates
-    row[:coordinates]
-  end
-
-  def deleted
-    row[:deleted]
-  end
-
-  def created
-    row[:created]
-  end
-
-  def submitter
-    row[:author]
+    column(:coordinates)
   end
 
   def platform
-    row[:platform]
+    column(:platform)
+  end
+
+  def deleted
+    column(:deleted)
+  end
+
+  def created
+    Time.parse(column(:created))
+  end
+
+  def submitter
+    Xia::Author.new(@pgsql, column(:author).to_i, log: @log, telepost: @telepost)
   end
 
   def reviews
@@ -84,30 +85,17 @@ class Xia::Project
       [@id, "Deleted by @#{@author.login} on #{Time.now.utc.iso8601}"]
     )
     @telepost.spam(
-      "The project no.#{@id} [#{row[:coordinates]}](https://github.com/#{row[:coordinates]}) has been deleted",
+      "The project no.#{@id} [#{coordinates}](https://github.com/#{coordinates}) has been deleted",
       "by [@#{@author.login}](https://github.com/#{@author.login})",
-      "(it was earlier submitted by [@#{submitter}](https://github.com/#{submitter}))"
+      "(it was earlier submitted by [@#{submitter.login}](https://github.com/#{submitter.login}))"
     )
   end
 
   private
 
-  def row
-    r = @pgsql.exec(
-      [
-        'SELECT p.*, a.login, a.id AS author_id',
-        'FROM project AS p JOIN author AS a ON a.id=p.author WHERE p.id=$1'
-      ].join(' '),
-      [@id]
-    )[0]
+  def column(name)
+    r = @pgsql.exec("SELECT #{name} FROM project WHERE id=$1", [@id])[0]
     raise Xia::Urror, "Project ##{@id} not found in the database" if r.nil?
-    {
-      id: r['id'].to_i,
-      platform: r['platform'],
-      coordinates: r['coordinates'],
-      author: Xia::Author.new(@pgsql, r['author_id'].to_i, log: @log, telepost: @telepost),
-      deleted: r['deleted'],
-      created: Time.parse(r['created'])
-    }
+    r[name.to_s]
   end
 end

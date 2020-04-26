@@ -25,14 +25,7 @@ require 'digest'
 get '/p/{id}.json' do
   project = the_author.projects.get(params[:id].to_i)
   content_type 'application/json'
-  JSON.pretty_generate(
-    id: project.id,
-    coordinates: project.coordinates,
-    platform: project.platform,
-    author: project.submitter,
-    created: project.created,
-    deleted: project.deleted
-  )
+  JSON.pretty_generate(project)
 end
 
 get '/p/{id}/reviews.json' do
@@ -120,7 +113,7 @@ end
 
 get '/p/{id}/badges.json' do
   project = the_author.projects.get(params[:id].to_i)
-  JSON.pretty_generate(project.badges.all)
+  JSON.pretty_generate(project.badges.to_a)
 end
 
 get '/p/{id}/meta' do

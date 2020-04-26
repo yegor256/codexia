@@ -4,17 +4,17 @@
 - else
   - list.each do |p|
     %p
-      %a{href: iri.cut('/p').append(p[:id]), style: (p[:deleted] ? 'text-decoration:line-through' : '')}
-        &= p[:coordinates]
+      %a{href: iri.cut('/p').append(p.id), style: (p.deleted ? 'text-decoration:line-through' : '')}
+        &= p.coordinates
       %br
-      - p[:badges].each do |b|
-        = partial(:badge, locals, text: b)
+      - p.badges.to_a do |b|
+        = partial(:badge, locals, text: b.text)
       %br
       %span.smaller.gray
-        = partial(:author, locals, a: p[:author])
-        %span.item{title: "##{p[:id]} on #{p[:created]}"}
-          = RelativeTime.in_words(p[:created])
+        = partial(:author, locals, a: p.author)
+        %span.item{title: "##{p.id} on #{p.created}"}
+          = RelativeTime.in_words(p.created)
         %span.item
-          %a{href: iri.cut('/p').append(p[:id]).append('delete'), onclick: 'return confirm("Are you sure?");'}<
+          %a{href: iri.cut('/p').append(p.id).append('delete'), onclick: 'return confirm("Are you sure?");'}<
             = '/delete'
   = partial(:paging, locals, page: page, list: list)

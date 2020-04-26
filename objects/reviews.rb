@@ -27,6 +27,7 @@ require_relative 'xia'
 require_relative 'review'
 require_relative 'rank'
 require_relative 'bots'
+require_relative 'veil'
 
 # Reviews.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -89,7 +90,7 @@ class Xia::Reviews
   def recent(limit: 10, offset: 0, show_deleted: false)
     carpet = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
     q = [
-      'SELECT r.*, author.login, author.id AS author_id,',
+      'SELECT r.*, author.login AS author_login, author.id AS author_id,',
       '(SELECT COUNT(*) FROM vote AS v WHERE v.review=r.id AND positive=true) AS up,',
       '(SELECT COUNT(*) FROM vote AS v WHERE v.review=r.id AND positive=false) AS down',
       'FROM review AS r',
@@ -100,16 +101,26 @@ class Xia::Reviews
       'LIMIT $2 OFFSET $3'
     ].join(' ')
     @pgsql.exec(q, [@project.id, limit, offset]).map do |r|
-      {
-        id: r['id'].to_i,
-        text: r['text'],
-        html: carpet.render(r['text']),
-        author: Xia::Author.new(@pgsql, r['author_id'].to_i, log: @log, telepost: @telepost),
-        up: r['up'].to_i,
-        deleted: r['deleted'],
-        down: r['down'].to_i,
-        created: Time.parse(r['created'])
-      }
+      Xia::Sieve.new(
+        Xia::Veil.new(
+          get(r['id'].to_i),
+          text: r['text'],
+          html: carpet.render(r['text']),
+          up: r['up'].to_i,
+          down: r['down'].to_i,
+          deleted: r['deleted'],
+          created: Time.parse(r['created']),
+          submitter: Xia::Sieve.new(
+            Xia::Veil.new(
+              Xia::Author.new(@pgsql, r['author_id'].to_i, log: @log, telepost: @telepost),
+              id: r['author_id'].to_i,
+              login: r['author_login']
+            ),
+            :id, :login
+          )
+        ),
+        :id, :text, :html, :up, :down, :created, :deleted, :submitter
+      )
     end
   end
 end

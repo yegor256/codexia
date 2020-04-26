@@ -34,11 +34,11 @@
       &= project.deleted
 
 %p
-  - project.badges.all.each do |b|
-    - next if /^newbie|L[123]$/.match?(b[:text])
-    = partial(:badge, locals, text: b[:text])
+  - project.badges.to_a.each do |b|
+    - next if /^newbie|L[123]$/.match?(b.text)
+    = partial(:badge, locals, text: b.text)
     - if Xia::Rank.new(the_author).ok?('badges.detach')
-      %a.tomato{href: iri.cut('/p').append(project.id).append('detach').append(b[:id]), onclick: 'return confirm("Are you sure?");'}<
+      %a.tomato{href: iri.cut('/p').append(project.id).append('detach').append(b.id), onclick: 'return confirm("Are you sure?");'}<
         = '✘'
 
 - if Xia::Rank.new(the_author).ok?('badges.attach')
@@ -50,29 +50,29 @@
 - reviews.each do |r|
   %div.block{style: 'border-left: 2px solid lightgray; padding-left: 1em;'}
     %p{style: 'margin-bottom: 1em; clear: both;'}
-      - if r[:deleted]
+      - if r.deleted
         %strong.firebrick
-          &= r[:deleted]
+          &= r.deleted
         %br
       %span.smaller.gray
-        = partial(:author, locals, a: r[:author])
-        %span.item{title: "##{r[:id]} on #{r[:created]}", style: (r[:deleted] ? 'text-decoration:line-through' : '')}
-          = RelativeTime.in_words(r[:created])
+        = partial(:author, locals, a: r.submitter)
+        %span.item{title: "##{r.id} on #{r.created}", style: (r.deleted ? 'text-decoration:line-through' : '')}
+          = RelativeTime.in_words(r.created)
         - if Xia::Rank.new(the_author).ok?('reviews.upvote')
           %span.item
-            = r[:up]
-            %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('up')}<
+            = r.up
+            %a{href: iri.cut('/p').append(project.id).append('r').append(r.id).append('up')}<
               = '/up'
         - if Xia::Rank.new(the_author).ok?('reviews.downvote')
           %span.item
-            = r[:down]
-            %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('down')}<
+            = r.down
+            %a{href: iri.cut('/p').append(project.id).append('r').append(r.id).append('down')}<
               = '/down'
         - if Xia::Rank.new(the_author).ok?('reviews.delete')
           %span.item
-            %a{href: iri.cut('/p').append(project.id).append('r').append(r[:id]).append('delete'), onclick: 'return confirm("Are you sure?");'}<
+            %a{href: iri.cut('/p').append(project.id).append('r').append(r.id).append('delete'), onclick: 'return confirm("Are you sure?");'}<
               = '/delete'
-    = r[:html]
+    = r.html
 
 = partial(:paging, locals, page: page, list: reviews)
 
@@ -100,7 +100,7 @@
 
 - if project.deleted.nil? && Xia::Bots.new.is?(the_author)
   %div.block
-    - metas = project.meta.all
+    - metas = project.meta.to_a
     - unless metas.empty?
       %table
         %thead

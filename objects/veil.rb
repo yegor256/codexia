@@ -20,31 +20,51 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'loog'
 require_relative 'xia'
-require_relative 'rank'
 
-# Badges.
+# Veil.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2020 Yegor Bugayenko
 # License:: MIT
-class Xia::Badge
-  attr_reader :id
-
-  def initialize(pgsql, project, id, log: Loog::NULL)
-    @pgsql = pgsql
-    @project = project
-    @id = id
-    @log = log
+class Xia::Veil
+  def initialize(origin, methods)
+    @origin = origin
+    @methods = methods
   end
 
-  def text
-    @pgsql.exec('SELECT * FROM badge WHERE id=$1', [@id])[0]['text']
+  def to_s
+    method_missing(:to_s)
   end
 
-  def detach
-    Xia::Rank.new(@project.author).enter('badges.detach')
-    raise Xia::Urror, 'Can\'t delete the last badge' if @project.badges.to_a.size < 2
-    @pgsql.exec('DELETE FROM badge WHERE id=$1', [@id])
+  def method_missing(*args)
+    if @pierced
+      through(args)
+    else
+      method = args[0]
+      if @methods.key?(method)
+        @methods[method]
+      else
+        @pierced = true
+        through(args)
+      end
+    end
+  end
+
+  def respond_to?(method, include_private = false)
+    @origin.respond_to?(method, include_private)
+  end
+
+  def respond_to_missing?(_method, _include_private = false)
+    true
+  end
+
+  private
+
+  def through(args)
+    method = args[0]
+    raise "Method #{method} is absent in #{@origin}" unless @origin.respond_to?(method)
+    @origin.__send__(*args) do |*a|
+      yield(*a) if block_given?
+    end
   end
 end
