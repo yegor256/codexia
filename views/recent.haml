@@ -11,7 +11,7 @@
         = partial(:badge, locals, text: b.text)
       %br
       %span.smaller.gray
-        = partial(:author, locals, a: p.author)
+        = partial(:author, locals, a: p.submitter)
         %span.item{title: "##{p.id} on #{p.created}"}
           = RelativeTime.in_words(p.created)
         %span.item
