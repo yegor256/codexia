@@ -58,16 +58,20 @@
         = partial(:author, locals, a: r.submitter)
         %span.item{title: "##{r.id} on #{r.created}", style: (r.deleted ? 'text-decoration:line-through' : '')}
           = RelativeTime.in_words(r.created)
-        - if Xia::Rank.new(the_author).ok?('reviews.upvote')
-          %span.item
-            = r.up
+        %span.item
+          = r.up
+          - if Xia::Rank.new(the_author).ok?('reviews.upvote')
             %a{href: iri.cut('/p').append(project.id).append('r').append(r.id).append('up')}<
               = '/up'
-        - if Xia::Rank.new(the_author).ok?('reviews.downvote')
-          %span.item
-            = r.down
+          - else
+            = 'ups'
+        %span.item
+          = r.down
+          - if Xia::Rank.new(the_author).ok?('reviews.downvote')
             %a{href: iri.cut('/p').append(project.id).append('r').append(r.id).append('down')}<
               = '/down'
+          - else
+            = 'downs'
         - if Xia::Rank.new(the_author).ok?('reviews.delete')
           %span.item
             %a{href: iri.cut('/p').append(project.id).append('r').append(r.id).append('delete'), onclick: 'return confirm("Are you sure?");'}<
