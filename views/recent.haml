@@ -7,7 +7,7 @@
       %a{href: iri.cut('/p').append(p.id), style: (p.deleted ? 'text-decoration:line-through' : '')}
         &= p.coordinates
       %br
-      - p.badges.to_a do |b|
+      - p.badges.to_a.each do |b|
         = partial(:badge, locals, text: b.text)
       %br
       %span.smaller.gray
