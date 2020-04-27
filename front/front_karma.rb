@@ -23,7 +23,7 @@
 get '/karma' do
   haml :karma, layout: :layout, locals: merged(
     title: '/karma',
-    recent: karma(the_author).recent(limit: 10),
+    recent: the_author.karma.recent(limit: 10),
     withdrawals: the_author.withdrawals.recent(limit: 10)
   )
 end
