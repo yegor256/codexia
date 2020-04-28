@@ -26,7 +26,14 @@ require_relative '../objects/rank'
 get '/p/{id}.json' do
   project = the_projects.get(params[:id].to_i)
   content_type 'application/json'
-  JSON.pretty_generate(project)
+  JSON.pretty_generate(
+    id: project.id,
+    coordinates: project.coordinates,
+    platform: project.platform,
+    author: project.submitter,
+    created: project.created,
+    deleted: project.deleted
+  )
 end
 
 get '/p/{id}/reviews.json' do
