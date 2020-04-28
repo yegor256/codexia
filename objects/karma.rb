@@ -207,11 +207,10 @@ class Xia::Karma
       end.inject(&:+)
     end.inject(&:+)
     paid = @pgsql.exec('SELECT SUM(points) FROM withdrawal WHERE author=$1', [@author.id])[0]['sum'].to_i
-    earned -= paid + 100 if safe
+    earned -= (paid + 100) if safe
     earned += paid unless safe
-    @points ||= earned
-    @log.info("Karma #{@points.round(2)} calculated for @#{author.login}")
-    @points.round(4)
+    @log.info("Karma #{earned.round(2)} calculated for @#{author.login}")
+    earned
   end
 
   def recent(offset: 0, limit: 10)
