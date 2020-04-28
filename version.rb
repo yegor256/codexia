@@ -24,8 +24,8 @@ require_relative 'objects/xia'
 
 module Xia
   # Currently released version
-  VERSION = '0.0.0'
+  VERSION = '0.0.49'
 
   # The Git hash of the release
-  RELEASE = '000000'
+  RELEASE = '09d00d8'
 end
