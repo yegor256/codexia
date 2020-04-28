@@ -125,7 +125,8 @@ class Xia::Karma
       },
       {
         points: {
-          '2020-04-22': +1
+          '2020-04-22': +1,
+          '2000-01-01': +1
         },
         query: [
           'SELECT t.* FROM vote AS t',
