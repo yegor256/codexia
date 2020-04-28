@@ -21,12 +21,20 @@
 # SOFTWARE.
 
 require 'minitest/autorun'
-require 'glogin'
+require 'tacky'
 require_relative 'test__helper'
 require_relative '../objects/xia'
 require_relative '../objects/authors'
 
 class Xia::AuthorTest < Minitest::Test
+  def test_fetches_login
+    authors = Xia::Authors.new(t_pgsql)
+    login = 'hello'
+    author = Tacky.new(authors.named(login))
+    assert(author.login.is_a?(String), "Type is #{author.login.class.name}")
+    assert_equal(login, author.login)
+  end
+
   def test_updates_author
     authors = Xia::Authors.new(t_pgsql)
     author = authors.named('-test-')
