@@ -105,7 +105,11 @@ class Xia::AppTest < Minitest::Test
     assert(json['created'].is_a?(String))
     get("/p/#{id}.json", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
-    assert(!JSON.parse(last_response.body).empty?)
+    json = JSON.parse(last_response.body)
+    assert(json['id'].is_a?(Integer))
+    assert(json['submitter']['id'].is_a?(Integer))
+    assert(json['deleted'].nil?)
+    assert(json['badges'].is_a?(Array))
   end
 
   def test_api_post_review

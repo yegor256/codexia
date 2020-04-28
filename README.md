@@ -21,10 +21,12 @@ Read our [Terms of Use](https://www.codexia.org/terms).
 
 We have the following official bots at the moment:
 
-  * [iakunin/codexia-bot](https://github.com/iakunin/codexia-bot)
+  * [codexia-bot](https://github.com/iakunin/codexia-bot)
+    by [@iakunin](https://github.com/iakunin)
     as [@iakunin-codexia-bot](https://github.com/iakunin-codexia-bot)
 
-  * [/codexia-hunter](https://github.com/iakunin/codexia-hunter)
+  * [codexia-hunter](https://github.com/iakunin/codexia-hunter)
+    by [@fellahi-ali](https://github.com/fellahi-ali)
     as [@codexia-hunter](https://github.com/codexia-hunter)
 
 If you want to add yours, join our

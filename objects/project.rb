@@ -62,20 +62,32 @@ class Xia::Project
   end
 
   def submitter
-    Xia::Author.new(@pgsql, column(:author).to_i, log: @log, telepost: @telepost)
+    Xia::Sieve.new(
+      Xia::Author.new(@pgsql, column(:author).to_i, log: @log, telepost: @telepost),
+      :id, :login, :karma
+    )
   end
 
   def reviews
-    Xia::Reviews.new(@pgsql, self, log: @log, telepost: @telepost)
+    Xia::Sieve.new(
+      Xia::Reviews.new(@pgsql, self, log: @log, telepost: @telepost),
+      :to_a
+    )
   end
 
   def badges
-    Xia::Badges.new(@pgsql, self, log: @log)
+    Xia::Sieve.new(
+      Xia::Badges.new(@pgsql, self, log: @log),
+      :to_a
+    )
   end
 
   def meta
     raise Xia::Urror, 'You are not allowed to use meta' unless Xia::Bots.new.is?(@author)
-    Xia::Meta.new(@pgsql, self, log: @log, telepost: @telepost)
+    Xia::Sieve.new(
+      Xia::Meta.new(@pgsql, self, log: @log, telepost: @telepost),
+      :to_a
+    )
   end
 
   def delete

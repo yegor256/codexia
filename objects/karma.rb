@@ -209,7 +209,6 @@ class Xia::Karma
     paid = @pgsql.exec('SELECT SUM(points) FROM withdrawal WHERE author=$1', [@author.id])[0]['sum'].to_i
     earned -= (paid + 100) if safe
     earned += paid unless safe
-    @log.info("Karma #{earned.round(2)} calculated for @#{author.login}")
     earned
   end
 

@@ -41,7 +41,10 @@ class Xia::Projects
   end
 
   def get(id)
-    Xia::Project.new(@pgsql, @author, id, log: @log, telepost: @telepost)
+    Xia::Sieve.new(
+      Xia::Project.new(@pgsql, @author, id, log: @log, telepost: @telepost),
+      :id, :coordinates, :platform, :created, :deleted, :submitter, :badges, :meta
+    )
   end
 
   def submit(platform, coordinates)
