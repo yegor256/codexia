@@ -105,7 +105,7 @@ GEM
     openssl (2.1.2)
       ipaddr
     parallel (1.19.1)
-    parser (2.7.1.1)
+    parser (2.7.1.2)
       ast (~> 2.4.0)
     pg (1.2.3)
     pgtk (0.7.5)
@@ -136,7 +136,7 @@ GEM
     rainbow (3.0.0)
     rake (12.3.3)
     random-port (0.5.1)
-    rb-fsevent (0.10.3)
+    rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     redcarpet (3.4.0)

@@ -53,6 +53,14 @@ class Xia::Projects
     unless %r{^[A-Za-z0-9\-\.]+/[A-Za-z0-9\-_\.]+$}.match?(coordinates)
       raise Xia::Urror, "Coordinates #{coordinates.inspect} are wrong"
     end
+    %w[
+      google facebook facebookresearch facebookincubator
+      ibm oracle intel alibaba aws pivotal mozilla uber
+    ].each do |org|
+      if coordinates.start_with?("#{org}/")
+        raise Xia::Urror, "This project most likely is already sponsored by a large enterprise '#{org}'"
+      end
+    end
     raise Xia::Urror, 'The only possible platform now is "github"' unless platform == 'github'
     row = @pgsql.exec(
       'SELECT id FROM project WHERE platform=$1 AND coordinates=$2',
