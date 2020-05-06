@@ -57,7 +57,7 @@ class Xia::Projects
       google facebook facebookresearch facebookincubator
       ibm oracle intel alibaba aws pivotal mozilla uber netflix
     ].each do |org|
-      if /^#{org}/i.match?(coordinates)
+      if %r{^#{org}/}i.match?(coordinates)
         raise Xia::Urror, "This project most likely is already sponsored by a large enterprise '#{org}'"
       end
     end
