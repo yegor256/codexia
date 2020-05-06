@@ -59,7 +59,7 @@ post '/submit' do
   raise Xia::Urror, '"platform" is a mandatory parameter' if platform.nil?
   coordinates = params[:coordinates]
   raise Xia::Urror, '"coordinates" is a mandatory parameter' if coordinates.nil?
-  project = the_projects.submit(platform, coordinates)
+  project = the_projects.submit(platform.strip, coordinates.strip)
   if params[:noredirect]
     return JSON.pretty_generate(
       id: project.id,

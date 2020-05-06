@@ -36,6 +36,14 @@ class Xia::ProjectsTest < Minitest::Test
     assert(!projects.recent.empty?)
   end
 
+  def test_rejects_google_project
+    author = Xia::Authors.new(t_pgsql).named('-eee')
+    projects = author.projects
+    assert_raises(Xia::Urror) do
+      projects.submit('github', 'Google/test')
+    end
+  end
+
   def test_bot_submits_project_in_threads
     author = Xia::Authors.new(t_pgsql).named("-test#{rand(99_999)}")
     projects = author.projects
