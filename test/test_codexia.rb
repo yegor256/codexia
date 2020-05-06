@@ -71,6 +71,7 @@ class Xia::AppTest < Minitest::Test
     pages = [
       '/recent',
       '/payables?a=-test',
+      '/a/-test',
       '/submit',
       '/terms',
       '/bots',

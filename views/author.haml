@@ -1,7 +1,8 @@
-%span.item{title: "Author ID: ##{a.id}"}
+%p
   %a{href: Iri.new('https://github.com/').append(a.login), style: 'vertical-align:middle;'}<
     %img{src: "https://socatar.com/github/#{a.login}/192-192", style: 'height:1em;width:1em;'}
-  %a{href: iri.cut('/a').append(a.login)}<
-    &= "@#{a.login}"
-  - if Xia::Bots.new.is?(a)
-    %span{title: 'It is a supervised bot'}= '⚙️'
+  = "@#{a.login}"
+
+%p
+  Karma:
+  = format('%+d', a.karma.points)

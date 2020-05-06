@@ -20,14 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-get '/payables' do
-  raise Xia::Urror, 'You are not allowed to see this' unless the_author.vip?
+get '/a/{a}' do
   a = the_authors.named(params[:a].downcase)
-  page = (params[:page] || '0').strip.to_i
-  haml :payables, layout: :layout, locals: merged(
-    title: '/payables',
-    a: a,
-    recent: a.karma.recent(limit: 25, offset: page * 25),
-    page: page
+  haml :author, layout: :layout, locals: merged(
+    title: a.login,
+    a: a
   )
 end

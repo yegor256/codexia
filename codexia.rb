@@ -40,6 +40,8 @@ require 'time'
 require 'yaml'
 require 'zache'
 require_relative 'objects/urror'
+require_relative 'objects/authors'
+require_relative 'objects/projects'
 require_relative 'version'
 
 if ENV['RACK_ENV'] != 'test'
@@ -124,16 +126,20 @@ get '/api' do
   )
 end
 
+def the_authors
+  Xia::Authors.new(
+    settings.pgsql,
+    log: settings.log,
+    telepost: settings.telepost
+  )
+end
+
 def the_author
   redirect '/welcome' unless @locals[:author]
   require_relative 'objects/authors'
   return @locals[:the_author] if @locals[:the_author]
   @locals[:the_author] = Tacky.new(
-    Xia::Authors.new(
-      settings.pgsql,
-      log: settings.log,
-      telepost: settings.telepost
-    ).named(@locals[:author][:login].downcase)
+    the_authors.named(@locals[:author][:login].downcase)
   )
 end
 
@@ -153,6 +159,7 @@ end
 require_relative 'front/front_misc.rb'
 require_relative 'front/front_login.rb'
 require_relative 'front/front_helpers.rb'
+require_relative 'front/front_author.rb'
 require_relative 'front/front_project.rb'
 require_relative 'front/front_projects.rb'
 require_relative 'front/front_karma.rb'
