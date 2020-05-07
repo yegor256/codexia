@@ -25,7 +25,7 @@ We have the following official bots at the moment:
     by [@iakunin](https://github.com/iakunin)
     as [@iakunin-codexia-bot](https://github.com/iakunin-codexia-bot)
 
-  * [codexia-hunter](https://github.com/iakunin/codexia-hunter)
+  * [codexia-hunter](https://github.com/fellahi-ali/codexia-hunter)
     by [@fellahi-ali](https://github.com/fellahi-ali)
     as [@codexia-hunter](https://github.com/codexia-hunter)
 
