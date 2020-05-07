@@ -112,7 +112,7 @@ configure do
 end
 
 get '/' do
-  redirect '/recent'
+  redirect '/inbox'
 end
 
 get '/welcome' do
