@@ -43,6 +43,7 @@ end
 
 get '/p/{id}' do
   project = the_projects.get(params[:id].to_i)
+  project.seen!
   page = (params[:page] || '0').strip.to_i
   haml :project, layout: :layout, locals: merged(
     title: project.coordinates,

@@ -107,6 +107,20 @@ class Xia::Project
     )
   end
 
+  def unseen!
+    @pgsql.exec(
+      'DELETE FROM seen WHERE project=$1 AND author=$2',
+      [id, @author.id]
+    )
+  end
+
+  def seen!
+    @pgsql.exec(
+      'INSERT INTO seen (project, author) VALUES ($1, $2) ON CONFLICT (project, author) DO NOTHING',
+      [id, @author.id]
+    )
+  end
+
   private
 
   def column(name)

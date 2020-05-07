@@ -37,6 +37,15 @@ get '/recent' do
   )
 end
 
+get '/inbox' do
+  page = (params[:page] || '0').strip.to_i
+  haml :recent, layout: :layout, locals: merged(
+    title: '/inbox',
+    page: page,
+    list: the_projects.inbox(limit: 25, offset: page * 25)
+  )
+end
+
 get '/recent.json' do
   content_type 'application/json'
   JSON.pretty_generate(

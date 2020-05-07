@@ -32,4 +32,14 @@ class Xia::ProjectTest < Minitest::Test
     project = projects.submit('github', "yegor256/takes#{rand(999)}")
     project.delete
   end
+
+  def test_seen_unseen
+    author = Xia::Authors.new(t_pgsql).named('-test-')
+    projects = author.projects
+    project = projects.submit('github', 'test/hey009')
+    project.seen!
+    project.seen!
+    project.unseen!
+    project.unseen!
+  end
 end

@@ -107,45 +107,65 @@ class Xia::Projects
       'ORDER BY p.created DESC',
       'LIMIT $1 OFFSET $2'
     ].join(' ')
-    @pgsql.exec(q, [limit, offset]).map do |r|
-      p = get(r['id'].to_i)
-      Xia::Sieve.new(
-        Xia::Veil.new(
-          p,
-          id: p.id,
-          coordinates: r['coordinates'],
-          platform: r['platform'],
-          deleted: r['deleted'],
-          created: Time.parse(r['created']),
-          submitter: Xia::Sieve.new(
-            Xia::Veil.new(
-              Xia::Author.new(@pgsql, r['author_id'].to_i, log: @log, telepost: @telepost),
-              id: r['author_id'].to_i,
-              login: r['author_login']
-            ),
-            :id, :login
+    @pgsql.exec(q, [limit, offset]).map { |r| to_obj(r) }
+  end
+
+  def inbox(limit: 10, offset: 0)
+    q = [
+      'SELECT DISTINCT p.*, author.login AS author_login, author.id AS author_id,',
+      'ARRAY(SELECT CONCAT(id,\':\',text) FROM badge WHERE project=p.id) as badges,',
+      '(SELECT COUNT(*) FROM review WHERE review.project=p.id) AS reviews_count',
+      'FROM project AS p',
+      'LEFT JOIN badge ON p.id=badge.project',
+      'JOIN author ON author.id=p.author',
+      'LEFT JOIN seen ON p.id=seen.project AND seen.author=$1',
+      'WHERE seen.id IS NULL',
+      'ORDER BY p.created DESC',
+      'LIMIT $2 OFFSET $3'
+    ].join(' ')
+    @pgsql.exec(q, [@author.id, limit, offset]).map { |r| to_obj(r) }
+  end
+
+  private
+
+  def to_obj(r)
+    p = get(r['id'].to_i)
+    Xia::Sieve.new(
+      Xia::Veil.new(
+        p,
+        id: p.id,
+        coordinates: r['coordinates'],
+        platform: r['platform'],
+        deleted: r['deleted'],
+        created: Time.parse(r['created']),
+        submitter: Xia::Sieve.new(
+          Xia::Veil.new(
+            Xia::Author.new(@pgsql, r['author_id'].to_i, log: @log, telepost: @telepost),
+            id: r['author_id'].to_i,
+            login: r['author_login']
           ),
-          reviews_count: r['reviews_count'].to_i,
-          badges: Xia::Sieve.new(
-            Xia::Veil.new(
-              Xia::Badges.new(@pgsql, p, log: @log),
-              to_a: r['badges'][1..-2].split(',').map do |t|
-                id, text = t.split(':', 2)
-                Xia::Sieve.new(
-                  Xia::Veil.new(
-                    Xia::Badge.new(@pgsql, p, id, log: @log),
-                    id: id,
-                    text: text
-                  ),
-                  :id, :text
-                )
-              end
-            ),
-            :to_a
-          )
+          :id, :login
         ),
-        :id, :coordinates, :platform, :created, :deleted, :submitter, :badges, :reviews_count
-      )
-    end
+        reviews_count: r['reviews_count'].to_i,
+        badges: Xia::Sieve.new(
+          Xia::Veil.new(
+            Xia::Badges.new(@pgsql, p, log: @log),
+            to_a: r['badges'][1..-2].split(',').map do |t|
+              id, text = t.split(':', 2)
+              Xia::Sieve.new(
+                Xia::Veil.new(
+                  Xia::Badge.new(@pgsql, p, id, log: @log),
+                  id: id,
+                  text: text
+                ),
+                :id, :text
+              )
+            end
+          ),
+          :to_a
+        )
+      ),
+      :id, :coordinates, :platform, :created, :deleted, :submitter, :badges, :reviews_count
+    )
   end
 end
