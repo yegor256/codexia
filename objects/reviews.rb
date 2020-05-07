@@ -68,6 +68,7 @@ class Xia::Reviews
       'INSERT INTO review (project, author, text, hash) VALUES ($1, $2, $3, $4) RETURNING id',
       [@project.id, @project.author.id, text, hash]
     )[0]['id'].to_i
+    @project.unseen!
     unless Xia::Bots.new.is?(@project.author)
       @telepost.spam(
         "👍 New review no.#{id} has been posted for the project",

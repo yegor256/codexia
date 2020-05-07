@@ -45,6 +45,7 @@ class Xia::Badge
   def detach
     Xia::Rank.new(@project.author).enter('badges.detach')
     raise Xia::Urror, 'Can\'t delete the last badge' if @project.badges.to_a.size < 2
+    @project.unseen!
     @pgsql.exec('DELETE FROM badge WHERE id=$1', [@id])
   end
 end

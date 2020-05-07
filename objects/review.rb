@@ -81,6 +81,7 @@ class Xia::Review
         [@id, "Deleted by @#{@project.author.login} on #{Time.now.utc.iso8601}"]
       )
     end
+    @project.unseen!
   end
 
   def quota

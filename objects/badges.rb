@@ -111,6 +111,7 @@ class Xia::Badges
         [@project.id, text]
       )[0]['id'].to_i
     end
+    @project.unseen!
     get(id)
   end
 end
