@@ -1,13 +1,15 @@
-- color = 'gray'
+- fg = 'white'
+- bg = 'gray'
 - if text == 'newbie'
-  - color = 'darkseagreen'
+  - bg = 'darkseagreen'
 - if text == 'L1'
-  - color = 'steelblue'
+  - bg = 'steelblue'
 - if text == 'L2'
-  - color = 'darkorange'
+  - bg = 'darkorange'
 - if text == 'L3'
-  - color = 'maroon'
+  - bg = 'maroon'
 - if text == 'bad'
-  - color = 'red'
-%kbd{style: "background-color: #{color};"}
+  - fg = 'orangered'
+  - bg = 'lightgray'
+%kbd{style: "color: #{fg}; background-color: #{bg};"}
   &= text

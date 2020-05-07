@@ -70,6 +70,9 @@
               %a{href: iri.cut('/recent').add(badges: 'newbie')}
                 = partial(:badge, locals, text: 'newbie')
             %li
+              %a{href: iri.cut('/recent').add(badges: 'bad')}
+                = partial(:badge, locals, text: 'bad')
+            %li
               %a{href: iri.cut('/recent').add(badges: 'L1')}
                 = partial(:badge, locals, text: 'L1')
             %li
