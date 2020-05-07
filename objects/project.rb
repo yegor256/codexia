@@ -101,11 +101,13 @@ class Xia::Project
         [@id, "Deleted by @#{@author.login} on #{Time.now.utc.iso8601}"]
       )
     end
-    @telepost.spam(
-      "The project no.#{@id} [#{coordinates}](https://github.com/#{coordinates}) has been deleted",
-      "by [@#{@author.login}](https://github.com/#{@author.login})",
-      "(it was earlier submitted by [@#{submitter.login}](https://github.com/#{submitter.login}))"
-    )
+    unless Xia::Bots.new.is?(@author)
+      @telepost.spam(
+        "The project no.#{@id} [#{coordinates}](https://github.com/#{coordinates}) has been deleted",
+        "by [@#{@author.login}](https://github.com/#{@author.login})",
+        "(it was earlier submitted by [@#{submitter.login}](https://github.com/#{submitter.login}))"
+      )
+    end
   end
 
   def unseen!
