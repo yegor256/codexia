@@ -98,7 +98,8 @@ class Xia::Projects
     terms << 'badge.text IN (' + badges.map { |b| "'#{b}'" }.join(',') + ')' unless badges.empty?
     q = [
       'SELECT DISTINCT p.*, author.login AS author_login, author.id AS author_id,',
-      'ARRAY(SELECT CONCAT(id,\':\',text) FROM badge WHERE project=p.id) as badges',
+      'ARRAY(SELECT CONCAT(id,\':\',text) FROM badge WHERE project=p.id) as badges,',
+      '(SELECT COUNT(*) FROM review WHERE review.project=p.id) AS reviews_count',
       'FROM project AS p',
       'LEFT JOIN badge ON p.id=badge.project',
       'JOIN author ON author.id=p.author',
@@ -124,6 +125,7 @@ class Xia::Projects
             ),
             :id, :login
           ),
+          reviews_count: r['reviews_count'].to_i,
           badges: Xia::Sieve.new(
             Xia::Veil.new(
               Xia::Badges.new(@pgsql, p, log: @log),
@@ -142,7 +144,7 @@ class Xia::Projects
             :to_a
           )
         ),
-        :id, :coordinates, :platform, :created, :deleted, :submitter, :badges
+        :id, :coordinates, :platform, :created, :deleted, :submitter, :badges, :reviews_count
       )
     end
   end

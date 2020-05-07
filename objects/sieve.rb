@@ -38,7 +38,7 @@ class Xia::Sieve
   end
 
   def to_s
-    'JsonedOf:' + method_missing(:to_s)
+    'Sieve:' + method_missing(:to_s)
   end
 
   def method_missing(*args)

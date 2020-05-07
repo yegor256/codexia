@@ -14,6 +14,9 @@
         = partial(:author, locals, a: p.submitter)
         %span.item{title: "##{p.id} on #{p.created}"}
           = RelativeTime.in_words(p.created)
+        - unless p.reviews_count.zero?
+          %span.item{title: "##{p.id} on #{p.created}"}
+            = "#{p.reviews_count} review#{p.reviews_count == 1 ? '' : 's'}"
         %span.item
           %a{href: iri.cut('/p').append(p.id).append('delete'), onclick: 'return confirm("Are you sure?");'}<
             = '/delete'

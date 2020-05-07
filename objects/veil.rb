@@ -51,7 +51,7 @@ class Xia::Veil
   end
 
   def respond_to?(method, include_private = false)
-    @origin.respond_to?(method, include_private)
+    @origin.respond_to?(method, include_private) || @methods[method]
   end
 
   def respond_to_missing?(_method, _include_private = false)
