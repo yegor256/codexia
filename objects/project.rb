@@ -93,13 +93,14 @@ class Xia::Project
   def delete
     if submitter.login == @author.login
       Xia::Rank.new(@author).enter('projects.delete-own')
+      @pgsql.exec('DELETE FROM project WHERE id=$1', [@id])
     else
       Xia::Rank.new(@author).enter('projects.delete')
+      @pgsql.exec(
+        'UPDATE project SET deleted = $2 WHERE id=$1',
+        [@id, "Deleted by @#{@author.login} on #{Time.now.utc.iso8601}"]
+      )
     end
-    @pgsql.exec(
-      'UPDATE project SET deleted = $2 WHERE id=$1',
-      [@id, "Deleted by @#{@author.login} on #{Time.now.utc.iso8601}"]
-    )
     @telepost.spam(
       "The project no.#{@id} [#{coordinates}](https://github.com/#{coordinates}) has been deleted",
       "by [@#{@author.login}](https://github.com/#{@author.login})",
