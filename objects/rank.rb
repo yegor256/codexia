@@ -59,6 +59,11 @@ class Xia::Rank
         bot_forbid: true
       },
       {
+        task: 'projects.delete-own',
+        min: 0,
+        text: 'delete your own project'
+      },
+      {
         task: 'reviews.post',
         min: 0,
         text: 'post a review'

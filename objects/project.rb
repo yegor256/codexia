@@ -91,7 +91,11 @@ class Xia::Project
   end
 
   def delete
-    Xia::Rank.new(@author).enter('projects.delete')
+    if submitter.login == @author.login
+      Xia::Rank.new(@author).enter('projects.delete-own')
+    else
+      Xia::Rank.new(@author).enter('projects.delete')
+    end
     @pgsql.exec(
       'UPDATE project SET deleted = $2 WHERE id=$1',
       [@id, "Deleted by @#{@author.login} on #{Time.now.utc.iso8601}"]
