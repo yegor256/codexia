@@ -1,10 +1,10 @@
-- if list.empty?
+- if list.count.zero?
   %p
     No projects found :(
 - else
   %p
     Total:
-    = list.size
+    = list.count
     projects
   - list.each do |p|
     %p
