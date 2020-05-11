@@ -21,11 +21,11 @@
 # SOFTWARE.
 
 require 'loog'
+require 'veil'
 require_relative 'xia'
 require_relative 'project'
 require_relative 'rank'
 require_relative 'bots'
-require_relative 'veil'
 require_relative 'sieve'
 
 # Projects.
@@ -104,10 +104,12 @@ class Xia::Projects
       'LEFT JOIN badge ON p.id=badge.project',
       'JOIN author ON author.id=p.author',
       terms.empty? ? '' : 'WHERE ' + terms.join(' AND '),
-      'ORDER BY p.created DESC',
-      'LIMIT $1 OFFSET $2'
+      'ORDER BY p.created DESC'
     ].join(' ')
-    @pgsql.exec(q, [limit, offset]).map { |r| to_obj(r) }
+    Veil.new(
+      @pgsql.exec(q + ' LIMIT $1 OFFSET $2', [limit, offset]).map { |r| to_obj(r) },
+      count: @pgsql.exec("SELECT COUNT(*) FROM (#{q}) AS x")[0]['count'].to_i
+    )
   end
 
   def inbox(limit: 10, offset: 0)
@@ -120,10 +122,12 @@ class Xia::Projects
       'JOIN author ON author.id=p.author',
       'LEFT JOIN seen ON p.id=seen.project AND seen.author=$1',
       'WHERE seen.id IS NULL',
-      'ORDER BY p.created DESC',
-      'LIMIT $2 OFFSET $3'
+      'ORDER BY p.created DESC'
     ].join(' ')
-    @pgsql.exec(q, [@author.id, limit, offset]).map { |r| to_obj(r) }
+    Veil.new(
+      @pgsql.exec(q + ' LIMIT $2 OFFSET $3', [@author.id, limit, offset]).map { |r| to_obj(r) },
+      count: @pgsql.exec("SELECT COUNT(*) FROM (#{q}) AS x", [@author.id])[0]['count'].to_i
+    )
   end
 
   private
@@ -131,7 +135,7 @@ class Xia::Projects
   def to_obj(r)
     p = get(r['id'].to_i)
     Xia::Sieve.new(
-      Xia::Veil.new(
+      Veil.new(
         p,
         id: p.id,
         coordinates: r['coordinates'],
@@ -139,7 +143,7 @@ class Xia::Projects
         deleted: r['deleted'],
         created: Time.parse(r['created']),
         submitter: Xia::Sieve.new(
-          Xia::Veil.new(
+          Veil.new(
             Xia::Author.new(@pgsql, r['author_id'].to_i, log: @log, telepost: @telepost),
             id: r['author_id'].to_i,
             login: r['author_login']
@@ -148,12 +152,12 @@ class Xia::Projects
         ),
         reviews_count: r['reviews_count'].to_i,
         badges: Xia::Sieve.new(
-          Xia::Veil.new(
+          Veil.new(
             Xia::Badges.new(@pgsql, p, log: @log),
             to_a: r['badges'][1..-2].split(',').map do |t|
               id, text = t.split(':', 2)
               Xia::Sieve.new(
-                Xia::Veil.new(
+                Veil.new(
                   Xia::Badge.new(@pgsql, p, id, log: @log),
                   id: id,
                   text: text

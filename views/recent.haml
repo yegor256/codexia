@@ -2,6 +2,10 @@
   %p
     No projects found :(
 - else
+  %p
+    Total:
+    = list.size
+    projects
   - list.each do |p|
     %p
       %a{href: iri.cut('/p').append(p.id), style: (p.deleted ? 'text-decoration:line-through' : '')}

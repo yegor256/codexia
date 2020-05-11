@@ -24,11 +24,11 @@ require 'loog'
 require 'redcarpet'
 require 'securerandom'
 require 'tacky'
+require 'veil'
 require_relative 'xia'
 require_relative 'review'
 require_relative 'rank'
 require_relative 'bots'
-require_relative 'veil'
 
 # Reviews.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -104,7 +104,7 @@ class Xia::Reviews
     ].join(' ')
     @pgsql.exec(q, [@project.id, limit, offset]).map do |r|
       Xia::Sieve.new(
-        Xia::Veil.new(
+        Veil.new(
           get(r['id'].to_i),
           text: r['text'],
           html: carpet.render(r['text']),
@@ -113,7 +113,7 @@ class Xia::Reviews
           deleted: r['deleted'],
           created: Time.parse(r['created']),
           submitter: Xia::Sieve.new(
-            Xia::Veil.new(
+            Veil.new(
               Xia::Author.new(@pgsql, r['author_id'].to_i, log: @log, telepost: @telepost),
               id: r['author_id'].to_i,
               login: r['author_login']

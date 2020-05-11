@@ -83,14 +83,14 @@ class Xia::AppTest < Minitest::Test
     ]
     pages.each do |p|
       get(p)
-      assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
+      assert_equal(200, last_response.status, "#{p} fails: #{last_response.body.inspect}")
     end
   end
 
   def test_submits_wrong_coordinates
     login('-tester5')
     post(Iri.new('/submit').add(platform: 'github', coordinates: '-').to_s, nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
-    assert_equal(303, last_response.status, "#{p} fails: #{last_response.body}")
+    assert_equal(303, last_response.status, "#{p} fails: #{last_response.body.inspect}")
   end
 
   def test_api_fetch_json
@@ -98,16 +98,17 @@ class Xia::AppTest < Minitest::Test
     id = post_project('tt/ttt')
     post("/p/#{id}/post?text=hello", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
     get('/recent.json', nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
-    assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
+    assert_equal(200, last_response.status, "#{p} fails: #{last_response.body.inspect}")
     json = JSON.parse(last_response.body)[0]
-    assert(json['id'].is_a?(Integer))
+    assert(json.is_a?(Hash), "No projects in the JSON response: #{last_response.body.inspect}")
+    assert(json['id'].is_a?(Integer), 'ID is not present')
     assert(json['submitter']['id'].is_a?(Integer))
     assert(json['deleted'].nil?)
     assert(json['badges'].is_a?(Array))
     assert_equal('newbie', json['badges'][0]['text'])
     assert(json['created'].is_a?(String))
     get("/p/#{id}.json", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
-    assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
+    assert_equal(200, last_response.status, "#{p} fails: #{last_response.body.inspect}")
     json = JSON.parse(last_response.body)
     assert(json['id'].is_a?(Integer))
     assert(json['submitter']['id'].is_a?(Integer))
@@ -123,32 +124,35 @@ class Xia::AppTest < Minitest::Test
     text = 'This is a long enough review to pass all possible checks inside'
     uri = Iri.new("/p/#{id}/post").add(text: text, hash: 123).to_s
     post(uri, nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
-    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
+    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body.inspect}")
     post(uri, nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
-    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
+    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body.inspect}")
   end
 
   def test_attach_detach_badge
     login('-tester2')
     id = post_project('abc/my-badges')
     post("/p/#{id}/attach?text=thebadge", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
-    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
+    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body.inspect}")
+    post("/p/#{id}/attach?text=another", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
+    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body.inspect}")
     get("/p/#{id}/badges.json", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
-    assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
+    assert_equal(200, last_response.status, "#{p} fails: #{last_response.body.inspect}")
     json = JSON.parse(last_response.body)
-    assert(json.length.positive?, json.to_s)
+    assert(json.is_a?(Array), json.to_s)
+    assert(json.length > 1, json.to_s)
     badge = json[0]['id'].to_i
     get("/p/#{id}/detach/#{badge}", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
-    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
+    assert_equal(302, last_response.status, "can't detach #{badge}: #{last_response.body.inspect}")
   end
 
   def test_meta
     login('-tester3')
     id = post_project('hey/def')
     post("/p/#{id}/meta?key=test&value=22", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
-    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
+    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body.inspect}")
     get("/p/#{id}/meta?key=-test-:test", nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
-    assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
+    assert_equal(200, last_response.status, "#{p} fails: #{last_response.body.inspect}")
   end
 
   private
@@ -160,11 +164,11 @@ class Xia::AppTest < Minitest::Test
   # Post a new project and return its ID
   def post_project(name)
     post(Iri.new('/submit').add(platform: 'github', coordinates: name).to_s, nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
-    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body}")
+    assert_equal(302, last_response.status, "#{p} fails: #{last_response.body.inspect}")
     id = last_response.header['Location'].gsub(%r{^.*/p/(\d+)$}, '\1')
     ["/p/#{id}", "/p/#{id}.json", "/p/#{id}/reviews.json"].each do |p|
       get(p, nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')
-      assert_equal(200, last_response.status, "#{p} fails: #{last_response.body}")
+      assert_equal(200, last_response.status, "#{p} fails: #{last_response.body.inspect}")
     end
     id
   end

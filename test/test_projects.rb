@@ -28,6 +28,19 @@ require_relative '../objects/authors'
 require_relative '../objects/projects'
 
 class Xia::ProjectsTest < Minitest::Test
+  def test_iterates_projects
+    author = Xia::Authors.new(t_pgsql).named('-eee')
+    projects = author.projects
+    projects.submit('github', "yegor-1A.o/takes_#{rand(999)}")
+    list = projects.inbox
+    assert(!list.count.zero?)
+    assert(!list.empty?)
+    assert(!list.count.zero?)
+    observed = 0
+    list.each { |_| observed += 1 }
+    assert(!observed.zero?)
+  end
+
   def test_submits_project
     author = Xia::Authors.new(t_pgsql).named('-eee')
     projects = author.projects
@@ -59,7 +72,7 @@ class Xia::ProjectsTest < Minitest::Test
     projects.submit('github', "dd/fdfs#{rand(999)}")
     project = projects.submit('github', "dd/fsss#{rand(999)}")
     project.badges.attach('test')
-    assert(projects.recent.length >= 2)
+    assert(projects.recent.count >= 2)
     assert(projects.recent(badges: ['badge-is-absent']).empty?)
     assert(!projects.recent(badges: ['test']).empty?)
   end

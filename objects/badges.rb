@@ -21,10 +21,10 @@
 # SOFTWARE.
 
 require 'loog'
+require 'veil'
 require_relative 'xia'
 require_relative 'badge'
 require_relative 'bots'
-require_relative 'veil'
 
 # Badges.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -63,7 +63,7 @@ class Xia::Badges
   def to_a
     @pgsql.exec('SELECT * FROM badge WHERE project=$1', [@project.id]).map do |r|
       Xia::Sieve.new(
-        Xia::Veil.new(
+        Veil.new(
           get(r['id'].to_i),
           text: r['text']
         ),
