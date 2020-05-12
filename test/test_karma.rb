@@ -43,8 +43,8 @@ class Xia::KarmaTest < Minitest::Test
     authors = Xia::Authors.new(t_pgsql)
     author = authors.named("test#{rand(999)}")
     author.karma.legend.each do |k|
-      assert(k[:points].keys.any? { |t| t.to_s == '2000-01-01' }, k[:terms])
-      assert(k[:bot].keys.any? { |t| t.to_s == '2000-01-01' }, k[:terms])
+      assert(k[:points].keys.any? { |t| t.to_s == '2000-01-01' }, "#{k[:terms]} is broken")
+      assert(k[:bot].keys.any? { |t| t.to_s == '2000-01-01' }, "#{k[:terms]} is broken")
     end
   end
 

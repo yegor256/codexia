@@ -62,14 +62,18 @@ class Xia::Karma
       },
       {
         points: {
-          '2000-01-01': +1
+          '2020-05-12': +5,
+          '2000-01-01': 0
         },
-        query: 'SELECT * FROM project AS t WHERE author=$1 AND deleted IS NULL',
-        terms: 'each project you submitted',
-        history: 'The project #[id]:[coordinates] you submitted',
+        query: [
+          'SELECT project.id, project.coordinates, t.text, t.created FROM badge AS t',
+          'JOIN project ON project.id=t.project',
+          'WHERE t.author=$1 AND t.text LIKE \'L%\''
+        ].join(' '),
+        terms: 'each L1-L3 badge you attached',
+        history: 'The badge you attached to #[id]:[coordinates]',
         bot: {
-          '2020-04-22': +0.8,
-          '2000-01-01': +1
+          '2000-01-01': 0
         }
       },
       {
