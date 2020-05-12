@@ -62,6 +62,18 @@ class Xia::Karma
       },
       {
         points: {
+          '2000-01-01': +1
+        },
+        query: 'SELECT * FROM project AS t WHERE author=$1 AND deleted IS NULL',
+        terms: 'each project you submitted',
+        history: 'The project #[id]:[coordinates] you submitted',
+        bot: {
+          '2020-04-22': +0.8,
+          '2000-01-01': +1
+        }
+      },
+      {
+        points: {
           '2000-01-01': +5
         },
         query: [

@@ -105,10 +105,10 @@ class Xia::Badges
       end
       t.exec(
         [
-          'INSERT INTO badge (project, text) VALUES ($1, $2)',
+          'INSERT INTO badge (project, author, text) VALUES ($1, $2, $3)',
           'ON CONFLICT (project, text) DO UPDATE SET text = $2 RETURNING id'
         ].join(' '),
-        [@project.id, text]
+        [@project.id, @project.author.id, text]
       )[0]['id'].to_i
     end
     @project.unseen!
