@@ -1,0 +1,13 @@
+%table
+  %thead
+    %tr
+      %th Login
+      %th.right Earned
+  %tbody
+    - list.each do |a|
+      %tr
+        %td
+          = partial(:author, locals, a: a)
+        %td
+          = a.points
+

@@ -75,6 +75,7 @@ class Xia::AppTest < Minitest::Test
       '/payables?a=-test',
       '/a/-test',
       '/submit',
+      '/authors',
       '/terms',
       '/bots',
       '/sql',

@@ -55,6 +55,10 @@
                     = '/submit'
               - if defined?(author)
                 %li
+                  %a{href: iri.cut('/authors'), title: 'Most active authors'}
+                    = '/authors'
+              - if defined?(author)
+                %li
                   %a{href: iri.cut('/terms')}
                     = '/terms'
                 - if Xia::Bots.new.is?(the_author)
