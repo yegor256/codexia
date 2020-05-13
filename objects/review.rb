@@ -85,20 +85,10 @@ class Xia::Review
     @project.unseen!
   end
 
-  def quota
-    return 1 if @project.author.vip?
-    max = 10
-    max = 100 if Xia::Bots.new.is?(@project.author)
-    max - @pgsql.exec(
-      'SELECT COUNT(*) FROM vote WHERE created > NOW() - INTERVAL \'1 DAY\' AND author=$1',
-      [@project.author.id]
-    )[0]['count'].to_i
-  end
-
   def vote(up)
     Xia::Rank.new(@project.author).enter('reviews.upvote') if up
     Xia::Rank.new(@project.author).enter('reviews.downvote') unless up
-    raise Xia::Urror, 'You are voting too fast' if quota.negative?
+    Xia::Rank.new(@project.author).quota('vote', 'vote')
     raise Xia::Urror, "The review is already deleted by @#{deleter.login}, can\'t vote" if deleter
     raise Xia::Urror, 'The project is deleted, can\'t vote' if @project.deleter
     @pgsql.exec(

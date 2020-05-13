@@ -59,11 +59,11 @@ class Xia::Reviews
 
   def post(text, hash = SecureRandom.hex)
     Xia::Rank.new(@project.author).enter('reviews.post')
+    Xia::Rank.new(@project.author).quota('review', 'post')
     unless @project.deleter.nil?
       raise Xia::Urror, "The project is already deleted by @#{@project.deleter.login}, can\'t review"
     end
     raise Xia::Urror, "The review is too short for us, just #{text.length}" if text.length < 30
-    raise Xia::Urror, 'You are reviewing too fast' if quota.negative?
     raise Xia::Urror, 'Hash can\'t be empty' if hash.empty?
     raise DuplicateError, 'A review with this hash already exists' if exists?(hash)
     id = @pgsql.exec(
@@ -79,16 +79,6 @@ class Xia::Reviews
       )
     end
     get(id)
-  end
-
-  def quota
-    return 1 if @project.author.vip?
-    max = 5
-    max = 300 if Xia::Bots.new.is?(@project.author)
-    max - @pgsql.exec(
-      'SELECT COUNT(*) FROM review WHERE created > NOW() - INTERVAL \'1 DAY\' AND author=$1',
-      [@project.author.id]
-    )[0]['count'].to_i
   end
 
   def recent(limit: 10, offset: 0, show_deleted: false)

@@ -48,6 +48,16 @@ class Xia::Rank
         text: 'submit a new project'
       },
       {
+        task: 'projects.submit.quota.5',
+        min: 100,
+        text: 'submit more than 5 projects per day'
+      },
+      {
+        task: 'projects.submit.quota.50',
+        min: 500,
+        text: 'submit more than 50 projects per day'
+      },
+      {
         task: 'projects.show-deleted',
         min: 100,
         text: 'see deleted projects'
@@ -67,6 +77,16 @@ class Xia::Rank
         task: 'reviews.post',
         min: 0,
         text: 'post a review'
+      },
+      {
+        task: 'reviews.post.quota.50',
+        min: 100,
+        text: 'post most than 50 reviews per day'
+      },
+      {
+        task: 'reviews.post.quota.200',
+        min: 500,
+        text: 'post most than 200 reviews per day'
       },
       {
         task: 'reviews.show-deleted',
@@ -96,6 +116,16 @@ class Xia::Rank
         min: 200,
         text: 'downvote a review',
         bot_forbid: true
+      },
+      {
+        task: 'reviews.vote.quota.50',
+        min: 100,
+        text: 'vote more than 50 times per day'
+      },
+      {
+        task: 'reviews.vote.quota.200',
+        min: 500,
+        text: 'vote more than 20 times per day'
       },
       {
         task: 'badges.promote-to-L1',
@@ -169,5 +199,16 @@ class Xia::Rank
       raise Xia::Urror, "Karma #{txt} is not enough to #{info[:text]} (must be #{info[:min]}+)"
     end
     karma
+  end
+
+  def quota(entity, task)
+    return if @author.vip?
+    footprint = @author.footprint(entity)
+    prefix = "#{entity}s.#{task}.quota."
+    t = legend.select { |g| g[:task].start_with?(prefix) }
+      .map { |g| { task: g[:task], diff: footprint - g[:task][prefix.length..-1].to_i } }
+      .reject { |g| g[:diff].negative? }
+      .min_by { |g| g[:diff] }
+    Xia::Rank.new(@author, log: @log).enter(t[:task]) unless t.nil?
   end
 end

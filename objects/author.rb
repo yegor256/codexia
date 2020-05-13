@@ -69,6 +69,13 @@ class Xia::Author
     end
   end
 
+  def footprint(entity)
+    @pgsql.exec(
+      "SELECT COUNT(*) FROM #{entity} WHERE created > NOW() - INTERVAL '1 DAY' AND author=$1",
+      [@id]
+    )[0]['count'].to_i
+  end
+
   private
 
   def column(name)
