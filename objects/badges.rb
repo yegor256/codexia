@@ -112,6 +112,7 @@ class Xia::Badges
       )[0]['id'].to_i
     end
     @project.unseen!
+    @project.reviews.post("A new badge #{text.inspect} was attached to the project") unless text == 'newbie'
     get(id)
   end
 end
