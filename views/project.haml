@@ -32,7 +32,7 @@
   %p
     %strong.firebrick
       Deleted by
-      = "@#{project.deleter.login}"
+      = partial(:author, locals, a: project.deleter)
 
 %p
   - project.badges.to_a.each do |b|
@@ -54,7 +54,7 @@
       - if r.deleter
         %strong.firebrick
           Deleted by
-          = "@#{r.deleter}"
+          = partial(:author, locals, a: r.deleter)
         %br
       %span.smaller.gray
         = partial(:author, locals, a: r.submitter)
