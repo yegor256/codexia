@@ -104,7 +104,7 @@ class Xia::AppTest < Minitest::Test
     assert(json.is_a?(Hash), "No projects in the JSON response: #{last_response.body.inspect}")
     assert(json['id'].is_a?(Integer), 'ID is not present')
     assert(json['submitter']['id'].is_a?(Integer))
-    assert(json['deleted'].nil?)
+    assert(json['deleter'].nil?)
     assert(json['badges'].is_a?(Array))
     assert_equal('newbie', json['badges'][0]['text'])
     assert(json['created'].is_a?(String))
@@ -113,7 +113,7 @@ class Xia::AppTest < Minitest::Test
     json = JSON.parse(last_response.body)
     assert(json['id'].is_a?(Integer))
     assert(json['submitter']['id'].is_a?(Integer))
-    assert(json['deleted'].nil?)
+    assert(json['deleter'].nil?)
     assert(json['badges'].is_a?(Array))
   end
 

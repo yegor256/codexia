@@ -45,8 +45,10 @@ class Xia::Review
     Time.parse(column(:created))
   end
 
-  def deleted
-    column(:deleted)
+  def deleter
+    d = column(:deleter)
+    return d if d.nil?
+    Xia::Author.new(@pgsql, d.to_i, log: @log, telepost: @telepost)
   end
 
   def submitter
@@ -73,14 +75,13 @@ class Xia::Review
   def delete
     if submitter.id == @project.author.id
       Xia::Rank.new(@project.author).enter('reviews.delete-own')
-      @pgsql.exec('DELETE FROM review WHERE id=$1', [@id])
     else
       Xia::Rank.new(@project.author).enter('reviews.delete')
-      @pgsql.exec(
-        'UPDATE review SET deleted = $2 WHERE id=$1',
-        [@id, "Deleted by @#{@project.author.login} on #{Time.now.utc.iso8601}"]
-      )
     end
+    @pgsql.exec(
+      'UPDATE review SET deleter=$1 WHERE id=$2',
+      [@project.author.id, @id]
+    )
     @project.unseen!
   end
 
@@ -98,8 +99,8 @@ class Xia::Review
     Xia::Rank.new(@project.author).enter('reviews.upvote') if up
     Xia::Rank.new(@project.author).enter('reviews.downvote') unless up
     raise Xia::Urror, 'You are voting too fast' if quota.negative?
-    raise Xia::Urror, 'It is already deleted, can\'t vote' if deleted
-    raise Xia::Urror, 'The project is deleted, can\'t vote' if @project.deleted
+    raise Xia::Urror, "The review is already deleted by @#{deleter.login}, can\'t vote" if deleter
+    raise Xia::Urror, 'The project is deleted, can\'t vote' if @project.deleter
     @pgsql.exec(
       [
         'INSERT INTO vote (review, author, positive)',

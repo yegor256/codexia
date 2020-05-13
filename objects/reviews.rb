@@ -59,7 +59,9 @@ class Xia::Reviews
 
   def post(text, hash = SecureRandom.hex)
     Xia::Rank.new(@project.author).enter('reviews.post')
-    raise Xia::Urror, 'The project is dead, can\'t review' unless @project.deleted.nil?
+    unless @project.deleter.nil?
+      raise Xia::Urror, "The project is already deleted by @#{@project.deleter.login}, can\'t review"
+    end
     raise Xia::Urror, "The review is too short for us, just #{text.length}" if text.length < 30
     raise Xia::Urror, 'You are reviewing too fast' if quota.negative?
     raise Xia::Urror, 'Hash can\'t be empty' if hash.empty?
@@ -98,7 +100,7 @@ class Xia::Reviews
       'FROM review AS r',
       'JOIN author ON author.id=r.author',
       'WHERE project=$1',
-      show_deleted ? '' : ' AND r.deleted IS NULL',
+      show_deleted ? '' : ' AND r.deleter IS NULL',
       'ORDER BY r.created DESC',
       'LIMIT $2 OFFSET $3'
     ].join(' ')
@@ -110,7 +112,14 @@ class Xia::Reviews
           html: carpet.render(r['text']),
           up: r['up'].to_i,
           down: r['down'].to_i,
-          deleted: r['deleted'],
+          deleter: r['deleter'].nil? ? nil : Xia::Sieve.new(
+            Veil.new(
+              Xia::Author.new(@pgsql, r['deleter_id'].to_i, log: @log, telepost: @telepost),
+              id: r['deleter_id'].to_i,
+              login: r['deleter_login']
+            ),
+            :id, :login
+          ),
           created: Time.parse(r['created']),
           submitter: Xia::Sieve.new(
             Veil.new(
@@ -121,7 +130,7 @@ class Xia::Reviews
             :id, :login
           )
         ),
-        :id, :text, :html, :up, :down, :created, :deleted, :submitter
+        :id, :text, :html, :up, :down, :created, :deleter, :submitter
       )
     end
   end

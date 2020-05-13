@@ -52,8 +52,13 @@ class Xia::Project
     column(:platform)
   end
 
-  def deleted
-    column(:deleted)
+  def deleter
+    d = column(:deleter)
+    return d if d.nil?
+    Xia::Sieve.new(
+      Xia::Author.new(@pgsql, d.to_i, log: @log, telepost: @telepost),
+      :id, :login, :karma
+    )
   end
 
   def created
@@ -96,8 +101,8 @@ class Xia::Project
       Xia::Rank.new(@author).enter('projects.delete')
     end
     @pgsql.exec(
-      'UPDATE project SET deleted = $2 WHERE id=$1',
-      [@id, "Deleted by @#{@author.login} on #{Time.now.utc.iso8601}"]
+      'UPDATE project SET deleter=$1 WHERE id=$2',
+      [@author.id, @id]
     )
     @telepost.spam(
       "The project no.#{@id} [#{coordinates}](https://github.com/#{coordinates}) has been deleted",

@@ -43,7 +43,7 @@ class Xia::Projects
   def get(id)
     Xia::Sieve.new(
       Xia::Project.new(@pgsql, @author, id, log: @log, telepost: @telepost),
-      :id, :coordinates, :platform, :created, :deleted, :submitter, :badges, :meta
+      :id, :coordinates, :platform, :created, :deleter, :submitter, :badges, :meta
     )
   end
 
@@ -94,13 +94,15 @@ class Xia::Projects
 
   def recent(badges: [], limit: 10, offset: 0, show_deleted: false)
     terms = []
-    terms << 'p.deleted IS NULL' unless show_deleted
+    terms << 'p.deleter IS NULL' unless show_deleted
     terms << 'badge.text IN (' + badges.map { |b| "'#{b}'" }.join(',') + ')' unless badges.empty?
     q = [
       'SELECT DISTINCT p.*, author.login AS author_login, author.id AS author_id,',
+      'deleter.id AS deleter_id, deleter.login AS deleter_login,',
       'ARRAY(SELECT CONCAT(id,\':\',text) FROM badge WHERE project=p.id) as badges,',
       '(SELECT COUNT(*) FROM review WHERE review.project=p.id) AS reviews_count',
       'FROM project AS p',
+      'LEFT JOIN author AS deleter ON deleter.id=p.deleter',
       'LEFT JOIN badge ON p.id=badge.project',
       'JOIN author ON author.id=p.author',
       terms.empty? ? '' : 'WHERE ' + terms.join(' AND '),
@@ -115,11 +117,13 @@ class Xia::Projects
   def inbox(limit: 10, offset: 0)
     q = [
       'SELECT DISTINCT p.*, author.login AS author_login, author.id AS author_id,',
+      'deleter.id AS deleter_id, deleter.login AS deleter_login,',
       'ARRAY(SELECT CONCAT(id,\':\',text) FROM badge WHERE project=p.id) as badges,',
       '(SELECT COUNT(*) FROM review WHERE review.project=p.id) AS reviews_count',
       'FROM project AS p',
       'LEFT JOIN badge ON p.id=badge.project',
       'JOIN author ON author.id=p.author',
+      'LEFT JOIN author AS deleter ON deleter.id=p.deleter',
       'LEFT JOIN seen ON p.id=seen.project AND seen.author=$1',
       'WHERE seen.id IS NULL',
       'ORDER BY p.created DESC'
@@ -140,7 +144,14 @@ class Xia::Projects
         id: p.id,
         coordinates: r['coordinates'],
         platform: r['platform'],
-        deleted: r['deleted'],
+        deleter: r['deleter_id'].nil? ? nil : Xia::Sieve.new(
+          Veil.new(
+            Xia::Author.new(@pgsql, r['deleter_id'].to_i, log: @log, telepost: @telepost),
+            id: r['deleter_id'].to_i,
+            login: r['deleter_login']
+          ),
+          :id, :login
+        ),
         created: Time.parse(r['created']),
         submitter: Xia::Sieve.new(
           Veil.new(
@@ -169,7 +180,7 @@ class Xia::Projects
           :to_a
         )
       ),
-      :id, :coordinates, :platform, :created, :deleted, :submitter, :badges, :reviews_count
+      :id, :coordinates, :platform, :created, :deleter, :submitter, :badges, :reviews_count
     )
   end
 end

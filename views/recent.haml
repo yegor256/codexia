@@ -8,7 +8,7 @@
     projects
   - list.each do |p|
     %p
-      %a{href: iri.cut('/p').append(p.id), style: (p.deleted ? 'text-decoration:line-through' : '')}
+      %a{href: iri.cut('/p').append(p.id), style: (p.deleter ? 'text-decoration:line-through' : '')}
         &= p.coordinates
       %br
       - p.badges.to_a.each do |b|

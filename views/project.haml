@@ -28,10 +28,11 @@
         %a{href: iri.cut('/p').append(project.id).append('delete'), onclick: 'return confirm("Are you sure?");'}<
           = '/delete'
 
-- if !project.deleted.nil?
+- if !project.deleter.nil?
   %p
     %strong.firebrick
-      &= project.deleted
+      Deleted by
+      = "@#{project.deleter.login}"
 
 %p
   - project.badges.to_a.each do |b|
@@ -42,7 +43,7 @@
         = '✘'
 
 - if Xia::Rank.new(the_author).ok?('badges.attach')
-  - if project.deleted.nil?
+  - if project.deleter.nil?
     %form{action: iri.cut('/p').append(project.id).append('attach'), method: 'POST'}
       %input{type: 'text', name: 'text', size: 25, placeholder: 'attach a new badge...', autocomplete: 'off'}
       %button{type: 'submit'} Attach
@@ -50,13 +51,14 @@
 - reviews.each do |r|
   %div.block{style: 'border-left: 2px solid lightgray; padding-left: 1em;'}
     %p{style: 'margin-bottom: 1em; clear: both;'}
-      - if r.deleted
+      - if r.deleter
         %strong.firebrick
-          &= r.deleted
+          Deleted by
+          = "@#{r.deleter}"
         %br
       %span.smaller.gray
         = partial(:author, locals, a: r.submitter)
-        %span.item{title: "##{r.id} on #{r.created}", style: (r.deleted ? 'text-decoration:line-through' : '')}
+        %span.item{title: "##{r.id} on #{r.created}", style: (r.deleter ? 'text-decoration:line-through' : '')}
           = RelativeTime.in_words(r.created)
         %span.item
           = r.up
@@ -81,7 +83,7 @@
 = partial(:paging, locals, page: page, list: reviews)
 
 - if Xia::Rank.new(the_author).ok?('reviews.post')
-  - if project.deleted.nil?
+  - if project.deleter.nil?
     %div.block
       %form{action: iri.cut('/p').append(project.id).append('post'), method: 'POST'}
         %fieldset
@@ -102,7 +104,7 @@
                 terms of use
               and don't abuse the platform.
 
-- if project.deleted.nil? && Xia::Bots.new.is?(the_author)
+- if project.deleter.nil? && Xia::Bots.new.is?(the_author)
   %div.block
     - metas = project.meta.to_a
     - unless metas.empty?
