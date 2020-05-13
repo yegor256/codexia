@@ -49,7 +49,7 @@ class Xia::Rank
       },
       {
         task: 'projects.submit.quota.5',
-        min: 100,
+        min: 50,
         text: 'submit more than 5 projects per day'
       },
       {
@@ -80,7 +80,7 @@ class Xia::Rank
       },
       {
         task: 'reviews.post.quota.50',
-        min: 100,
+        min: 50,
         text: 'post most than 50 reviews per day'
       },
       {
