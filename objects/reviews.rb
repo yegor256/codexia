@@ -85,10 +85,12 @@ class Xia::Reviews
     carpet = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
     q = [
       'SELECT r.*, author.login AS author_login, author.id AS author_id,',
+      'deleter.id AS deleter_id, deleter.login AS deleter_login,',
       '(SELECT COUNT(*) FROM vote AS v WHERE v.review=r.id AND positive=true) AS up,',
       '(SELECT COUNT(*) FROM vote AS v WHERE v.review=r.id AND positive=false) AS down',
       'FROM review AS r',
       'JOIN author ON author.id=r.author',
+      'LEFT JOIN author AS deleter ON deleter.id=r.deleter',
       'WHERE project=$1',
       show_deleted ? '' : ' AND r.deleter IS NULL',
       'ORDER BY r.created DESC',

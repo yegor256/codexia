@@ -55,6 +55,15 @@ class Xia::ReviewsTest < Minitest::Test
     assert_equal(1, project.reviews.recent.size)
   end
 
+  def test_fetches_deleted_reviews
+    author = Xia::Authors.new(t_pgsql).named('-test-')
+    projects = author.projects
+    project = projects.submit('github', "yegor256/foo#{rand(999)}")
+    review = project.reviews.post('This is a test review good enough to be posted')
+    review.delete
+    assert(!project.reviews.recent(show_deleted: true)[0].deleter.login.nil?)
+  end
+
   def test_rejects_duplicate_markers
     author = Xia::Authors.new(t_pgsql).named('-test-')
     projects = author.projects
