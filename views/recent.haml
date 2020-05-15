@@ -2,10 +2,17 @@
   %p
     No projects found :(
 - else
-  %p
-    Total:
-    = list.count
-    projects
+  %nav
+    %ul
+      %li
+        = list.count
+        projects
+      %li
+        - if Xia::Rank.new(the_author).ok?('projects.show-deleted')
+          - if params[:show_deleted]
+            %a{href: iri.del('show_deleted')} hide deleted
+          - else
+            %a{href: iri.add(show_deleted: true)} show deleted
   - list.each do |p|
     %p
       %a{href: iri.cut('/p').append(p.id), style: (p.deleter ? 'text-decoration:line-through' : '')}

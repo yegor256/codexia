@@ -32,7 +32,7 @@ get '/recent' do
       limit: 25,
       offset: page * 25,
       badges: badges,
-      show_deleted: Xia::Rank.new(the_author).ok?('projects.show-deleted')
+      show_deleted: Xia::Rank.new(the_author).ok?('projects.show-deleted') && params[:show_deleted]
     )
   )
 end
@@ -52,7 +52,7 @@ get '/recent.json' do
     the_projects.recent(
       limit: 25,
       offset: (params[:page] || '0').strip.to_i * 25,
-      show_deleted: Xia::Rank.new(the_author).ok?('projects.show-deleted')
+      show_deleted: Xia::Rank.new(the_author).ok?('projects.show-deleted') && params[:show_deleted]
     )
   )
 end
