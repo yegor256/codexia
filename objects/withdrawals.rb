@@ -49,7 +49,7 @@ class Xia::Withdrawals
     @author.karma.add(points, wallet, Zold::Amount.new(zld: zld).to_i)
     @telepost.spam(
       "New withdrawal for #{points} points (#{zld} ZLD) has been made",
-      "by [@#{@author.login}](https://github.com/#{@author.login})"
+      "by [@#{@author.login}](https://www.codexia.org/a/#{@author.login})"
     )
   end
 
