@@ -177,8 +177,8 @@ class Xia::Karma
           '2000-01-01': -25
         },
         query: 'SELECT t.* FROM project AS t WHERE author=$1 AND deleter IS NOT NULL AND deleter != author',
-        terms: 'each project you submitted, which was deleter later',
-        history: 'The project #[id]:[coordinates] you submitted was deleter',
+        terms: 'each project you submitted, which was deleted later',
+        history: 'The project #[id]:[coordinates] you submitted was deleted',
         bot: {
           '2020-04-22': -10,
           '2000-01-01': -25
@@ -190,8 +190,8 @@ class Xia::Karma
           '2000-01-01': -50
         },
         query: 'SELECT * FROM review AS t WHERE author=$1 AND deleter IS NOT NULL AND deleter != author',
-        terms: 'each review you submitted, which was deleter later',
-        history: 'The review #[id] you submitted was deleter',
+        terms: 'each review you submitted, which was deleted later',
+        history: 'The review #[id] you submitted was deleted',
         bot: {
           '2020-04-22': -10,
           '2000-01-01': -50
