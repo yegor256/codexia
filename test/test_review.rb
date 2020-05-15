@@ -44,8 +44,11 @@ class Xia::ReviewTest < Minitest::Test
     reviews = project.reviews
     review = reviews.post('This is a test review good enough to be posted')
     assert(!project.reviews.recent.empty?)
+    assert(review.deleter.nil?)
     review.delete
     assert(project.reviews.recent.empty?)
+    assert(!review.deleter.nil?)
+    assert(!review.deleter.login.nil?)
   end
 
   def test_deletes_someones_review
