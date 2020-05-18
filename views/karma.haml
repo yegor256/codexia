@@ -17,6 +17,7 @@
     withdraw anything at the moment
     = succeed '.' do
       = "(#{format('%.02f', safe)})"
+  %a{href: iri.cut('/terms').fragment('withdraw')} Why?
 
 - if withdrawals.empty?
   %p
