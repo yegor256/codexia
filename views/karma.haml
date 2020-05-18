@@ -56,7 +56,7 @@
     %p
       %strong
         = format('%+0.2f', r[:points])
-      &= r[:text]
+      = r[:text].gsub(/(\d+):([\w\/\-\._]+)/) { '<a href="' + iri.cut('/p').append(Regexp.last_match[1].to_i).to_s + '">' + Regexp.last_match[2] + '</a>' }
       %br
       %span.smaller.gray
         %span.item
