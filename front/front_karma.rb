@@ -21,9 +21,10 @@
 # SOFTWARE.
 
 get '/karma' do
+  page = (params[:page] || '0').strip.to_i
   haml :karma, layout: :layout, locals: merged(
     title: '/karma',
-    recent: the_author.karma.recent(limit: 10),
+    recent: the_author.karma.recent(offset: page * 25, limit: 25),
     withdrawals: the_author.withdrawals.recent(limit: 10)
   )
 end

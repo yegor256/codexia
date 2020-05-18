@@ -52,10 +52,10 @@ class Xia::ReviewTest < Minitest::Test
   end
 
   def test_deletes_someones_review
-    author = Xia::Authors.new(t_pgsql).named('-test0932')
+    author = Xia::Authors.new(t_pgsql).named('-test09300')
     projects = author.projects
-    project = projects.submit('github', "yegor256/takes#{rand(999)}")
-    reviewer = Xia::Authors.new(t_pgsql).named('-test228q')
+    project = projects.submit('github', "yegor256/takes#{rand(99_999)}")
+    reviewer = Xia::Authors.new(t_pgsql).named('-test2286q')
     review = reviewer.projects.get(project.id).reviews.post(
       'This is a test review good enough to be posted'
     )

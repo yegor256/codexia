@@ -61,3 +61,4 @@
       %span.smaller.gray
         %span.item
           = RelativeTime.in_words(r[:created])
+  = partial(:paging, locals, page: page, list: recent)
