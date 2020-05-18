@@ -54,7 +54,7 @@ class Xia::Karma
         },
         query: 'SELECT * FROM project AS t WHERE author=$1 AND deleter IS NULL',
         terms: 'each project you submitted',
-        history: 'The project #[id]:[coordinates] you submitted',
+        history: 'The project [id]:[coordinates] you submitted',
         bot: {
           '2020-04-22': +0.8,
           '2000-01-01': +1
@@ -71,7 +71,7 @@ class Xia::Karma
           'WHERE t.author=$1 AND t.text LIKE \'L%\''
         ].join(' '),
         terms: 'each L1-L3 badge you attached',
-        history: 'The badge you attached to #[id]:[coordinates]',
+        history: 'The badge you attached to [id]:[coordinates]',
         bot: {
           '2000-01-01': 0
         }
@@ -86,7 +86,7 @@ class Xia::Karma
           'WHERE t.author=$1 AND t.deleter IS NULL'
         ].join(' '),
         terms: 'each promoted project',
-        history: 'The project #[id]:[coordinates] you submitted got a promotion',
+        history: 'The project [id]:[coordinates] you submitted got a promotion',
         bot: {
           '2020-04-22': +2,
           '2000-01-01': +5
@@ -96,9 +96,13 @@ class Xia::Karma
         points: {
           '2000-01-01': +1
         },
-        query: 'SELECT * FROM review AS t WHERE author=$1 AND deleter IS NULL',
+        query: [
+          'SELECT t.*, project.coordinates FROM review AS t',
+          'JOIN project ON project.id=t.project',
+          'WHERE t.author=$1 AND t.deleter IS NULL'
+        ].join(' '),
         terms: 'each review you submitted',
-        history: 'The review #[id] you submitted',
+        history: 'The review #[id] you submitted to [project]:[coordinates]',
         bot: {
           '2020-04-22': +0.1,
           '2000-01-01': +1
@@ -109,13 +113,13 @@ class Xia::Karma
           '2000-01-01': 0
         },
         query: [
-          'SELECT DISTINCT t.id, t.created FROM review AS t',
+          'SELECT DISTINCT t.id, t.created, t.project, project.coordinates FROM review AS t',
           'JOIN project ON t.project=project.id',
           'JOIN badge ON project.id=badge.project AND badge.text LIKE \'L%\'',
           'WHERE t.author=$1 AND t.deleter IS NULL'
         ].join(' '),
         terms: 'each review you submitted for L1+ project',
-        history: 'The review #[id] you submitted for L1+ project',
+        history: 'The review #[id] you submitted for L1+ project [project]:[coordinates]',
         bot: {
           '2020-04-22': +0.8,
           '2000-01-01': 0
@@ -127,13 +131,15 @@ class Xia::Karma
         },
         query: [
           'SELECT t.* FROM (',
-          '  SELECT *, (SELECT COUNT(*) FROM vote WHERE review.id=vote.review AND positive=true) AS votes',
+          '  SELECT review.*, project.coordinates,',
+          '  (SELECT COUNT(*) FROM vote WHERE review.id=vote.review AND positive=true) AS votes',
           '  FROM review',
-          '  WHERE author=$1 AND deleter IS NULL',
+          '  JOIN project ON project.id=review.project',
+          '  WHERE review.author=$1 AND review.deleter IS NULL',
           ') AS t WHERE votes >= 10'
         ].join(' '),
         terms: 'each review of yours, which collected 10+ upvotes',
-        history: 'Your review #[id] was upvoted 10+ times',
+        history: 'Your review #[id] was upvoted 10+ times in [project]:[coordinates]',
         bot: {
           '2020-04-22': 0,
           '2000-01-01': +10
@@ -145,12 +151,13 @@ class Xia::Karma
           '2000-01-01': +1
         },
         query: [
-          'SELECT t.* FROM vote AS t',
+          'SELECT t.*, project.coordinates FROM vote AS t',
           'JOIN review ON t.review=review.id',
+          'JOIN project ON project.id=review.project',
           'WHERE review.author=$1 AND positive=true'
         ].join(' '),
         terms: 'each review of yours, which was up-voted',
-        history: 'You review #[id] was up-voted',
+        history: 'You review #[id] was up-voted in [project]:[coordinates]',
         bot: {
           '2000-01-01': 0
         }
@@ -160,12 +167,13 @@ class Xia::Karma
           '2000-01-01': -5
         },
         query: [
-          'SELECT t.* FROM vote AS t',
+          'SELECT t.*, project.coordinates FROM vote AS t',
           'JOIN review ON t.review=review.id',
+          'JOIN project ON project.id=review.project',
           'WHERE review.author=$1 AND positive=false'
         ].join(' '),
         terms: 'each review of yours, which was down-voted',
-        history: 'Your review #[id] was down-voted',
+        history: 'Your review #[id] was down-voted in [project]:[coordinates]',
         bot: {
           '2020-04-22': -0.5,
           '2000-01-01': -5
@@ -178,7 +186,7 @@ class Xia::Karma
         },
         query: 'SELECT t.* FROM project AS t WHERE author=$1 AND deleter IS NOT NULL AND deleter != author',
         terms: 'each project you submitted, which was deleted later',
-        history: 'The project #[id]:[coordinates] you submitted was deleted',
+        history: 'The project [id]:[coordinates] you submitted was deleted',
         bot: {
           '2020-04-22': -10,
           '2000-01-01': -25
@@ -189,9 +197,13 @@ class Xia::Karma
           '2020-04-22': -25,
           '2000-01-01': -50
         },
-        query: 'SELECT * FROM review AS t WHERE author=$1 AND deleter IS NOT NULL AND deleter != author',
+        query: [
+          'SELECT t.*, project.coordinates FROM review AS t',
+          'JOIN project ON project.id=t.id',
+          'WHERE t.author=$1 AND t.deleter IS NOT NULL AND t.deleter != t.author'
+        ].join(' '),
         terms: 'each review you submitted, which was deleted later',
-        history: 'The review #[id] you submitted was deleted',
+        history: 'The review [id] you submitted was deleted in [project]:[coordinates]',
         bot: {
           '2020-04-22': -10,
           '2000-01-01': -50
