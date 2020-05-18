@@ -62,3 +62,8 @@
         %span.item
           = RelativeTime.in_words(r[:created])
   = partial(:paging, locals, page: page, list: recent)
+  %p
+    Download full history as
+    %a{href: iri.cut('/karma.csv')} .csv
+    or
+    %a{href: iri.cut('/karma.json')} .json
