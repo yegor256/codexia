@@ -91,6 +91,19 @@ class Xia::AppTest < Minitest::Test
     end
   end
 
+  def test_404_user_pages
+    name = '-t39432432'
+    login(name)
+    pages = [
+      '/p/47483',
+      '/something-else'
+    ]
+    pages.each do |p|
+      get(p)
+      assert_equal(404, last_response.status, "#{p} fails: #{last_response.body.inspect}")
+    end
+  end
+
   def test_submits_wrong_coordinates
     login('-tester5')
     post(Iri.new('/submit').add(platform: 'github', coordinates: '-').to_s, nil, 'HTTP_X_CODEXIA_TOKEN' => '-test-')

@@ -27,3 +27,9 @@ require_relative 'xia'
 # Copyright:: Copyright (c) 2020 Yegor Bugayenko
 # License:: MIT
 class Xia::Urror < StandardError; end
+
+# Something is not found.
+# Author:: Yegor Bugayenko (yegor256@gmail.com)
+# Copyright:: Copyright (c) 2020 Yegor Bugayenko
+# License:: MIT
+class Xia::NotFound < StandardError; end

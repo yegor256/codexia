@@ -39,6 +39,7 @@ require 'telepost'
 require 'time'
 require 'yaml'
 require 'zache'
+require 'alterout'
 require_relative 'objects/urror'
 require_relative 'objects/authors'
 require_relative 'objects/projects'
@@ -144,11 +145,17 @@ def the_author
 end
 
 def the_projects(a = the_author)
-  Xia::Projects.new(
-    settings.pgsql,
-    a,
-    log: settings.log,
-    telepost: settings.telepost
+  AlterOut.new(
+    Xia::Projects.new(
+      settings.pgsql,
+      a,
+      log: settings.log,
+      telepost: settings.telepost
+    ),
+    get: proc do |p|
+      raise Xia::NotFound, "Project #{p.id} is not found" unless p.exists?
+      p
+    end
   )
 end
 

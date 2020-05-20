@@ -44,6 +44,10 @@ class Xia::Project
     @telepost = telepost
   end
 
+  def exists?
+    !@pgsql.exec('SELECT * FROM project WHERE id=$1', [@id]).empty?
+  end
+
   def coordinates
     column(:coordinates)
   end

@@ -50,6 +50,8 @@ error do
   e = env['sinatra.error']
   if e.is_a?(Xia::Urror)
     flash(@locals[:author] ? '/recent' : '/', e.message, color: 'darkred', code: 303)
+  elsif e.is_a?(Xia::NotFound)
+    flash(@locals[:author] ? '/recent' : '/', e.message, color: 'darkred', code: 404)
   else
     Raven.capture_exception(e)
     haml(
