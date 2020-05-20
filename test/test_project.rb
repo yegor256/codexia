@@ -42,4 +42,13 @@ class Xia::ProjectTest < Minitest::Test
     project.unseen!
     project.unseen!
   end
+
+  def test_seen_unseen_by_friend
+    author = Xia::Authors.new(t_pgsql).named('-test955-first')
+    p1 = author.projects.submit('github', 'test/hey938533')
+    p1.seen!
+    friend = Xia::Authors.new(t_pgsql).named('-test955-second')
+    p2 = friend.projects.get(p1.id)
+    p2.seen!
+  end
 end
