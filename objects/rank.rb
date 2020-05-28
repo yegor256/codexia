@@ -129,7 +129,7 @@ class Xia::Rank
       },
       {
         task: 'badges.promote-to-L1',
-        min: 500,
+        min: 150,
         text: 'promote a project to L1',
         bot_forbid: true
       },
@@ -159,7 +159,7 @@ class Xia::Rank
       },
       {
         task: 'badges.degrade-from-L1',
-        min: 300,
+        min: 250,
         text: 'degrade an L1 project',
         bot_forbid: true
       },
