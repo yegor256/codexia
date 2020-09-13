@@ -20,10 +20,10 @@
 # SOFTWARE.
 
 source 'https://rubygems.org'
-ruby '2.6.0'
+ruby '>= 2.6.0'
 
 gem 'bundler', '2.1.4'
-gem 'codecov', '0.1.14'
+gem 'codecov', '0.2.8'
 gem 'eslintrb', '2.1.0'
 gem 'glogin', '0.6.0'
 gem 'haml', '5.0.4'

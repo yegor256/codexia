@@ -53,6 +53,11 @@ class Xia::Withdrawals
     )
   end
 
+  # How many points were taken home already
+  def total
+    @pgsql.exec('SELECT SUM(points) FROM withdrawal WHERE author=$1', [@author.id])[0]['sum'].to_i
+  end
+
   def recent(limit: 10)
     q = [
       'SELECT *',

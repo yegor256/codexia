@@ -10,6 +10,7 @@
     %tr
       %th Login
       %th.right Karma
+      %th.right Withdrawn
       %th.right Payable
   %tbody
     - bots.each do |b|
@@ -19,5 +20,7 @@
         %td.right.monospace
           %a{href: iri.cut('/payables').add(a: b.login)}<
             = b.karma.points.round
+        %td.right.monospace
+          = b.withdrawals.total
         %td.right.monospace
           = b.karma.points(safe: true).round
