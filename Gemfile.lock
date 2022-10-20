@@ -70,7 +70,6 @@ GEM
     i18n (1.8.9)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
-    ipaddr (1.2.2)
     iri (0.5.0)
     jaro_winkler (1.5.4)
     json (2.1.0)
@@ -88,7 +87,7 @@ GEM
       plist
       rack
       sinatra
-    mini_portile2 (2.5.0)
+    mini_portile2 (2.8.0)
     minitest (5.11.3)
     minitest-reporters (1.3.6)
       ansi
@@ -99,13 +98,12 @@ GEM
     multipart-post (2.1.1)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
-    nokogiri (1.11.1)
-      mini_portile2 (~> 2.5.0)
+    nokogiri (1.13.9)
+      mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
-    nokogiri (1.11.1-x86_64-darwin)
+    nokogiri (1.13.9-x86_64-darwin)
       racc (~> 1.4)
     openssl (2.1.2)
-      ipaddr
     parallel (1.19.2)
     parser (2.7.1.4)
       ast (~> 2.4.1)
@@ -117,7 +115,7 @@ GEM
       random-port (~> 0.3)
     plist (3.5.0)
     powerpack (0.1.2)
-    racc (1.5.2)
+    racc (1.6.0)
     rack (2.1.4)
     rack-protection (2.0.4)
       rack
