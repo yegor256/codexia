@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2020 Yegor Bugayenko
+# Copyright (c) 2020-2023 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -22,10 +22,10 @@
 source 'https://rubygems.org'
 ruby '>= 2.6.0'
 
-gem 'bundler', '2.3.25'
+gem 'bundler', '~>2.3', require: false
 gem 'codecov', '0.2.8'
 gem 'eslintrb', '2.1.0'
-gem 'glogin', '0.6.0'
+gem 'glogin', '0.10.0'
 gem 'haml', '5.0.4'
 gem 'iri', '0.5.0'
 gem 'loog', '0.2.1'
@@ -49,9 +49,9 @@ gem 'sinatra-contrib', '2.0.4'
 gem 'sprockets', '3.7.2'
 gem 'tacky', '0.3.5'
 gem 'telepost', '>=0.3.2'
-gem 'thin', '1.7.2'
+gem 'thin', '1.8.2'
 gem 'threads', '>=0.3'
 gem 'veils', '0.3.0'
 gem 'xcop', '0.6'
 gem 'zache', '>=0.12.0'
-gem 'zold-ruby-sdk', '0.2.3'
+gem 'zold-ruby-sdk', '0.3.0'
