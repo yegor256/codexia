@@ -44,7 +44,7 @@ gem 'rubocop', '0.62.0', require: false
 gem 'rubocop-rspec', '1.30.1', require: false
 gem 'sass', '3.7.2'
 gem 'sentry-raven', '2.7.4'
-gem 'sinatra', '2.0.4'
+gem 'sinatra', '2.2.3'
 gem 'sinatra-contrib', '2.0.4'
 gem 'sprockets', '3.7.2'
 gem 'tacky', '0.3.5'
