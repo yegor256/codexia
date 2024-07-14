@@ -39,7 +39,7 @@ gem 'rake', '12.3.3', require: false
 gem 'redcarpet', '3.5.1'
 gem 'relative_time', '1.1.0'
 gem 'rerun', '0.13.1', require: false
-gem 'rspec-rails', '3.8.1', require: false
+gem 'rspec-rails', '3.9.1', require: false
 gem 'rubocop', '0.62.0', require: false
 gem 'rubocop-rspec', '1.30.1', require: false
 gem 'sass', '3.7.2'
