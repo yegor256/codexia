@@ -7,7 +7,7 @@ assets:
 install: |-
   export PATH=$PATH:/usr/lib/postgresql/10/bin
   sudo apt-get -y update
-  sudo apt-get -y install libpq-dev
+  sudo apt-get install --yes libpq-dev
   git config --global user.email "server@codexia.org"
   git config --global user.name "codexia.org"
   sudo gem update bundler
