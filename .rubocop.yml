@@ -43,7 +43,7 @@ Layout/EmptyLineAfterGuardClause:
   Enabled: false
 Style/ClassAndModuleChildren:
   Enabled: false
-required:
+require:
   - rubocop-rake
   - rubocop-minitest
   - rubocop-performance
