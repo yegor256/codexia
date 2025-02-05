@@ -5,7 +5,6 @@ AllCops:
     - 'vendor/**/*'
   DisplayCopNames: true
   TargetRubyVersion: 2.6.0
-
 Style/MethodMissingSuper:
   Enabled: false
 Layout/RescueEnsureAlignment:
@@ -44,3 +43,7 @@ Layout/EmptyLineAfterGuardClause:
   Enabled: false
 Style/ClassAndModuleChildren:
   Enabled: false
+required:
+  - rubocop-rake
+  - rubocop-minitest
+  - rubocop-performance
