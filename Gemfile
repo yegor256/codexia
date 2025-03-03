@@ -12,7 +12,7 @@ gem 'eslintrb', '2.1.0'
 gem 'glogin', '0.10.0'
 gem 'haml', '5.0.4'
 gem 'iri', '0.5.0'
-gem 'loog', '0.2.1'
+gem 'loog', '0.6.0'
 gem 'minitest', '5.16.3', require: false
 gem 'minitest-reporters', '1.5.0', require: false
 gem 'pgtk', '0.7.5'
