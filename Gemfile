@@ -7,7 +7,7 @@ source 'https://rubygems.org'
 ruby '>= 2.6.0'
 
 gem 'bundler', '~>2.3', require: false
-gem 'codecov', '0.2.8'
+gem 'codecov', '0.6.0'
 gem 'eslintrb', '2.1.0'
 gem 'glogin', '0.10.0'
 gem 'haml', '5.0.4'
