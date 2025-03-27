@@ -248,7 +248,7 @@ GEM
       nokogiri (~> 1.8)
       rainbow (~> 3.0)
       slop (~> 4.4)
-    zache (0.13.0)
+    zache (0.13.2)
     zeitwerk (2.6.8)
     zold (0.31.5)
       backtrace (>= 0.3)
