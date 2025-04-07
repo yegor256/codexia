@@ -1,11 +1,11 @@
 <img src="http://www.codexia.org/logo.svg" height="96px"/>
 
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
-[![DevOps By Rultor.com](http://www.rultor.com/b/yegor256/codexia)](http://www.rultor.com/p/yegor256/codexia)
+[![DevOps By Rultor.com](https://www.rultor.com/b/yegor256/codexia)](https://www.rultor.com/p/yegor256/codexia)
 [![We recommend RubyMine](https://www.elegantobjects.org/rubymine.svg)](https://www.jetbrains.com/ruby/)
 
 [![Build Status](https://travis-ci.org/yegor256/codexia.svg?branch=master)](https://travis-ci.org/yegor256/codexia)
-[![PDD status](http://www.0pdd.com/svg?name=yegor256/codexia)](http://www.0pdd.com/p?name=yegor256/codexia)
+[![PDD status](https://www.0pdd.com/svg?name=yegor256/codexia)](https://www.0pdd.com/p?name=yegor256/codexia)
 [![codecov](https://codecov.io/gh/yegor256/codexia/branch/master/graph/badge.svg)](https://codecov.io/gh/yegor256/codexia)
 [![Maintainability](https://api.codeclimate.com/v1/badges/b84839a6064ac08ba41c/maintainability)](https://codeclimate.com/github/yegor256/codexia/maintainability)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/yegor256/takes/codexia/master/LICENSE.txt)
