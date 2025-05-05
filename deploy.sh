@@ -1,5 +1,9 @@
 #!/bin/bash
-set -e
+
+# SPDX-FileCopyrightText: Copyright (c) 2020-2025 Yegor Bugayenko
+# SPDX-License-Identifier: MIT
+
+set -ex -o pipefail
 
 cd "$(dirname "$0")"
 bundle update
