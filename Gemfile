@@ -16,7 +16,7 @@ gem 'loog', '~>0.2'
 gem 'minitest', '~>5.16', require: false
 gem 'minitest-reporters', '~>1.5', require: false
 gem 'pgtk', '~>0.7'
-gem 'rack', '2.1.4.1'
+gem 'rack', '2.2.14'
 gem 'rack-ssl', '~>1.4'
 gem 'rack-test', '~>1.1'
 gem 'rake', '~>12.3', require: false
