@@ -15,8 +15,8 @@ class Xia::ReviewsTest < Minitest::Test
     project = projects.submit('github', "yegor256/takes#{rand(999)}")
     reviews = project.reviews
     review = reviews.post('This is a test review good enough to be posted')
-    assert(!review.id.nil?)
-    assert(!reviews.recent.empty?)
+    refute_nil(review.id)
+    refute_empty(reviews.recent)
   end
 
   def test_rejects_review_for_deleted_project
@@ -44,7 +44,7 @@ class Xia::ReviewsTest < Minitest::Test
     project = projects.submit('github', "yegor256/foo#{rand(999)}")
     review = project.reviews.post('This is a test review good enough to be posted')
     review.delete
-    assert(!project.reviews.recent(show_deleted: true)[0].deleter.login.nil?)
+    refute_nil(project.reviews.recent(show_deleted: true)[0].deleter.login)
   end
 
   def test_rejects_duplicate_markers
@@ -54,7 +54,7 @@ class Xia::ReviewsTest < Minitest::Test
     text = 'This is a test review good enough to be posted'
     project.reviews.post(text, 'hash')
     assert_raises(Xia::Reviews::DuplicateError) do
-      project.reviews.post(text + '.', 'hash')
+      project.reviews.post("#{text}.", 'hash')
     end
   end
 end

@@ -3,7 +3,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2020-2026 Yegor Bugayenko
 # SPDX-License-Identifier: MIT
 
-STDOUT.sync = true
+$stdout.sync = true
 
 require 'glogin'
 require 'glogin/codec'
@@ -11,6 +11,7 @@ require 'haml'
 require 'iri'
 require 'json'
 require 'loog'
+require 'loog/tee'
 require 'pgtk'
 require 'pgtk/pool'
 require 'raven'
@@ -84,15 +85,17 @@ configure do
   if File.exist?('target/pgsql-config.yml')
     set :pgsql, Pgtk::Pool.new(
       Pgtk::Wire::Yaml.new(File.join(__dir__, 'target/pgsql-config.yml')),
+      max: 4,
       log: settings.log
     )
   else
     set :pgsql, Pgtk::Pool.new(
       Pgtk::Wire::Env.new('DATABASE_URL'),
+      max: 4,
       log: settings.log
     )
   end
-  settings.pgsql.start(4)
+  settings.pgsql.start!
 end
 
 get '/' do
@@ -146,15 +149,15 @@ def iri
   Iri.new(request.url)
 end
 
-require_relative 'front/front_misc.rb'
-require_relative 'front/front_login.rb'
-require_relative 'front/front_helpers.rb'
-require_relative 'front/front_author.rb'
-require_relative 'front/front_authors.rb'
-require_relative 'front/front_project.rb'
-require_relative 'front/front_projects.rb'
-require_relative 'front/front_karma.rb'
-require_relative 'front/front_payables.rb'
-require_relative 'front/front_sql.rb'
-require_relative 'front/front_terms.rb'
-require_relative 'front/front_bots.rb'
+require_relative 'front/front_misc'
+require_relative 'front/front_login'
+require_relative 'front/front_helpers'
+require_relative 'front/front_author'
+require_relative 'front/front_authors'
+require_relative 'front/front_project'
+require_relative 'front/front_projects'
+require_relative 'front/front_karma'
+require_relative 'front/front_payables'
+require_relative 'front/front_sql'
+require_relative 'front/front_terms'
+require_relative 'front/front_bots'

@@ -189,7 +189,7 @@ class Xia::Rank
     footprint = @author.footprint(entity)
     prefix = "#{entity}s.#{task}.quota."
     t = legend.select { |g| g[:task].start_with?(prefix) }
-      .map { |g| { task: g[:task], diff: footprint - g[:task][prefix.length..-1].to_i } }
+      .map { |g| { task: g[:task], diff: footprint - g[:task][prefix.length..].to_i } }
       .reject { |g| g[:diff].negative? }
       .min_by { |g| g[:diff] }
     Xia::Rank.new(@author, log: @log).enter(t[:task]) unless t.nil?

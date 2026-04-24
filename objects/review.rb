@@ -14,8 +14,7 @@ require_relative 'bots'
 # Copyright:: Copyright (c) 2020-2026 Yegor Bugayenko
 # License:: MIT
 class Xia::Review
-  attr_reader :id
-  attr_reader :project
+  attr_reader :id, :project
 
   def initialize(pgsql, project, id, log: Loog::NULL)
     @pgsql = pgsql

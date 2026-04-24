@@ -16,7 +16,7 @@ class Xia::ReviewTest < Minitest::Test
     reviews = project.reviews
     review = reviews.post('This is a test review good enough to be posted')
     id = review.vote(true)
-    assert(!id.nil?)
+    refute_nil(id)
     assert_equal(id, review.vote(false))
   end
 
@@ -26,12 +26,12 @@ class Xia::ReviewTest < Minitest::Test
     project = projects.submit('github', "yegor256/takes#{rand(999)}")
     reviews = project.reviews
     review = reviews.post('This is a test review good enough to be posted')
-    assert(!project.reviews.recent.empty?)
-    assert(review.deleter.nil?)
+    refute_empty(project.reviews.recent)
+    assert_nil(review.deleter)
     review.delete
-    assert(project.reviews.recent.empty?)
-    assert(!review.deleter.nil?)
-    assert(!review.deleter.login.nil?)
+    assert_empty(project.reviews.recent)
+    refute_nil(review.deleter)
+    refute_nil(review.deleter.login)
   end
 
   def test_deletes_someones_review
@@ -43,6 +43,6 @@ class Xia::ReviewTest < Minitest::Test
       'This is a test review good enough to be posted'
     )
     project.reviews.get(review.id).delete
-    assert(project.reviews.recent.empty?)
+    assert_empty(project.reviews.recent)
   end
 end

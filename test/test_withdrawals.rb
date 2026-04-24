@@ -13,7 +13,7 @@ class Xia::KarmaTest < Minitest::Test
   def test_list_withdrawals
     author = Xia::Authors.new(t_pgsql).named('-yegor256')
     withdrawals = author.withdrawals
-    assert(!withdrawals.recent.nil?)
-    assert(!withdrawals.total.nil?)
+    refute_nil(withdrawals.recent)
+    refute_nil(withdrawals.total)
   end
 end

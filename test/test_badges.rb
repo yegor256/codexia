@@ -18,8 +18,8 @@ class Xia::BadgesTest < Minitest::Test
     text = 'jey'
     badge = badges.attach(text)
     assert_equal(2, badges.to_a.size)
-    assert(badges.to_a.map(&:text).include?(text))
-    assert(!badge.id.nil?)
+    assert_includes(badges.to_a.map(&:text), text)
+    refute_nil(badge.id)
     badge.detach
   end
 
@@ -30,9 +30,9 @@ class Xia::BadgesTest < Minitest::Test
     badges = project.badges
     Threads.new(20).assert do
       badge = badges.attach('newbie')
-      assert(!badge.id.nil?)
+      refute_nil(badge.id)
     rescue Xia::Badges::DuplicateError => e
-      assert(!e.nil?)
+      refute_nil(e)
     end
   end
 

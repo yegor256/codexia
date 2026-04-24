@@ -14,8 +14,8 @@ class Xia::BotsTest < Minitest::Test
     authors = Xia::Authors.new(t_pgsql)
     authors.named('cdxbot')
     bots = Xia::Bots.new(t_pgsql)
-    assert(!bots.authors.empty?)
+    refute_empty(bots.authors)
     bot = bots.authors.first
-    assert(!bot.login.nil?)
+    refute_nil(bot.login)
   end
 end

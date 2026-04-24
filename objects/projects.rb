@@ -33,7 +33,7 @@ class Xia::Projects
   def submit(platform, coordinates)
     Xia::Rank.new(@author).enter('projects.submit')
     Xia::Rank.new(@author).quota('project', 'submit')
-    unless %r{^[A-Za-z0-9\-\.]+/[A-Za-z0-9\-_\.]+$}.match?(coordinates)
+    unless %r{^[A-Za-z0-9\-.]+/[A-Za-z0-9\-_.]+$}.match?(coordinates)
       raise Xia::Urror, "Coordinates #{coordinates.inspect} are wrong"
     end
     %w[
@@ -68,7 +68,7 @@ class Xia::Projects
   def recent(badges: [], limit: 10, offset: 0, show_deleted: false)
     terms = []
     terms << 'p.deleter IS NULL' unless show_deleted
-    terms << 'badge.text IN (' + badges.map { |b| "'#{b}'" }.join(',') + ')' unless badges.empty?
+    terms << "badge.text IN (#{badges.map { |b| "'#{b}'" }.join(',')})" unless badges.empty?
     q = [
       'SELECT DISTINCT p.*, author.login AS author_login, author.id AS author_id,',
       'deleter.id AS deleter_id, deleter.login AS deleter_login,',
@@ -78,11 +78,11 @@ class Xia::Projects
       'LEFT JOIN author AS deleter ON deleter.id=p.deleter',
       'LEFT JOIN badge ON p.id=badge.project',
       'JOIN author ON author.id=p.author',
-      terms.empty? ? '' : 'WHERE ' + terms.join(' AND '),
+      terms.empty? ? '' : "WHERE #{terms.join(' AND ')}",
       'ORDER BY p.created DESC'
     ].join(' ')
     Veil.new(
-      @pgsql.exec(q + ' LIMIT $1 OFFSET $2', [limit, offset]).map { |r| to_obj(r) },
+      @pgsql.exec("#{q} LIMIT $1 OFFSET $2", [limit, offset]).map { |r| to_obj(r) },
       count: @pgsql.exec("SELECT COUNT(*) FROM (#{q}) AS x")[0]['count'].to_i
     )
   end
@@ -102,7 +102,7 @@ class Xia::Projects
       'ORDER BY p.created DESC'
     ].join(' ')
     Veil.new(
-      @pgsql.exec(q + ' LIMIT $2 OFFSET $3', [@author.id, limit, offset]).map { |r| to_obj(r) },
+      @pgsql.exec("#{q} LIMIT $2 OFFSET $3", [@author.id, limit, offset]).map { |r| to_obj(r) },
       count: @pgsql.exec("SELECT COUNT(*) FROM (#{q}) AS x", [@author.id])[0]['count'].to_i
     )
   end

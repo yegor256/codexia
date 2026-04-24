@@ -6,11 +6,11 @@
 ENV['RACK_ENV'] = 'test'
 
 require 'simplecov'
-SimpleCov.start
 if ENV['CI'] == 'true'
   require 'codecov'
   SimpleCov.formatter = SimpleCov::Formatter::Codecov
 end
+SimpleCov.start
 
 require 'minitest/reporters'
 Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new]
@@ -26,8 +26,9 @@ module Minitest
       # rubocop:disable Style/ClassVars
       @@t_pgsql ||= Pgtk::Pool.new(
         Pgtk::Wire::Yaml.new(File.join(__dir__, '../target/pgsql-config.yml')),
+        max: 4,
         log: ENV['TEST_QUIET_LOG'] ? Loog::NULL : Loog::VERBOSE
-      ).start(4)
+      ).start!
       # rubocop:enable Style/ClassVars
     end
   end

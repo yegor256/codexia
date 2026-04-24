@@ -21,7 +21,7 @@ class Xia::AuthorTest < Minitest::Test
   def test_updates_author
     authors = Xia::Authors.new(t_pgsql)
     author = authors.named('-test-')
-    assert(!author.id.nil?)
+    refute_nil(author.id)
   end
 
   def test_generates_token

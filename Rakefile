@@ -37,7 +37,7 @@ end
 require 'pgtk/pgsql_task'
 Pgtk::PgsqlTask.new(:pgsql) do |t|
   t.dir = 'target/pgsql'
-  t.fresh_start = true
+  t.fresh = true
   t.user = 'test'
   t.password = 'test'
   t.dbname = 'test'
@@ -52,7 +52,6 @@ end
 
 require 'xcop/rake_task'
 Xcop::RakeTask.new(:xcop) do |task|
-  task.license = 'LICENSE.txt'
   task.includes = ['**/*.xml', '**/*.xsl', '**/*.xsd', '**/*.html']
   task.excludes = ['target/**/*', 'coverage/**/*']
 end
@@ -66,6 +65,7 @@ task(run: %i[pgsql liquibase]) do
   `rerun -b "RACK_ENV=test ruby codexia.rb"`
 end
 
+desc 'Check the copyright year'
 task(:copyright) do
   sh "grep -q -r '#{Date.today.strftime('%Y')}' \
     --include '*.rb' \

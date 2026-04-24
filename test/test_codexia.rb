@@ -103,7 +103,7 @@ class Xia::AppTest < Minitest::Test
     assert(json.is_a?(Hash), "No projects in the JSON response: #{last_response.body.inspect}")
     assert(json['id'].is_a?(Integer), 'ID is not present')
     assert(json['submitter']['id'].is_a?(Integer))
-    assert(json['deleter'].nil?)
+    assert_nil(json['deleter'])
     assert(json['badges'].is_a?(Array))
     assert_equal('newbie', json['badges'][0]['text'])
     assert(json['created'].is_a?(String))
@@ -112,7 +112,7 @@ class Xia::AppTest < Minitest::Test
     json = JSON.parse(last_response.body)
     assert(json['id'].is_a?(Integer))
     assert(json['submitter']['id'].is_a?(Integer))
-    assert(json['deleter'].nil?)
+    assert_nil(json['deleter'])
     assert(json['badges'].is_a?(Array))
   end
 
@@ -158,7 +158,7 @@ class Xia::AppTest < Minitest::Test
   private
 
   def login(name)
-    set_cookie('glogin=' + name)
+    set_cookie("glogin=#{name}")
   end
 
   # Post a new project and return its ID
