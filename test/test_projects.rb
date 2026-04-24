@@ -16,20 +16,20 @@ class Xia::ProjectsTest < Minitest::Test
     projects = author.projects
     projects.submit('github', "yegor-1A.o/takes_#{rand(999)}")
     list = projects.inbox
-    assert(!list.count.zero?)
-    assert(!list.empty?)
-    assert(!list.count.zero?)
+    refute(list.count.zero?)
+    refute_empty(list)
+    refute(list.count.zero?)
     observed = 0
     list.each { |_| observed += 1 }
-    assert(!observed.zero?)
+    refute(observed.zero?)
   end
 
   def test_submits_project
     author = Xia::Authors.new(t_pgsql).named('-eee')
     projects = author.projects
     project = projects.submit('github', "yegor-1A.o/takes_#{rand(999)}")
-    assert(!project.id.nil?)
-    assert(!projects.recent.empty?)
+    refute_nil(project.id)
+    refute_empty(projects.recent)
   end
 
   def test_rejects_google_project
@@ -45,7 +45,7 @@ class Xia::ProjectsTest < Minitest::Test
     projects = author.projects
     Threads.new(20).assert do
       project = projects.submit('github', "yyy/ff_#{rand(99_999)}")
-      assert(!project.id.nil?)
+      refute_nil(project.id)
     end
   end
 
@@ -56,8 +56,8 @@ class Xia::ProjectsTest < Minitest::Test
     project = projects.submit('github', "dd/fsss#{rand(999)}")
     project.badges.attach('test')
     assert(projects.recent.count >= 2)
-    assert(projects.recent(badges: ['badge-is-absent']).empty?)
-    assert(!projects.recent(badges: ['test']).empty?)
+    assert_empty(projects.recent(badges: ['badge-is-absent']))
+    refute_empty(projects.recent(badges: ['test']))
   end
 
   def test_adds_badges_and_fetches_them

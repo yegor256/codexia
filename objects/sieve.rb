@@ -21,7 +21,7 @@ class Xia::Sieve
   end
 
   def to_s
-    'Sieve:' + method_missing(:to_s)
+    "Sieve:#{method_missing(:to_s)}"
   end
 
   def method_missing(*args)
@@ -32,7 +32,7 @@ class Xia::Sieve
     end
   end
 
-  def respond_to?(method, include_private = false)
+  def respond_to?(method, include_private = false) # rubocop:disable Style/OptionalBooleanParameter
     @origin.respond_to?(method, include_private)
   end
 

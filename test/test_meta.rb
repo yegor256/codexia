@@ -15,7 +15,7 @@ class Xia::MetaTest < Minitest::Test
     project = projects.submit('github', "yegor256/takes#{rand(999)}")
     meta = project.meta
     id = meta.set('ABC', 'works?')
-    assert(!id.nil?)
+    refute_nil(id)
     assert_equal(id, meta.set('ABC', 'second'))
     assert('second', meta.value('-test-:ABC'))
   end

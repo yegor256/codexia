@@ -7,8 +7,10 @@ AllCops:
     - 'assets/**/*'
     - 'vendor/**/*'
   DisplayCopNames: true
-  TargetRubyVersion: 2.6.0
-Style/MethodMissingSuper:
+  NewCops: disable
+  TargetRubyVersion: 3.2
+  SuggestExtensions: false
+Lint/MissingSuper:
   Enabled: false
 Layout/RescueEnsureAlignment:
   Enabled: false
@@ -30,23 +32,24 @@ Layout/EndOfLine:
   EnforcedStyle: lf
 Metrics/ParameterLists:
   Max: 10
-Layout/AlignParameters:
+Layout/ParameterAlignment:
   Enabled: false
 Metrics/PerceivedComplexity:
   Max: 25
-Metrics/LineLength:
+Layout/LineLength:
   Max: 120
 Style/MultilineBlockChain:
   Enabled: false
 Layout/MultilineOperationIndentation:
   Enabled: false
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   MinNameLength: 1
 Layout/EmptyLineAfterGuardClause:
   Enabled: false
 Style/ClassAndModuleChildren:
   Enabled: false
-require:
+plugins:
   - rubocop-rake
   - rubocop-minitest
   - rubocop-performance
+  - rubocop-rspec

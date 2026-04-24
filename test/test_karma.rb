@@ -19,7 +19,7 @@ class Xia::KarmaTest < Minitest::Test
     reviews.post('This is a test review good enough to be posted')
     karma = authors.named(login).karma.points
     assert(karma.positive?, "The karma is #{karma}")
-    assert(!authors.named(login).karma.points(safe: true).nil?)
+    refute_nil(authors.named(login).karma.points(safe: true))
   end
 
   def test_validity_of_points
@@ -36,7 +36,7 @@ class Xia::KarmaTest < Minitest::Test
     login = '-test-'
     author = authors.named(login)
     author.projects.submit('github', "yegor256/takes#{rand(999)}")
-    assert(!author.karma.recent.empty?)
+    refute_empty(author.karma.recent)
   end
 
   def test_takes_withdrawals_into_account
@@ -47,7 +47,7 @@ class Xia::KarmaTest < Minitest::Test
     before = author.karma.points
     wts = Zold::WTS::Fake.new
     author.withdrawals.pay('0000111122223333', 1, wts, 'keygap')
-    assert(author.karma.points != before)
-    assert(author.karma.points(safe: true) != before)
+    refute_equal(author.karma.points, before)
+    refute_equal(author.karma.points(safe: true), before)
   end
 end

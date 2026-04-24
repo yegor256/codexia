@@ -13,7 +13,7 @@ class Xia::AuthorsTest < Minitest::Test
     authors = Xia::Authors.new(t_pgsql)
     login = '-test-'
     author = authors.named(login)
-    assert(!author.id.nil?)
+    refute_nil(author.id)
     assert_equal(author.id, authors.named(login).id)
   end
 end
