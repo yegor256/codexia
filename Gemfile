@@ -10,7 +10,7 @@ gem 'bundler', '>=2.3', require: false
 gem 'codecov', '>=0.6', require: false
 gem 'eslintrb', '>=2.1', require: false
 gem 'glogin', '>=0.17'
-gem 'haml', '~>5.0'
+gem 'haml', '~>7.0'
 gem 'iri', '>=0.11'
 gem 'loog', '>=0.8'
 gem 'minitest', '>=5.22', require: false
