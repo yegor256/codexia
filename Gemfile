@@ -33,7 +33,7 @@ gem 'rubocop-rspec', '>=2.25', require: false
 gem 'sass', '~>3.7'
 gem 'sentry-raven', '~>3.1'
 gem 'sinatra', '~>3.0'
-gem 'sinatra-contrib', '~>3.0'
+gem 'sinatra-contrib', '~>4.0'
 gem 'sprockets', '~>4.2'
 gem 'tacky', '>=0.5'
 gem 'telepost', '>=0.3.2'
